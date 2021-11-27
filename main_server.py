@@ -40,7 +40,9 @@ while not finished:
         elif event.type == pygame.KEYDOWN:
             if step_flag == 1:
 
-                if event.key == pygame.K_UP:
+                antibag = 0  # чтобы инфа отправлялась на сервер только 1 раз
+
+                if event.key == pygame.K_UP and antibag == 0:
                     data_client = check('W', labirint)  # в первый раз нужно передать 'NN' ПОРАБОТАТЬ!!!!!!!!!!
                     Return_client = visual_client(screen, width, height, flag_client, data_client, objects_client,
                                                   objects_server, x_client, y_client, x_server, y_server)
@@ -54,8 +56,9 @@ while not finished:
 
                     say_to_client_about_serv_step(data_client, conn)
                     # изменение лабиринта в зависимости от data_client!!!!!
+                    antibag = 1
 
-                if event.key == pygame.K_DOWN:
+                if event.key == pygame.K_DOWN and antibag == 0:
                     data_client = check('S', labirint)  # в первый раз нужно передать 'NN'
                     Return_client = visual_client(screen, width, height, flag_client, data_client, objects_client,
                                                   objects_server, x_client, y_client, x_server, y_server)
@@ -69,8 +72,9 @@ while not finished:
 
                     say_to_client_about_serv_step(data_client, conn)
                     # изменение лабиринта
+                    antibag = 1
 
-                if event.key == pygame.K_RIGHT:
+                if event.key == pygame.K_RIGHT and antibag == 0:
                     data_client = check('D', labirint)  # в первый раз нужно передать 'NN'
                     Return_client = visual_client(screen, width, height, flag_client, data_client, objects_client,
                                                   objects_server, x_client, y_client, x_server, y_server)
@@ -84,8 +88,9 @@ while not finished:
 
                     say_to_client_about_serv_step(data_client, conn)
                     # изменение лабиринта
+                    antibag = 1
 
-                if event.key == pygame.K_LEFT:
+                if event.key == pygame.K_LEFT and antibag == 0:
                     data_client = check('A', labirint)  # в первый раз нужно передать 'NN'
                     Return_client = visual_client(screen, width, height, flag_client, data_client, objects_client,
                                                   objects_server, x_client, y_client, x_server, y_server)
@@ -99,6 +104,7 @@ while not finished:
 
                     say_to_client_about_serv_step(data_client, conn)
                     # изменение лабиринта
+                    antibag = 1
 
     # ход соперника
     if step_flag == 0:

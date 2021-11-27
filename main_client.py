@@ -38,7 +38,9 @@ while not finished:
         elif event.type == pygame.KEYDOWN:
             if step_flag == 0:
 
-                if event.key == pygame.K_UP:
+                antibag = 0  # чтобы инфа отправлялась на сервер только 1 раз
+
+                if event.key == pygame.K_UP and antibag == 0:
 
                         data_client = ask_server('W', sock)  # в первый раз нужно передать 'NN'
                         Return_client = visual_client(screen, width, height, flag_client, data_client, objects_client,
@@ -51,7 +53,9 @@ while not finished:
                         y_client = Return_client[5]
                         step_flag = 1
 
-                if event.key == pygame.K_DOWN:
+                        antibag = 1
+
+                if event.key == pygame.K_DOWN and antibag == 0:
 
                     data_client = ask_server('S',
                                              sock)  # в первый раз нужно передать 'NN'
@@ -65,7 +69,9 @@ while not finished:
                     y_client = Return_client[5]
                     step_flag = 1
 
-                if event.key == pygame.K_RIGHT:
+                    antibag = 1
+
+                if event.key == pygame.K_RIGHT and antibag == 0:
                     data_client = ask_server('D',
                                              sock)  # в первый раз нужно передать 'NN'
                     Return_client = visual_client(screen, width, height, flag_client, data_client, objects_client,
@@ -78,7 +84,9 @@ while not finished:
                     y_client = Return_client[5]
                     step_flag = 1
 
-                if event.key == pygame.K_LEFT:
+                    antibag = 1
+
+                if event.key == pygame.K_LEFT and antibag == 0:
                     data_client = ask_server('A',
                                              sock)  # в первый раз нужно передать 'NN'
                     Return_client = visual_client(screen, width, height, flag_client, data_client, objects_client,
@@ -90,6 +98,8 @@ while not finished:
                     x_client = Return_client[4]
                     y_client = Return_client[5]
                     step_flag = 1
+
+                    antibag = 1
 
     # ход соперника
     if step_flag == 1:

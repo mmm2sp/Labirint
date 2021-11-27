@@ -21,7 +21,7 @@ def connection(IP, Port):
 def ask_server(vector, sock):
     '''
     отправляет запрос на сервер, можно ли сходить в направлении vector
-    :param vector: направление, куда хочется сходить
+    :param vector: направление, куда хочется сходить wasd
     :return: ответ сервера в виде wasd + буква предмета в клетке, куда пришли
     '''
     sock.send(vector.encode('utf-8'))
@@ -36,6 +36,7 @@ def catch_server_steps(sock):
     :return: информацию переданную сервером
     '''
     data = sock.recv(1024)
+
     return data.decode('utf-8')
 
 

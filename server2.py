@@ -32,14 +32,23 @@ def answer_to_client_step(labirint, conn):
     if data.decode('utf-8') == 'W' or data.decode('utf-8') == 'A' or data.decode('utf-8') == 'S' or data.decode('utf-8') == 'D':
         answer = check(data.decode('utf-8'), labirint)  # - функция проверяющая можно ли туда ходить (параметры WASD), находится в модуле лабиринт
         conn.send(answer.encode('utf-8'))
-        return data.decode('utf-8')
+        return answer
 
-def say_to_client_about_serv_step(step, item, conn):
+def say_to_client_about_serv_step(data, conn):
     '''
     отправляет данные клиенту о шаге игрока на сервере
-    :param step: wasd
-    :param item: буква, обозначающая предмет
+    :param conn: канал связи
+    :param data: две буквы (строка)
     '''
-    conn.send((step + item).encode('utf-8'))
+    conn.send(data.encode('utf-8'))
 
-
+def check(data, labirint):
+    '''
+    проверяет можно ли сходить
+    :param data: строка с направлением хода wasd
+    :param labirint: нформация о лабиринте
+    :return:
+    '''
+    # для проверки лабиринт пуст, сходить можно везде, везде пустые клетки
+    info = data + 'N'
+    return info

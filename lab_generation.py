@@ -22,7 +22,7 @@ def generate_walls_in_lab():
     '''
     Генерирует объекты в лабиринте
     '''
-    global generation_lab, walls_v, walls_h
+    global generation_lab, walls_v, walls_h, ars_coords
     #Матрица с вертикальными стенами
     walls_v = [['#' for y in range(HEIGHT)] for x in range(WIDTH + 1)] #Заполняем матрицу стен стенами "#"
     #Матрица с горизонтальными стенами
@@ -30,10 +30,11 @@ def generate_walls_in_lab():
     #Рабочая матрица для генерации
     generation_lab = [[0 for y in range(HEIGHT)] for x in range(WIDTH)] #Заполняем лабиринт нулями
 
-    hosp_coords = [chosen_cells[0] % WIDTH, chosen_cells[0] // WIDTH] #Координаты больницы
-    generate_walls(hosp_coords) #Запускаем рекурсию
+    hosp_coords = (chosen_cells[0] % WIDTH, chosen_cells[0] // WIDTH) #Координаты больницы
+    ars_coords = (chosen_cells[-1] % WIDTH, chosen_cells[-1] // WIDTH) #Координаты арсенала
+    generate_walls(hosp_coords, []) #Запускаем рекурсию
 
-    maximum = WIDTH * 2 + HEIGHT * 2
+    #Генерируем положение двери
     num_door = random.randint(0, (WIDTH + HEIGHT)*2 - 1)
     if num_door < WIDTH:
         walls_h[num_door][0] = '@'
@@ -66,14 +67,16 @@ def find_neighbors(coords):
         
     if lab[coords[0]][coords[1]] > '0' and lab[coords[0]][coords[1]] < str(NUM_PORTAL):
         next_portal = int(lab[coords[0]][coords[1]]) + 1
+        #print('next_portal is ', next_portal)
         next_portal_coords = (chosen_cells[next_portal] % WIDTH,
                           chosen_cells[next_portal] // WIDTH)
+        #print('next_portal_coords are ', next_portal_coords)
         if generation_lab[next_portal_coords[0]][next_portal_coords[1]] == 0:
             neighbors.add(next_portal_coords)
             
     return neighbors
             
-def generate_walls(coords):
+def generate_walls(coords, way):
     '''
     Рекурсивная функция, позволяющая генерировать лабиринт
     
@@ -87,10 +90,14 @@ def generate_walls(coords):
         
     Args:
         coords: координаты текущей клетки
+        way_ha: текущий маршрут
     '''
-    global walls_v, walls_h
+    global walls_v, walls_h, ars_coords, way_ha
     generation_lab[coords[0]][coords[1]] = 1 #Текущая клетка посещенная
-    
+    way.append(coords)
+    if coords == ars_coords:
+        way_ha = way.copy()
+    #print(way)
     neighbors = find_neighbors(coords)
     while len(neighbors) != 0: #Пока остались непосещенные соседние клетки
         cell = random.choice(list(neighbors))
@@ -98,27 +105,50 @@ def generate_walls(coords):
             walls_h[coords[0]][max(coords[1],cell[1])] = '*'
         elif coords[1] == cell[1] and abs(coords[0] - cell[0]) == 1:
             walls_v[max(coords[0],cell[0])][coords[1]] = '*'
-        generate_walls(cell)
+        #else:
+            #print("We are going into portal")
+        generate_walls(cell, way)
         neighbors = find_neighbors(coords)
+    way = way[:len(way_ha)-1:]
+
+def generate_minotaurus():
+    '''Отвечает за генерацию минотавров, не препятствующих прохождению лабиринта'''
+    global useless_cells, lab
+    max_num_minotaurus = max(min(len(useless_cells) - 2, 10), 0)
+    min_num_minotaurus = max(max_num_minotaurus - 4, 0)
+    num_minotaurus = random.randint(min_num_minotaurus, max_num_minotaurus)
+    minotaurus = random.sample(list(useless_cells), num_minotaurus)
+    for minotaur in minotaurus:
+        lab[minotaur[0]][minotaur[1]] = 'M'
+    useless_cells = useless_cells - set(minotaurus)        
 
 def generate():
     '''
     Главная функция генерации. Генерирует весь лабиринт
     '''
     global SIZE, WIDTH, HEIGHT, NUM_PORTAL, chosen_cells, lab
-    
-    WIDTH = random.randint(2, 10)
-    if WIDTH <= 4:
-        HEIGHT = random.randint(4, 10)
-    else:
-        HEIGHT = random.randint(2, 10)
+    global way_ha, useful_cells, useless_cells
 
+    #Определяем основные параметры
+    WIDTH = random.randint(2, 7)
+    if WIDTH <= 4:
+        HEIGHT = random.randint(4, 7)
+    else:
+        HEIGHT = random.randint(2, 7)
     SIZE = WIDTH, HEIGHT
-    NUM_PORTAL = random.randint(2, 5)
-    #Должно быть строго меньше 10, иначе мы имеем 2 цифры :(
-        
+    NUM_PORTAL = random.randint(2, 5) #Должно быть строго меньше 10, иначе 2 цифры
+    
     lab, chosen_cells = generate_objects_in_lab()
+    way_ha = []
     generate_walls_in_lab()
+
+    #Определяем, какие клетки можно загромождать
+    useful_cells = set(way_ha)
+    for number in chosen_cells:
+        useful_cells.add((number % WIDTH, number // WIDTH))
+    useless_cells = set((x, y) for y in range(HEIGHT) for x in range(WIDTH))
+    useless_cells = useless_cells - useful_cells
+    generate_minotaurus()
 
     # ВАЖНО! При отображении матрицу надо транспонировать(или считать х вниз, а у вправо)
     print(np.array(lab))
@@ -130,5 +160,5 @@ def generate():
 
 if __name__ == "__main__":
     generate()
-    #FixMe в итоге по рпямому вызову ничего не должно происходить...
+    #FixMe в итоге по прямому вызову ничего не должно происходить...
     print("This module is not for direct call!")

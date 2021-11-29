@@ -1,17 +1,6 @@
 import numpy as np #При отладке так удобнее смотреть вывод лабиринта
 import random
 
-##Сделайте начальную клетку текущей и отметьте ее как посещенную.
-##Пока есть непосещенные клетки
-##    Если текущая клетка имеет непосещенных «соседей»
-##    1) Протолкните текущую клетку в стек
-##    2) Выберите случайную клетку из соседних
-##    3) Уберите стенку между текущей клеткой и выбранной
-##    4) Сделайте выбранную клетку текущей и отметьте ее как посещенную.
-##    Иначе если стек не пуст
-##    1) Выдерните клетку из стека
-##    2) Сделайте ее текущей
-
 def find_neighbors(coords):
     '''
     Ищет соседей, в том числе следующий портал, которые не посещены
@@ -38,47 +27,60 @@ def find_neighbors(coords):
                           chosen_cells[next_portal] // WIDTH)
         if generated_lab[next_portal_coords[0]][next_portal_coords[1]] == 0:
             neighbors.add(next_portal_coords)
+            
     return neighbors
-
-
-
             
 def generate(coords):
     '''
     Рекурсивная функция, позволяющая генерировать лабиринт
+    
+    Отмечаем текущую клетку как посещенную
+    Ищем непосещенные соседние клетки (в т ч следующий портал)
+    Пока есть подходящие соседние клетки:
+        Выбираем случайную клетку из соседних
+        Убираем стенку между текущей клеткой и выбранной
+        Вызываем функцию для выбранной клетки
+        Ищем непосещенные соседние клетки (в т ч следующий портал)
+        
     Args:
         coords: координаты текущей клетки
     '''
-    global num_visited_cells, walls_v, walls_h
+    global walls_v, walls_h
     generated_lab[coords[0]][coords[1]] = 1 #Текущая клетка посещенная
-    num_visited_cells += 1
     
-    if num_visited_cells < WIDTH * HEIGHT:
+    neighbors = find_neighbors(coords)
+    while len(neighbors) != 0: #Пока остались непосещенные соседние клетки
+        cell = random.choice(list(neighbors))
+        if coords[0] == cell[0] and abs(coords[1] - cell[1]) == 1:
+            walls_h[coords[0]][max(coords[1],cell[1])] = '*'
+        elif coords[1] == cell[1] and abs(coords[0] - cell[0]) == 1:
+            walls_v[max(coords[0],cell[0])][coords[1]] = '*'
+        generate(cell)
         neighbors = find_neighbors(coords)
-        while len(neighbors) != 0: #Пока остались непосещенные соседние клетки
-            cell = random.choice(list(neighbors))
-            if coords[0] == cell[0] and abs(coords[1] - cell[1]) == 1:
-                walls_h[coords[0]][max(coords[1],cell[1])] = '*'
-            elif coords[1] == cell[1] and abs(coords[0] - cell[0]) == 1:
-                walls_v[max(coords[0],cell[0])][coords[1]] = '*'
-            generate(cell)
-            neighbors = find_neighbors(coords)
 
 
-SIZE = WIDTH, HEIGHT = 5, 5
-NUM_PORTAL = 5 #Должно быть строго меньше 10, иначе мы имеем 2 цифры :(
+WIDTH = random.randint(2, 10)
+if WIDTH <= 4:
+    HEIGHT = random.randint(4, 10)
+else:
+    HEIGHT = random.randint(2, 10)
+
+SIZE = WIDTH, HEIGHT
+
+NUM_PORTAL = random.randint(3, min(9, WIDTH*HEIGHT // 5))
+#Должно быть строго меньше 10, иначе мы имеем 2 цифры :(
 
 #Матрица с лабирирнтом
-lab = [['0' for y in range(WIDTH)] for x in range(HEIGHT)] #Заполняем лабиринт "нулями"
+lab = [['0' for y in range(HEIGHT)] for x in range(WIDTH)] #Заполняем лабиринт "нулями"
 
 #Матрица с горизонтальными стенами
-walls_h = [['#' for y in range(WIDTH + 1)] for x in range(HEIGHT)] #Заполняем матрицу стен стенами "#"
+walls_h = [['#' for y in range(HEIGHT + 1)] for x in range(WIDTH)] #Заполняем матрицу стен стенами "#"
 
 #Матрица с вертикальными стенами
-walls_v = [['#' for y in range(WIDTH)] for x in range(HEIGHT + 1)] #Заполняем матрицу стен стенами "#"
+walls_v = [['#' for y in range(HEIGHT)] for x in range(WIDTH + 1)] #Заполняем матрицу стен стенами "#"
 
 #Рабочая матрица для генерации
-generated_lab = [[0 for y in range(WIDTH)] for x in range(HEIGHT)] #Заполняем лабиринт нулями
+generated_lab = [[0 for y in range(HEIGHT)] for x in range(WIDTH)] #Заполняем лабиринт нулями
 
 
 
@@ -94,7 +96,6 @@ print(np.array(lab))
 
 hosp_coords = [chosen_cells[0] % WIDTH, chosen_cells[0] // WIDTH] #Координаты больницы
 
-num_visited_cells = 0
 generate(hosp_coords) #Запускаем рекурсию
 
 # ВАЖНО! При отображении матрицу надо транспонировать(или считать х вниз, а у вправо)

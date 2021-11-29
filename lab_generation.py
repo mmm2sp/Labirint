@@ -1,6 +1,36 @@
 import numpy as np #При отладке так удобнее смотреть вывод лабиринта
 import random
 
+class Cell:
+    '''Класс клетка, хранящий всю необходимую информацию о клетке лабиринта'''
+    coords = (-1, -1)
+    typ = '0'
+    up = '-'
+    down = '-'
+    left = '|'
+    right = '|'
+    equipment = []
+    def __init__(self, coords, lab, walls_v, walls_h):
+        '''
+        Заполняет параметры в соответствии с полученными данными
+        Args:
+            coords: координаты клетки
+            lab: матрица лабиринта
+            walls_v: матрица вертикальных стенок
+            walls_h: матрица горизонатльных стенок
+        '''
+        self.coords = coords
+        self.typ = lab[coords[0]][coords[1]]
+        if self.typ == 'A':
+            self.equipment.append('A')
+        if self.typ == 'K':
+            self.equipment.append('k')
+        self.up = walls_h[coords[0]][coords[1]]
+        self.down = walls_h[coords[0]][coords[1] + 1]
+        self.left = walls_v[coords[0]][coords[1]]
+        self.right = walls_v[coords[0] + 1][coords[1]]
+
+
 def generate_objects_in_lab():
     '''
     Генерирует объекты в лабиринте
@@ -24,9 +54,9 @@ def generate_walls_in_lab():
     '''
     global generation_lab, walls_v, walls_h, ars_coords
     #Матрица с вертикальными стенами
-    walls_v = [['#' for y in range(HEIGHT)] for x in range(WIDTH + 1)] #Заполняем матрицу стен стенами "#"
+    walls_v = [['|' for y in range(HEIGHT)] for x in range(WIDTH + 1)] #Заполняем матрицу стен стенами "#"
     #Матрица с горизонтальными стенами
-    walls_h = [['#' for y in range(HEIGHT + 1)] for x in range(WIDTH)] #Заполняем матрицу стен стенами "#"
+    walls_h = [['-' for y in range(HEIGHT + 1)] for x in range(WIDTH)] #Заполняем матрицу стен стенами "#"
     #Рабочая матрица для генерации
     generation_lab = [[0 for y in range(HEIGHT)] for x in range(WIDTH)] #Заполняем лабиринт нулями
 
@@ -53,7 +83,6 @@ def find_neighbors(coords):
         coords: координаты текущей клетки
     Returns:
         neighbors: множество неизведанных соседних
-
     '''
     neighbors = set()
     if coords[0] > 0 and generation_lab[coords[0] - 1][coords[1]] == 0:
@@ -90,7 +119,7 @@ def generate_walls(coords, way):
         
     Args:
         coords: координаты текущей клетки
-        way_ha: текущий маршрут
+        way: текущий маршрут
     '''
     global walls_v, walls_h, ars_coords, way_ha
     generation_lab[coords[0]][coords[1]] = 1 #Текущая клетка посещенная
@@ -122,9 +151,24 @@ def generate_minotaurus():
         lab[minotaur[0]][minotaur[1]] = 'M'
     useless_cells = useless_cells - set(minotaurus)        
 
+def generate_labirint():
+    '''
+    Генерирует матрицу элементов типа Cell
+    Returns:
+        labirint: матрица элементов типа Cell
+    '''
+    labirint = [['' for y in range(HEIGHT)] for x in range(WIDTH)] #Заполняем лабиринт ничем
+    for x in range(WIDTH):
+        for y in range(HEIGHT):
+            labirint[x][y] = Cell((x, y), lab, walls_v, walls_h)
+    return labirint
+
 def generate():
     '''
     Главная функция генерации. Генерирует весь лабиринт
+    ВАЖНО! При отображении матрицу надо транспонировать(или считать х вниз, а у вправо)
+    Returns:
+        labirint: матрица элементов типа Cell, полностью описывающая лабиринт
     '''
     global SIZE, WIDTH, HEIGHT, NUM_PORTAL, chosen_cells, lab
     global way_ha, useful_cells, useless_cells
@@ -149,16 +193,44 @@ def generate():
     useless_cells = set((x, y) for y in range(HEIGHT) for x in range(WIDTH))
     useless_cells = useless_cells - useful_cells
     generate_minotaurus()
+    
+    labirint = generate_labirint()
+    visualisation_of_generated_lab()
 
-    # ВАЖНО! При отображении матрицу надо транспонировать(или считать х вниз, а у вправо)
+def visualisation_of_generated_lab():
+    '''
+    Функция для отладки. Отображает корректно лабиринт (транспонированный)
+    '''
+    global lab, walls_h, walls_v
+    vis_lab = ['' for y in range(2*HEIGHT + 2)]
+    
+    vis_lab[0] = ' '
+    for x in range(WIDTH):
+        vis_lab[0] += (walls_h[x][0])
+        vis_lab[0] += " "
+    
+    for y in range(HEIGHT):
+        
+        for x in range(WIDTH):
+            vis_lab[2*y + 1] += (walls_v[x][y])
+            vis_lab[2*y + 1] += (lab[x][y])
+        vis_lab[2*y + 1] += (walls_v[x + 1][y])
+        
+        vis_lab[2*y + 2] = ' '
+        for x in range(WIDTH):
+            vis_lab[2*y + 2] += (walls_h[x][y+1])
+            vis_lab[2*y + 2] += " "
+
+    for y in range(len(vis_lab)):
+        print(vis_lab[y])
+        
+    print('ВАЖНО! далее х вниз, а у вправо')
     print(np.array(lab))
     print(np.array(walls_v))
     print(np.array(walls_h))
 
 
-
-
 if __name__ == "__main__":
-    generate()
+    Лабиринт = generate()
     #FixMe в итоге по прямому вызову ничего не должно происходить...
     print("This module is not for direct call!")

@@ -1,8 +1,11 @@
 from server2 import *
 from visualisation import *
 import pygame
+from lab_generation import generate
+from lab_classes import Player
+from lab_classes import Cell
 
-IP = '192.168.0.104'
+IP = '192.168.0.102'
 Port = 9090
 conn = connection(IP, Port)
 
@@ -29,7 +32,13 @@ screen.fill((255, 255, 255))
 pygame.display.update()
 finished = False
 
-labirint = 1  # неважно, что здесь, пока он не используется в функции
+visual_client(screen, width, height, flag_client, 'NN', objects_client,
+                                                  objects_server, x_client, y_client, x_server, y_server)
+
+visual_server(screen, width, height, flag_server, 'NN', objects_server, objects_client,
+                                      x_server, y_server, x_client, y_client)
+
+лабиринт, игроки = generate()
 
 while not finished:
 
@@ -43,7 +52,7 @@ while not finished:
                 antibag = 0  # чтобы инфа отправлялась на сервер только 1 раз
 
                 if event.key == pygame.K_UP and antibag == 0:
-                    data_client = check('W', labirint)  # в первый раз нужно передать 'NN' ПОРАБОТАТЬ!!!!!!!!!!
+                    data_client, лабиринт, игроки = игроки[1].move('W', лабиринт, игроки)  # в первый раз нужно передать 'NN' ПОРАБОТАТЬ!!!!!!!!!!
                     Return_client = visual_client(screen, width, height, flag_client, data_client, objects_client,
                                                   objects_server, x_client, y_client, x_server, y_server)
                     screen = Return_client[0]
@@ -59,7 +68,7 @@ while not finished:
                     antibag = 1
 
                 if event.key == pygame.K_DOWN and antibag == 0:
-                    data_client = check('S', labirint)  # в первый раз нужно передать 'NN'
+                    data_client, лабиринт, игроки = игроки[1].move('S', лабиринт, игроки)  # в первый раз нужно передать 'NN'
                     Return_client = visual_client(screen, width, height, flag_client, data_client, objects_client,
                                                   objects_server, x_client, y_client, x_server, y_server)
                     screen = Return_client[0]
@@ -75,7 +84,7 @@ while not finished:
                     antibag = 1
 
                 if event.key == pygame.K_RIGHT and antibag == 0:
-                    data_client = check('D', labirint)  # в первый раз нужно передать 'NN'
+                    data_client, лабиринт, игроки = игроки[1].move('D', лабиринт, игроки)  # в первый раз нужно передать 'NN'
                     Return_client = visual_client(screen, width, height, flag_client, data_client, objects_client,
                                                   objects_server, x_client, y_client, x_server, y_server)
                     screen = Return_client[0]
@@ -91,7 +100,7 @@ while not finished:
                     antibag = 1
 
                 if event.key == pygame.K_LEFT and antibag == 0:
-                    data_client = check('A', labirint)  # в первый раз нужно передать 'NN'
+                    data_client, лабиринт, игроки = игроки[1].move('A', лабиринт, игроки)  # в первый раз нужно передать 'NN'
                     Return_client = visual_client(screen, width, height, flag_client, data_client, objects_client,
                                                   objects_server, x_client, y_client, x_server, y_server)
                     screen = Return_client[0]
@@ -110,7 +119,7 @@ while not finished:
     if step_flag == 0:
         # обработка хода соперника
 
-        data_server = answer_to_client_step(labirint, conn)  # в первый раз нужно передать 'NN'
+        data_server, лабиринт, игроки = answer_to_client_step(лабиринт, conn, игроки)  # в первый раз нужно передать 'NN'
 
         Return_server = visual_server(screen, width, height, flag_server, data_server, objects_server, objects_client,
                                       x_server, y_server, x_client, y_client)
@@ -122,8 +131,9 @@ while not finished:
         y_server = Return_server[5]
 
         # изменение лабиринта!!!!
-
+        pygame.event.clear()  # возможно исправит баг
         step_flag = 1  # !!!!!!!!!!!!!!!!! возможно будет ошибка
+
 
 pygame.quit()
 conn.close()

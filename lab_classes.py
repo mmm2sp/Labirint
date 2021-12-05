@@ -117,11 +117,10 @@ class Player:
             cell = labirint[self.coords[0]][self.coords[1]]
             cell.heroes.append(hero)
             answer = cell.typ
-        elif labirint[self.coords[0]][self.coords[1]].walls[dr[0]][dr[1]] == '@' and \
-           self.key == True:
-            #FixMe: тут должно произойти окончание игры 
-            answer = 'YOU ARE WINNER'#Надо другой ответ!!!
-        else: answer = 'NN'
+        elif labirint[self.coords[0]][self.coords[1]].walls[dr[0]][dr[1]] == '@': #and self.key == True:
+            #FixMe: тут должно быть условие на окончание игры
+            answer = 'F'
+        else: answer = 'N'
         return answer, labirint
 
     def kill(self, coords):
@@ -215,16 +214,38 @@ class Player:
         if direction.lower() == 's': dr = [0, 1]
         if direction.lower() == 'a': dr = [-1, 0]
         if direction.lower() == 'd': dr = [1, 0]
-        
-        answer = 'Fire'#FixMe
+
+        answer = ''
         if direction.islower():
             labirint, players = self.fire(dr, labirint, players)
+            answer = 'Fire'  # FixMe
         else:
             answer, labirint = self.shift(dr, labirint)
             players = labirint[self.coords[0]][self.coords[1]].get_equipment(players, self.num)
             
         labirint = self.autoshift(labirint)
         players = labirint[self.coords[0]][self.coords[1]].get_equipment(players, self.num)
+
+
+        if answer == 'N':
+            answer = answer + direction
+            if answer == 'NNN':
+                answer = 'NN'
+        elif answer == '0':
+            answer = direction + 'N'
+        elif answer > '0' and answer <= '9':
+            answer = direction + 'P'
+        elif answer == 'F':
+            if direction == 'S':
+                answer = 'V'
+            if direction == 'A':
+                answer = 'C'
+            if direction == 'D':
+                answer = 'B'
+            answer = 'N'+ answer
+        else:
+            answer = direction + answer
+
         return answer, labirint, players
 
 

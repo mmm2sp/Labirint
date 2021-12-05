@@ -22,7 +22,7 @@ def connection(IP, Port):
     return conn
 
 
-def answer_to_client_step(labirint, conn):
+def answer_to_client_step(лабиринт, conn, игроки):
     '''
     отвечает клиенту, смог ли он походить и что в той клетке, куда он пришел
     :param labirint: матрица лабиринта со всей инфой о нем
@@ -30,9 +30,9 @@ def answer_to_client_step(labirint, conn):
     '''
     data = conn.recv(1024)  # возможно стоит передавать дату как параметр функции
     if data.decode('utf-8') == 'W' or data.decode('utf-8') == 'A' or data.decode('utf-8') == 'S' or data.decode('utf-8') == 'D':
-        answer = check(data.decode('utf-8'), labirint)  # - функция проверяющая можно ли туда ходить (параметры WASD), находится в модуле лабиринт
+        answer, лабиринт, игроки = игроки[0].move(data.decode('utf-8'), лабиринт, игроки)
         conn.send(answer.encode('utf-8'))
-        return answer
+        return answer, лабиринт, игроки
 
 def say_to_client_about_serv_step(data, conn):
     '''

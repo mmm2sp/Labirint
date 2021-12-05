@@ -37,7 +37,7 @@ class Wall:
         Стена справа:
         '''
         if self.orientation == 'd':
-            pygame.draw.line(self.screen, self.color, (self.x-self.l//2,self.y-self.l//2), (self.x+self.l//2,self.y+self.l//2), width=self.l*3//20)
+            pygame.draw.line(self.screen, self.color, (self.x+self.l//2,self.y-self.l//2), (self.x+self.l//2,self.y+self.l//2), width=self.l*3//20)
         
 class Door(Wall):
     '''

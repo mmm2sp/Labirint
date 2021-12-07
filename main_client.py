@@ -2,7 +2,7 @@ from client2 import *
 from visualisation import *
 import pygame
 
-IP = '192.168.0.102'
+IP = '10.55.130.165'
 Port = 9090
 sock = connection(IP, Port)
 
@@ -15,13 +15,6 @@ width = 1200
 height = 800 
 objects_client = [[]]
 objects_server = [[]]
-
-N_client = len(objects_client)
-N_server = len(objects_server)
-
-# то какие фрагменты мы рисуем сверху экрана
-client_pict = [N_client - 2, N_client - 3]
-server_pict = [N_server - 2, N_server - 3]
 
 
 x_client = width / 4
@@ -37,6 +30,13 @@ pygame.display.update()
 finished = False
 
 while not finished:
+
+    N_client = len(objects_client)
+    N_server = len(objects_server)
+
+    # то какие фрагменты мы рисуем сверху экрана
+    client_pict = [N_client - 2, N_client - 3]
+    server_pict = [N_server - 2, N_server - 3]
 
     # рисование пройденных фрагментов
     # рисование левого у клиента

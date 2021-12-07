@@ -20,13 +20,6 @@ height = 800
 objects_client = [[]]
 objects_server = [[]]
 
-N_client = len(objects_client)
-N_server = len(objects_server)
-
-# то какие фрагменты мы рисуем сверху экрана
-client_pict = [N_client - 2, N_client - 3]
-server_pict = [N_server - 2, N_server - 3]
-
 x_client = width / 4
 y_client = height * 2 / 3
 x_server = width * 3 / 4
@@ -49,13 +42,18 @@ visual_server(screen, width, height, 'NN', objects_server, objects_client,
 
 while not finished:
 
+    N_client = len(objects_client)
+    N_server = len(objects_server)
+
+    # то какие фрагменты мы рисуем сверху экрана
+    client_pict = [N_client - 2, N_client - 3]
+    server_pict = [N_server - 2, N_server - 3]
+
+    pygame.time.Clock().tick(60)
     # этот кусок не выполняется
     # рисование пройденных фрагментов
     # рисование левого у клиента
-    pygame.time.Clock().tick(60)
-    print(N_client)
     if client_pict[0] >= 0:
-        print(2)
         x = objects_client[client_pict[0]][0].x
         y = objects_client[client_pict[0]][0].y
         dx = 0
@@ -63,25 +61,23 @@ while not finished:
         if x != 3/8 * width and y != 1/6 * height:
             dx = 3/8 * width - x
             dy = 1/6 * height - y
-            print('dfdfd')
         for i in objects_client[client_pict[0]]:
-            print('aaaaaa')
             i.x += dx
             i.y += dy
             i.draw()
             pygame.display.update()
     # правого
     if client_pict[1] >= 0:
-        x = objects_client[client_pict[1]][0].x
-        y = objects_client[client_pict[1]][0].y
-        dx = 0
-        dy = 0
-        if x != 1/8 * width and y != 1/6 * height:
-            dx = 1/8 * width - x
-            dy = 1/6 * height - y
+        x1 = objects_client[client_pict[1]][0].x
+        y1 = objects_client[client_pict[1]][0].y
+        dx1 = 0
+        dy1 = 0
+        if x1 != 1/8 * width:
+            dx = 1/8 * width - x1
+            dy = 1/6 * height - y1
         for i in objects_client[client_pict[1]]:
-            i.x += dx
-            i.y += dy
+            i.x += dx1
+            i.y += dy1
             i.draw()
             pygame.display.update()
 

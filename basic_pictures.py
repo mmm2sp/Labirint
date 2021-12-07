@@ -187,9 +187,6 @@ class Boundaries:
 
     def draw(self):
         pygame.draw.line(self.screen, (0, 0, 0), (self.width / 2, 0), (self.width / 2, self.height), width=10)
-        pygame.draw.line(self.screen, (0, 0, 0), (self.width / 4, 0), (self.width / 4, self.height), width=5)
-        pygame.draw.line(self.screen, (0, 0, 0), (self.width * 3 / 4, 0), (self.width * 3 / 4, self.height), width=5)
         pygame.draw.line(self.screen, (0, 0, 0), (0, self.height / 3), (self.width, self.height / 3), width=5)
-        pygame.draw.line(self.screen, (0, 0, 0), (0, self.height * 2 / 3), (self.width, self.height * 2 / 3), width=5)
 
 

@@ -37,9 +37,11 @@ class Cell:
             labirint: матрица лабиринта
             players: список игроков
         Returns:
+            answer: информация об умерших игроках
             labirint: матрица лабиринта
             players: список игроков
         '''
+        answer = 'NN'
         for hero in self.heroes:
             if hero == 'M':
                 self.typ = 'm'
@@ -51,12 +53,11 @@ class Cell:
                     self.equipment.append('k')
                  #FixMe каждый должен отвечать за свое ...
                 coords = find_in_lab(labirint, 'R')
-                print('Player', player.num, 'died. Now he is in a hospital')
-                #FixMe тут надо иным способом сообщать о смерти игрока
                 player.kill(coords)            
                 labirint[coords[0]][coords[1]].heroes.append(hero)
+                answer = 'NG'
         self.heroes = []
-        return labirint, players
+        return answer, labirint, players
 
     def get_equipment(self, players, num):# player):#FixMe мб можно просто селф
         '''
@@ -117,10 +118,24 @@ class Player:
             cell = labirint[self.coords[0]][self.coords[1]]
             cell.heroes.append(hero)
             answer = cell.typ
-        elif labirint[self.coords[0]][self.coords[1]].walls[dr[0]][dr[1]] == '@': #and self.key == True:
-            #FixMe: тут должно быть условие на окончание игры
-            answer = 'F'
-        else: answer = 'N'
+            if answer == '0':
+                answer = 'N' #FixMe
+            elif answer >= '1' and answer <= '9':
+                answer = 'P' #Номер портала не сообщаем
+        elif labirint[self.coords[0]][self.coords[1]].walls[dr[0]][dr[1]] == '@':
+            if dr == [1, 0]:
+                answer = 'B'
+            elif dr == [-1, 0]:
+                answer = 'C'
+            elif dr == [0, 1]:
+                answer = 'V'
+            else:
+                answer = 'F'
+            if self.key == True:
+                answer = answer + 'N'
+            else:
+                answer = 'N' + answer
+        else: answer = '_'
         return answer, labirint
 
     def kill(self, coords):
@@ -141,16 +156,18 @@ class Player:
             labirint: матрица с лабиринтом
             players: список игроков
         Returns:
+            answer: информация об умерших игроках
             labirint: матрица лабиринта
             players: список игроков
         '''
+        answer = 'NN'
         if self.num_bullets > 0:
             self.num_bullets -= 1
             if labirint[self.coords[0]][self.coords[1]].walls[dr[0]][dr[1]] == '*':
                 x = self.coords[0] + dr[0]
                 y = self.coords[1] + dr[1]
-                labirint, players = labirint[x][y].kill(labirint, players)
-        return labirint, players
+                answer, labirint, players = labirint[x][y].kill(labirint, players)
+        return answer, labirint, players
 
 
     def autoshift(self, labirint):
@@ -179,8 +196,7 @@ class Player:
             labirint[coords[0]][coords[1]].heroes.append(hero)
             cell.heroes.remove(hero)
             
-        elif cell.typ > '0' and cell.typ <= '9':
-            #FixMe
+        elif cell.typ >= '1' and cell.typ <= '9':
             hero = 'G' + str(self.num)
             cell.heroes.remove(hero)
             next_portal = str(int(cell.typ) + 1)
@@ -217,8 +233,13 @@ class Player:
 
         answer = ''
         if direction.islower():
-            labirint, players = self.fire(dr, labirint, players)
-            answer = 'Fire'  # FixMe
+            answer, labirint, players = self.fire(dr, labirint, players)
+            answer = 'NN'
+            #FixMe надо передавать информацию об умерших
+##            if:
+##                answer = 'NG'
+##            else:
+##                answer = 'NN'
         else:
             answer, labirint = self.shift(dr, labirint)
             players = labirint[self.coords[0]][self.coords[1]].get_equipment(players, self.num)
@@ -227,24 +248,11 @@ class Player:
         players = labirint[self.coords[0]][self.coords[1]].get_equipment(players, self.num)
 
 
-        if answer == 'N':
-            answer = answer + direction
-            if answer == 'NNN':
-                answer = 'NN'
-        elif answer == '0':
-            answer = direction + 'N'
-        elif answer > '0' and answer <= '9':
-            answer = direction + 'P'
-        elif answer == 'F':
-            if direction == 'S':
-                answer = 'V'
-            if direction == 'A':
-                answer = 'C'
-            if direction == 'D':
-                answer = 'B'
-            answer = 'N'+ answer
-        else:
+        if answer == '_':
+            answer = 'N' + direction
+        elif len(answer) == 1:
             answer = direction + answer
+        answer = answer + str(int(self.key)) + str(self.num_bullets)
 
         return answer, labirint, players
 

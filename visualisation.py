@@ -4,7 +4,16 @@ import pygame
 
 def visual_client(screen, width, height, data_client, objects_client, objects_server, x_client, y_client,
                   x_server, y_server):
+    '''
+    Функция получает: данные об экране(высота, ширина),
+    информацию, которую передали игроку-клиенту,
+    массивы с объектами обоих игроков,
+    координаты обоих игроков.
+    Функция обрабатывает смещение игрока(W,A,S,D)
+    и рисует то, что он открыл для себя за свой ход
+    '''
     screen.fill((255, 255, 255))
+    l = 30
 
     v_client = 0
     h_client = 0
@@ -26,53 +35,53 @@ def visual_client(screen, width, height, data_client, objects_client, objects_se
         obj.draw()
 
     if str(data_object) == 'W':
-        wall = Wall(screen, x_client, y_client, (0, 0, 0), 'w')
+        wall = Wall(screen, x_client, y_client, l, (0, 0, 0), 'w')
         objects_client[N-1].append(wall)
         wall.draw()
     elif str(data_object) == 'A':
-        wall = Wall(screen, x_client, y_client, (0, 0, 0), 'a')
+        wall = Wall(screen, x_client, y_client, l, (0, 0, 0), 'a')
         objects_client[N-1].append(wall)
         wall.draw()
     elif str(data_object) == 'S':
-        wall = Wall(screen, x_client, y_client, (0, 0, 0), 's')
+        wall = Wall(screen, x_client, y_client, l, (0, 0, 0), 's')
         objects_client[N-1].append(wall)
         wall.draw()
     elif str(data_object) == 'D':
-        wall = Wall(screen, x_client, y_client, (0, 0, 0), 'd')
+        wall = Wall(screen, x_client, y_client, l, (0, 0, 0), 'd')
         objects_client[N-1].append(wall)
         wall.draw()
     elif str(data_object) == 'F':
-        door = Door(screen, x_client, y_client, (120, 50, 0), 'w')
+        door = Door(screen, x_client, y_client, l, (120, 50, 0), 'w')
         objects_client[N-1].append(door)
         door.draw()
     elif str(data_object) == 'C':
-        door = Door(screen, x_client, y_client, (120, 50, 0), 'a')
+        door = Door(screen, x_client, y_client, l, (120, 50, 0), 'a')
         objects_client[N-1].append(door)
         door.draw()
     elif str(data_object) == 'V':
-        door = Door(screen, x_client, y_client, (120, 50, 0), 's')
+        door = Door(screen, x_client, y_client, l, (120, 50, 0), 's')
         objects_client[N-1].append(door)
         door.draw()
     elif str(data_object) == 'B':
-        door = Door(screen, x_client, y_client, (120, 50, 0), 'd')
+        door = Door(screen, x_client, y_client, l, (120, 50, 0), 'd')
         objects_client[N-1].append(door)
         door.draw()
     elif str(data_object) == 'K':
-        key = Key(screen, x_client, y_client)
+        key = Key(screen, x_client, y_client, l)
         objects_client[N-1].append(key)
         key.draw()
     elif str(data_object) == 'R':
-        revival = Revival(screen, x_client, y_client)
+        revival = Revival(screen, x_client, y_client, l)
         objects_client[N-1].append(revival)
         revival.draw()
     # разобраться отдельно
     elif str(data_object) == 'P':
-        portal = Portal(screen, x_client, y_client)
+        portal = Portal(screen, x_client, y_client, l)
         objects_client[N-1].append(portal)
         x_client = width / 4
         y_client = height * 2 / 3
 
-        portal = Portal(screen, x_client, y_client)
+        portal = Portal(screen, x_client, y_client, l)
         new_objects_client = []
         new_objects_client.append(portal)
         objects_client.append(new_objects_client)
@@ -80,22 +89,22 @@ def visual_client(screen, width, height, data_client, objects_client, objects_se
         # создали навую рисовалку, нужно об этом как-то сообщить
 
     elif str(data_object) == 'E':
-        armory = Armory(screen, x_client, y_client)
+        armory = Armory(screen, x_client, y_client, l)
         objects_client[N-1].append(armory)
         armory.draw()
     elif str(data_object) == 'N':
-        exp = Explored_square(screen, x_client, y_client)
+        exp = Explored_square(screen, x_client, y_client, l)
         objects_client[N-1].append(exp)
         exp.draw()
 
     #разобраться отдельно
     elif str(data_object) == 'M':
-        minotaur = Minotaur(screen, x_client, y_client)
+        minotaur = Minotaur(screen, x_client, y_client, l)
         objects_client[N-1].append(minotaur)
 
         x_client = width * 1 / 4
         y_client = height * 2 / 3
-        revival = Revival(screen, x_client, y_client)
+        revival = Revival(screen, x_client, y_client, l)
         # рисуем по-новому
         new_objects_client = []
         new_objects_client.append(revival)
@@ -104,14 +113,14 @@ def visual_client(screen, width, height, data_client, objects_client, objects_se
         # создали навую рисовалку, нужно об этом как-то сообщить
 
 
-    player = Player(screen, x_client, y_client)
+    player = Player(screen, x_client, y_client, l)
     player.draw()
 
     N1 = len(objects_server)
     for obj in objects_server[N1-1]:
             obj.draw()
 
-    another_player = Another_Player(screen, x_server, y_server)
+    another_player = Another_Player(screen, x_server, y_server, l)
     another_player.draw()
 
     boundaries = Boundaries(screen, width, height)
@@ -124,7 +133,17 @@ def visual_client(screen, width, height, data_client, objects_client, objects_se
 
 def visual_server(screen, width, height, data_server, objects_server, objects_client, x_server, y_server,
                   x_client, y_client):
+    '''
+    Функция получает: данные об экране(высота, ширина),
+    информацию, которую передали игроку-серверу,
+    массивы с объектами обоих игроков,
+    координаты обоих игроков.
+    Функция обрабатывает смещение игрока(W,A,S,D)
+    и рисует то, что он открыл для себя за свой ход
+    '''
     screen.fill((255, 255, 255))
+    l = 30
+    
     pygame.time.Clock().tick(60)
     v_server = 0
     h_server = 0
@@ -148,87 +167,87 @@ def visual_server(screen, width, height, data_server, objects_server, objects_cl
         obj.draw()
 
     if str(data_object) == 'W':
-        wall = Wall(screen, x_server, y_server, (0, 0, 0), 'w')
+        wall = Wall(screen, x_server, y_server, l, (0, 0, 0), 'w')
         objects_server[N - 1].append(wall)
         wall.draw()
     elif str(data_object) == 'A':
-        wall = Wall(screen, x_server, y_server, (0, 0, 0), 'a')
+        wall = Wall(screen, x_server, y_server, l, (0, 0, 0), 'a')
         objects_server[N - 1].append(wall)
         wall.draw()
     elif str(data_object) == 'S':
-        wall = Wall(screen, x_server, y_server, (0, 0, 0), 's')
+        wall = Wall(screen, x_server, y_server, l, (0, 0, 0), 's')
         objects_server[N - 1].append(wall)
         wall.draw()
     elif str(data_object) == 'D':
-        wall = Wall(screen, x_server, y_server, (0, 0, 0), 'd')
+        wall = Wall(screen, x_server, y_server, l, (0, 0, 0), 'd')
         objects_server[N - 1].append(wall)
         wall.draw()
     elif str(data_object) == 'F':
-        door = Door(screen, x_server, y_server, (120, 50, 0), 'w')
+        door = Door(screen, x_server, y_server, l, (120, 50, 0), 'w')
         objects_server[N - 1].append(door)
         door.draw()
     elif str(data_object) == 'C':
-        door = Door(screen, x_server, y_server, (120, 50, 0), 'a')
+        door = Door(screen, x_server, y_server, l, (120, 50, 0), 'a')
         objects_server[N - 1].append(door)
         door.draw()
     elif str(data_object) == 'V':
-        door = Door(screen, x_server, y_server, (120, 50, 0), 's')
+        door = Door(screen, x_server, y_server, l, (120, 50, 0), 's')
         objects_server[N - 1].append(door)
         door.draw()
     elif str(data_object) == 'B':
-        door = Door(screen, x_server, y_server, (120, 50, 0), 'd')
+        door = Door(screen, x_server, y_server, l, (120, 50, 0), 'd')
         objects_server[N - 1].append(door)
         door.draw()
     elif str(data_object) == 'K':
-        key = Key(screen, x_server, y_server)
+        key = Key(screen, x_server, y_server, l)
         objects_server[N - 1].append(key)
         key.draw()
     elif str(data_object) == 'R':
-        revival = Revival(screen, x_server, y_server)
+        revival = Revival(screen, x_server, y_server, l)
         objects_server[N - 1].append(revival)
         revival.draw()
     elif str(data_object) == 'P':
-        portal = Portal(screen, x_server, y_server)
+        portal = Portal(screen, x_server, y_server, l)
         objects_server[N - 1].append(portal)
         x_server = width * 3 / 4
         y_server = height * 2 / 3
 
-        portal = Portal(screen, x_server, y_server)
+        portal = Portal(screen, x_server, y_server, l)
         new_objects_server = []
         new_objects_server.append(portal)
         objects_server.append(new_objects_server)
         portal.draw()
 
     elif str(data_object) == 'E':
-        armory = Armory(screen, x_server, y_server)
+        armory = Armory(screen, x_server, y_server, l)
         objects_server[N-1].append(armory)
         armory.draw()
     elif str(data_object) == 'N':
-        exp = Explored_square(screen, x_server, y_server)
+        exp = Explored_square(screen, x_server, y_server, l)
         objects_server[N-1].append(exp)
         exp.draw()
 
     elif str(data_object) == 'M':
-        minotaur = Minotaur(screen, x_server, y_server)
+        minotaur = Minotaur(screen, x_server, y_server, l)
         objects_server[N-1].append(minotaur)
 
         x_server = width * 3 / 4
         y_server = height * 2 / 3
-        revival = Revival(screen, x_server, y_server)
+        revival = Revival(screen, x_server, y_server, l)
 
         new_objects_server = []
         new_objects_server.append(revival)
         objects_server.append(new_objects_server)
         revival.draw()
 
-    another_player = Another_Player(screen, x_server, y_server)
+    another_player = Another_Player(screen, x_server, y_server, l)
     another_player.draw()
 
     N1 = len(objects_client)
     for obj in objects_client[N1 - 1]:
         obj.draw()
 
-    player = Player(screen, x_client, y_client)
+    player = Player(screen, x_client, y_client, l)
     player.draw()
 
     boundaries = Boundaries(screen, width, height)
@@ -237,10 +256,3 @@ def visual_server(screen, width, height, data_server, objects_server, objects_cl
     pygame.display.update()
 
     return screen, objects_server, objects_client, x_server, y_server
-
-# Написать стартовое меню
-
-# Написать экран победы и поражения
-
-
-

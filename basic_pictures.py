@@ -56,9 +56,9 @@ class Key:
         self.y = y
         self.l = l
     def draw(self):
-        pygame.draw.rect(self.screen, (230, 230, 230), (self.x-self.l//2, self.y-self.l//2, self.l, self.l))
+        pygame.draw.rect(self.screen, (230, 230, 230), (self.x-self.l//20*9, self.y-self.l//20*9, self.l//10*9, self.l//10*9))
         pygame.draw.line(self.screen, (210, 210, 0), (self.x, self.y+self.l*2//5), (self.x, self.y-self.l*2//5), width = self.l//10)
-        pygame.draw.circle(self.screen, (210, 210, 0), (self.x,self.y+self.l//5), self.l*2//9)
+        pygame.draw.circle(self.screen, (210, 210, 0), (self.x,self.y+self.l//5), self.l*2//9.5)
         pygame.draw.rect(self.screen, (210, 210, 0), (self.x, self.y-self.l*2//5,self.l*3//20, self.l//5))
 
 class Minotaur:
@@ -71,12 +71,12 @@ class Minotaur:
         self.y = y
         self.l = l
     def draw(self):
-        pygame.draw.rect(self.screen, (230, 230, 230), (self.x-self.l//2, self.y-self.l//2, self.l, self.l))
+        pygame.draw.rect(self.screen, (230, 230, 230), (self.x-self.l//20*9, self.y-self.l//20*9, self.l//10*9, self.l//10*9))
         pygame.draw.polygon(self.screen, (120, 50, 0), [(self.x,self.y+self.l*2//5),(self.x-self.l*3//10,self.y-self.l//20*7),(self.x+self.l//20*6,self.y-self.l//20*7)])
         pygame.draw.polygon(self.screen, (0, 0, 0), [(self.x-self.l//20*5,self.y-self.l//20*7),(self.x-self.l//20*4,self.y-self.l//20*9),(self.x-self.l//20*4,self.y-self.l//20*7)])
         pygame.draw.polygon(self.screen, (0, 0, 0), [(self.x+self.l//20*5,self.y-self.l//20*7),(self.x+self.l//20*4,self.y-self.l//20*9),(self.x+self.l//20*4,self.y-self.l//20*7)])
-        pygame.draw.circle(self.screen, (255, 255, 255), (self.x-self.l//20*2,self.y-self.l//20*2), self.l//20*1)
-        pygame.draw.circle(self.screen, (255, 255, 255), (self.x+self.l//20*2,self.y-self.l//20*2), self.l//20*1)
+        pygame.draw.circle(self.screen, (255, 0, 0), (self.x-self.l//20*2,self.y-self.l//20*2), self.l//20*1)
+        pygame.draw.circle(self.screen, (255, 0, 0), (self.x+self.l//20*2,self.y-self.l//20*2), self.l//20*1)
         
 class Revival:
     '''
@@ -88,7 +88,7 @@ class Revival:
         self.y = y
         self.l = l
     def draw(self):
-        pygame.draw.rect(self.screen, (230, 230, 230), (self.x-self.l//2, self.y-self.l//2, self.l, self.l))
+        pygame.draw.rect(self.screen, (230, 230, 230), (self.x-self.l//20*9, self.y-self.l//20*9, self.l//10*9, self.l//10*9))
         pygame.draw.line(self.screen, (255,0,0), (self.x, self.y-self.l//20*8), (self.x, self.y+self.l//20*8), width = self.l//20*8)
         pygame.draw.line(self.screen, (255,0,0), (self.x-self.l//20*8, self.y), (self.x+self.l//20*8, self.y), width = self.l//20*8)
 
@@ -102,7 +102,7 @@ class Explored_square:
         self.y = y
         self.l = l
     def draw(self):
-        pygame.draw.rect(self.screen, (230, 230, 230), (self.x-self.l//2, self.y-self.l//2, self.l, self.l))
+        pygame.draw.rect(self.screen, (230, 230, 230), (self.x-self.l//20*9, self.y-self.l//20*9, self.l//10*9, self.l//10*9))
 
 class Portal:
     '''
@@ -114,8 +114,8 @@ class Portal:
         self.y = y
         self.l = l
     def draw(self):
-        pygame.draw.rect(self.screen, (230, 230, 230), (self.x-self.l//2, self.y-self.l//2, self.l, self.l))
-        pygame.draw.circle(self.screen, (190, 100, 250), (self.x, self.y), self.l//20*9)
+        pygame.draw.rect(self.screen, (230, 230, 230), (self.x-self.l//20*9, self.y-self.l//20*9, self.l//10*9, self.l//10*9))
+        pygame.draw.circle(self.screen, (190, 100, 250), (self.x, self.y), self.l//20*8)
         
 class Player:
     '''
@@ -127,7 +127,7 @@ class Player:
         self.y = y
         self.l = l
     def draw(self):
-        pygame.draw.rect(self.screen, (0, 200, 0), (self.x-self.l//20*9, self.y-self.l//20*9, self.l//20*18, self.l//20*18), width = self.l//20*3)
+        pygame.draw.rect(self.screen, (0, 200, 0), (self.x-self.l//20*8, self.y-self.l//20*8, self.l//20*16, self.l//20*16), width = self.l//10)
         
 class Another_Player:
     '''
@@ -139,7 +139,7 @@ class Another_Player:
         self.y = y
         self.l = l
     def draw(self):
-        pygame.draw.rect(self.screen, (0, 0, 200), (self.x-self.l//20*9, self.y-self.l//20*9, self.l//20*18, self.l//20*18), width = self.l//20*3)
+        pygame.draw.rect(self.screen, (100, 100, 255), (self.x-self.l//20*8, self.y-self.l//20*8, self.l//20*16, self.l//20*16), width = self.l//10)
 
 class Armory:
     '''
@@ -151,9 +151,9 @@ class Armory:
         self.y = y
         self.l = l
     def draw(self):
-        pygame.draw.rect(self.screen, (230, 230, 230), (self.x-self.l//2, self.y-self.l//2, self.l, self.l))
-        pygame.draw.line(self.screen, (120, 50, 0), (self.x-self.l//20*8, self.y+self.l//20*8), (self.x-self.l//20*7, self.y+self.l//20*7) , width = self.l//20*3)
-        pygame.draw.polygon(self.screen, (160, 160, 160), [(self.x-self.l//20*6,self.y+self.l//20*8),(self.x-self.l//20*8,self.y+self.l//20*6),(self.x+self.l//20*8,self.y-self.l//20*8)])
+        pygame.draw.rect(self.screen, (230, 230, 230), (self.x-self.l//20*9, self.y-self.l//20*9, self.l//10*9, self.l//10*9))
+        pygame.draw.line(self.screen, (120, 50, 0), (self.x-self.l//20*9, self.y+self.l//20*9), (self.x-self.l//20*5, self.y+self.l//20*5) , width = self.l//20*3)
+        pygame.draw.polygon(self.screen, (160, 160, 160), [(self.x-self.l//20*8,self.y+self.l//20*3),(self.x-self.l//20*3,self.y+self.l//20*8),(self.x+self.l//20*8,self.y-self.l//20*8)])
 
 class Boundaries:
     '''
@@ -185,7 +185,7 @@ class Opened_door:
         pygame.draw.line(self.screen, (155, 0, 0), (self.x, self.y), (self.x+self.l, self.y), width = self.l//20)
         pygame.draw.line(self.screen, (155, 0, 0), (self.x, self.y), (self.x, self.y+2*self.l), width = self.l//20)
         pygame.draw.line(self.screen, (155, 0, 0), (self.x, self.y+2*self.l), (self.x+self.l//10, self.y+2*self.l), width = self.l//20)
-        pygame.draw.polygon(self.screen, (155, 0, 0), [(self.x+l, self.y),(self.x+self.l//10, self.y+self.l//3),(self.x+self.l//10, self.y+self.l*2.33),(self.x+self.l, self.y+2*self.l)])
+        pygame.draw.polygon(self.screen, (155, 0, 0), [(self.x+self.l, self.y),(self.x+self.l//10, self.y+self.l//3),(self.x+self.l//10, self.y+self.l*2.33),(self.x+self.l, self.y+2*self.l)])
 
 class Button:
     '''
@@ -249,23 +249,88 @@ class Men:
         pygame.draw.line(self.screen, self.color, (self.x, self.y + 375), (self.x - 125, self.y + 450), width = 10)
 
 
-#class Closed_door:
+class Closed_door:
     '''
-    Рисует закрытую дверь для кат сцены
+    Рисует закрытую дверь для кат сцены по координатам верхнего левого угла дверной коробки
     '''
-    
+    def __init__(self, screen, x, y, l):
+        self.screen = screen
+        self.x = x
+        self.y = y
+        self.l = l
+    def draw(self):
+        pygame.draw.rect(self.screen, (155, 0, 0), (self.x, self.y, self.l, 2*self.l))
+        pygame.draw.line(self.screen, (155, 0, 0), (self.x, self.y), (self.x+self.l, self.y), width = self.l//20)
+        pygame.draw.line(self.screen, (155, 0, 0), (self.x, self.y), (self.x, self.y+2*self.l), width = self.l//20)
+        pygame.draw.line(self.screen, (155, 0, 0), (self.x, self.y+2*self.l), (self.x+self.l, self.y+2*self.l), width = self.l//20)
 
+class Fully_opened_door:
+    '''
+    Рисует полностью открытую дверь по координатам верхнего левого угла дверной коробки
+    Нужно для кат сцены
+    '''
+    def __init__(self, screen, x, y, l):
+        self.screen = screen
+        self.x = x
+        self.y = y
+        self.l = l
+    def draw(self):
+        pygame.draw.rect(self.screen, (200, 200, 0), (self.x, self.y, self.l, 2*self.l))
+        pygame.draw.line(self.screen, (155, 0, 0), (self.x, self.y), (self.x+self.l, self.y), width = self.l//20)
+        pygame.draw.line(self.screen, (155, 0, 0), (self.x, self.y), (self.x, self.y+2*self.l), width = self.l//20)
+        pygame.draw.line(self.screen, (155, 0, 0), (self.x, self.y+2*self.l), (self.x+self.l, self.y+2*self.l), width = self.l//20)
+        pygame.draw.polygon(self.screen, (155, 0, 0), [(self.x+self.l, self.y),(self.x+self.l//10*19, self.y+self.l//3),
+                                                       (self.x+self.l//10*19, self.y+self.l*2.33),(self.x+self.l, self.y+2*self.l)])
 
+class Corner:
+    '''
+    Рисует угол в лабиринте по размерам экрана, нужно для кат-сцены
+    '''
+    def __init__(self, screen, width, height):
+        self.screen = screen
+        self.width = width
+        self.height = height
+    def draw(self):
+        pygame.draw.polygon(self.screen, (200, 200, 200), [(self.width//2, self.height//5), (self.width, self.height//5*2), (self.width, self.height), (self.width//2, self.height//5*4)])
+        pygame.draw.polygon(self.screen, (200, 200, 200), [(self.width//2, self.height//5), (0, self.height//5*2), (0, self.height), (self.width//2, self.height//5*4)])
+        pygame.draw.line(self.screen, (0, 0, 0), (self.width//2, self.height//5), (self.width//2, self.height//5*4), width = 10)
+        pygame.draw.line(self.screen, (0, 0, 0), (self.width//2, self.height//5), (self.width, self.height//5*2), width = 10)
+        pygame.draw.line(self.screen, (0, 0, 0), (self.width//2, self.height//5), (0, self.height//5*2), width = 10)
+        pygame.draw.line(self.screen, (0, 0, 0), (self.width//2, self.height//5*4), (self.width, self.height), width = 10)
+        pygame.draw.line(self.screen, (0, 0, 0), (self.width//2, self.height//5*4), (0, self.height), width = 10)
 
-
-
-
-
-
-
-
-
-
-
-
+class Web:
+    '''
+    Рисует паутину размера l по координатам ее центра x,y
+    Нужно для кат-сцены
+    '''
+    def __init__(self, screen, x, y, l):
+        self.screen = screen
+        self.x = x
+        self.y = y
+        self.l = l
+    def draw(self):
+        l = self.l
+        pygame.draw.circle(self.screen, (0, 0, 0), (self.x, self.y), l//3, width = 5)
+        pygame.draw.circle(self.screen, (0, 0, 0), (self.x, self.y), l//3*2, width = 5)
+        pygame.draw.circle(self.screen, (0, 0, 0), (self.x, self.y), l, width = 5)
+        pygame.draw.line(self.screen, (0, 0, 0), (self.x - l, self.y + l), (self.x + l, self.y - l), width = 5)
+        pygame.draw.line(self.screen, (0, 0, 0), (self.x - l, self.y - l), (self.x + l, self.y + l), width = 5)
+        pygame.draw.line(self.screen, (0, 0, 0), (self.x, self.y + l), (self.x, self.y - l), width = 5)
+        pygame.draw.line(self.screen, (0, 0, 0), (self.x - l, self.y), (self.x + l, self.y), width = 5)
+        
+class Skull:
+    '''
+    Рисует глаза и рот черепа проигравшего игрока в кат-сцене
+    Размера l, по координтам центра головы
+    '''
+    def __init__(self, screen, x, y, l):
+        self.screen = screen
+        self.x = x
+        self.y = y
+        self.l = l
+    def draw(self):
+        pygame.draw.circle(self.screen, (0, 0, 0), (self.x - self.l//4, self.y - self.l//4), self.l//15)
+        pygame.draw.circle(self.screen, (0, 0, 0), (self.x + self.l//4, self.y - self.l//4), self.l//15)
+        pygame.draw.rect(self.screen, (0, 0, 0), (self.x - self.l//4, self.y + self.l//4, self.l//2, self.l//10))
 

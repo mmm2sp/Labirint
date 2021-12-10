@@ -21,6 +21,7 @@ def visual_client(screen, width, height, data_client, objects_client, objects_se
     data_object = str(data_client[1])
     data_key = bool(data_client[2]) #Есть ли у игрока ключ
     data_bullets = int(data_client[3]) #Количество пуль у игрока
+    #FixMe: надо выводить на экран наличие ключа и количество пуль
 
     flag = 0
 
@@ -29,61 +30,51 @@ def visual_client(screen, width, height, data_client, objects_client, objects_se
     for obj in objects_client[N-1]:
         obj.draw()
 
-    if str(data_object) == 'W' or str(data_object) == 'A' or str(data_object) == 'S' or str(data_object) == 'D':
+    #Сначала проверяем второй символ: действия, если стена или дверь
+    set_move = {'W', 'A', 'S', 'D'}
+    if data_object in set_move:
         wall = Wall(screen, x_client, y_client, l, (0, 0, 0), data_object.lower())
         objects_client[N-1].append(wall)
         wall.draw()
-    elif str(data_object) == 'F':
-        door = Door(screen, x_client, y_client, l, (120, 50, 0), 'w')
-        objects_client[N-1].append(door)
-        door.draw()
-    elif str(data_object) == 'C':
-        door = Door(screen, x_client, y_client, l, (120, 50, 0), 'a')
-        objects_client[N-1].append(door)
-        door.draw()
-    elif str(data_object) == 'V':
-        door = Door(screen, x_client, y_client, l, (120, 50, 0), 's')
-        objects_client[N-1].append(door)
-        door.draw()
-    elif str(data_object) == 'B':
-        door = Door(screen, x_client, y_client, l, (120, 50, 0), 'd')
+    elif data_object.upper() in set_move:
+        door = Door(screen, x_client, y_client, l, (120, 50, 0), data_object.lower())
         objects_client[N-1].append(door)
         door.draw()
         
-    if str(data_movement) == 'W':
+    #Сдвигаем изображение, если первый символ указывает направление или что там дверь, а игрок с ключом   
+    if data_movement == 'W': y_client -= 20
+    elif data_movement == 'S': y_client += 20
+    elif data_movement == 'A': x_client -= 20
+    elif data_movement == 'D': x_client += 20
+    elif data_movement == 'w':
         y_client -= 20
-    elif str(data_movement) == 'S':
+        final_frame(screen, width, height, 1)
+    elif data_movement == 's':
         y_client += 20
-    elif str(data_movement) == 'A':
+        final_frame(screen, width, height, 1)
+    elif data_movement == 'a':
         x_client -= 20
-    elif str(data_movement) == 'D':
+        final_frame(screen, width, height, 1)
+    elif data_movement == 'd':
         x_client += 20
-    elif str(data_movement) == 'F':
-        y_client -= 20
-        final_frame(screen, width, height, 0)
-    elif str(data_movement) == 'V':
-        y_client += 20
-        final_frame(screen, width, height, 0)
-    elif str(data_movement) == 'C':
-        x_client -= 20
-        final_frame(screen, width, height, 0)
-    elif str(data_movement) == 'B':
-        x_client += 20
-        final_frame(screen, width, height, 0)
+        final_frame(screen, width, height, 1)
+    elif data_movement == 'G': #Умер второй игрок
+        print('RRR')
+        #FixMe: надо реализовать смерть СЕРВЕРА в этом случае
     else: #Не переместились
         data_object = data_movement
         #Отрисовываем то, что в текущей клетке
         
-    if str(data_object) == 'K':
+    if data_object == 'K':
         key = Key(screen, x_client, y_client, l)
         objects_client[N-1].append(key)
         key.draw()
-    elif str(data_object) == 'R':
+    elif data_object == 'R':
         revival = Revival(screen, x_client, y_client, l)
         objects_client[N-1].append(revival)
         revival.draw()
     # разобраться отдельно
-    elif str(data_object) == 'P':
+    elif data_object == 'P':
         portal = Portal(screen, x_client, y_client, l)
         objects_client[N-1].append(portal)
         x_client = width / 4
@@ -98,17 +89,17 @@ def visual_client(screen, width, height, data_client, objects_client, objects_se
         # создали навую рисовалку, нужно об этом как-то сообщить
         flag = 1
 
-    elif str(data_object) == 'E':
+    elif data_object == 'E':
         armory = Armory(screen, x_client, y_client, l)
         objects_client[N-1].append(armory)
         armory.draw()
-    elif str(data_object) == 'N':
+    elif data_object == 'N':
         exp = Explored_square(screen, x_client, y_client, l)
         objects_client[N-1].append(exp)
         exp.draw()
 
     #разобраться отдельно
-    elif str(data_object) == 'M': #FixMe добавить m - мертвого минотавра
+    elif data_object == 'M': #FixMe добавить m - мертвого минотавра
         minotaur = Minotaur(screen, x_client, y_client, l)
         objects_client[N-1].append(minotaur)
 
@@ -169,6 +160,7 @@ def visual_server(screen, width, height, data_server, objects_server, objects_cl
     data_object = str(data_server[1])
     data_key = bool(data_server[2]) #Есть ли у игрока ключ
     data_bullets = int(data_server[3]) #Количество пуль у игрока
+    #FixMe: надо выводить на экран наличие ключа и количество пуль
 
     N = len(objects_server)
 
@@ -177,61 +169,50 @@ def visual_server(screen, width, height, data_server, objects_server, objects_cl
     for obj in objects_server[N - 1]:
         obj.draw()
 
-
-    if str(data_object) == 'W' or str(data_object) == 'A' or str(data_object) == 'S' or str(data_object) == 'D':
+    #Сначала проверяем второй символ: действия, если стена или дверь
+    set_move = {'W', 'A', 'S', 'D'}
+    if data_object in set_move:
         wall = Wall(screen, x_server, y_server, l, (0, 0, 0), data_object.lower())
         objects_server[N - 1].append(wall)
         wall.draw()
-    elif str(data_object) == 'F':
-        door = Door(screen, x_server, y_server, l, (120, 50, 0), 'w')
+    elif data_object.upper() in set_move:
+        door = Door(screen, x_server, y_server, l, (120, 50, 0), data_object.lower())
         objects_server[N - 1].append(door)
         door.draw()
-    elif str(data_object) == 'C':
-        door = Door(screen, x_server, y_server, l, (120, 50, 0), 'a')
-        objects_server[N - 1].append(door)
-        door.draw()
-    elif str(data_object) == 'V':
-        door = Door(screen, x_server, y_server, l, (120, 50, 0), 's')
-        objects_server[N - 1].append(door)
-        door.draw()
-    elif str(data_object) == 'B':
-        door = Door(screen, x_server, y_server, l, (120, 50, 0), 'd')
-        objects_server[N - 1].append(door)
-        door.draw()
-        
-    if str(data_movement) == 'W':
-        y_server -= 20
-    elif str(data_movement) == 'S':
-        y_server += 20
-    elif str(data_movement) == 'A':
-        x_server -= 20
-    elif str(data_movement) == 'D':
-        x_server += 20
-    elif str(data_movement) == 'F':
+
+    #Сдвигаем изображение, если первый символ указывает направление или что там дверь, а игрок с ключом     
+    if data_movement == 'W': y_server -= 20
+    elif data_movement == 'S': y_server += 20
+    elif data_movement == 'A': x_server -= 20
+    elif data_movement == 'D': x_server += 20
+    elif data_movement == 'w':
         y_client -= 20
-        final_frame(screen, width, height, 1)
-    elif str(data_movement) == 'V':
+        final_frame(screen, width, height, 0)
+    elif data_movement == 's':
         y_server += 20
-        final_frame(screen, width, height, 1)
-    elif str(data_movement) == 'C':
+        final_frame(screen, width, height, 0)
+    elif data_movement == 'a':
         x_server -= 20
-        final_frame(screen, width, height, 1)
-    elif str(data_movement) == 'B':
+        final_frame(screen, width, height, 0)
+    elif data_movement == 'd':
         x_server += 20
-        final_frame(screen, width, height, 1)
+        final_frame(screen, width, height, 0)
+    elif data_movement == 'G': #Умер второй игрок
+        print('RRR')
+        #FixMe: надо реализовать смерть КЛИЕНТА в этом случае
     else: #Не переместились
         data_object = data_movement
         #Отрисовываем то, что в текущей клетке
         
-    if str(data_object) == 'K':
+    if data_object == 'K':
         key = Key(screen, x_server, y_server, l)
         objects_server[N - 1].append(key)
         key.draw()
-    elif str(data_object) == 'R':
+    elif data_object == 'R':
         revival = Revival(screen, x_server, y_server, l)
         objects_server[N - 1].append(revival)
         revival.draw()
-    elif str(data_object) == 'P':
+    elif data_object == 'P':
         portal = Portal(screen, x_server, y_server, l)
         objects_server[N - 1].append(portal)
         x_server = width * 3 / 4
@@ -245,16 +226,16 @@ def visual_server(screen, width, height, data_server, objects_server, objects_cl
         portal.draw()
         flag = 1
 
-    elif str(data_object) == 'E':
+    elif data_object == 'E':
         armory = Armory(screen, x_server, y_server, l)
         objects_server[N-1].append(armory)
         armory.draw()
-    elif str(data_object) == 'N':
+    elif data_object == 'N':
         exp = Explored_square(screen, x_server, y_server, l)
         objects_server[N-1].append(exp)
         exp.draw()
 
-    elif str(data_object) == 'M': #FixMe добавить m - мертвого минотавра
+    elif data_object == 'M': #FixMe добавить m - мертвого минотавра
         minotaur = Minotaur(screen, x_server, y_server, l)
         objects_server[N-1].append(minotaur)
 

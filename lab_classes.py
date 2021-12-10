@@ -41,7 +41,13 @@ class Cell:
             labirint: матрица лабиринта
             players: список игроков
         '''
-        answer = 'NN'
+        answer = self.typ
+        if answer == '0':
+            answer = 'N' #FixMe пусть это изначально будут N
+        elif answer >= '1' and answer <= '9':
+            answer = 'P' #Номер портала не сообщаем
+        answer = answer + 'N'
+        
         for hero in self.heroes:
             if hero == 'M':
                 self.typ = 'm'
@@ -55,7 +61,7 @@ class Cell:
                 coords = find_in_lab(labirint, 'R')
                 player.kill(coords)            
                 labirint[coords[0]][coords[1]].heroes.append(hero)
-                answer = 'NG'
+                answer = answer[0] + 'G'
         self.heroes = []
         return answer, labirint, players
 
@@ -125,13 +131,13 @@ class Player:
             answer = '_' + cell_typ
         elif labirint[self.coords[0]][self.coords[1]].walls[dr[0]][dr[1]] == '@':
             if dr == [1, 0]:
-                answer = 'B'
+                answer = 'd'
             elif dr == [-1, 0]:
-                answer = 'C'
+                answer = 'a'
             elif dr == [0, 1]:
-                answer = 'V'
+                answer = 's'
             else:
-                answer = 'F'
+                answer = 'w'
             if self.key == True:
                 answer = answer + 'N'
             else:
@@ -172,7 +178,13 @@ class Player:
             labirint: матрица лабиринта
             players: список игроков
         '''
-        answer = 'NN'
+        answer = labirint[self.coords[0]][self.coords[1]].typ
+        if answer == '0':
+            answer = 'N' #FixMe пусть это изначально будут N
+        elif answer >= '1' and answer <= '9':
+            answer = 'P' #Номер портала не сообщаем
+        answer = answer + 'N'
+        
         if self.num_bullets > 0:
             self.num_bullets -= 1
             if labirint[self.coords[0]][self.coords[1]].walls[dr[0]][dr[1]] == '*':
@@ -220,14 +232,11 @@ class Player:
             cell = labirint[self.coords[0]][self.coords[1]]
             cell.heroes.append(hero)
         return labirint
-
-##### main function in lab updating ####
-            
-#Вызов в формате players[i].move(direction, labirint, players)
             
     def move(self, direction, labirint, players):
         '''
         Осуществляет ход
+        Вызов в формате players[i].move(direction, labirint, players)
         Params:
             direction: направление хода в формате wasd
             labirint: матрица лабиринта
@@ -243,19 +252,12 @@ class Player:
         if direction.lower() == 'a': dr = [-1, 0]
         if direction.lower() == 'd': dr = [1, 0]
 
-        answer = ''
+        answer = 'NN'
         if direction.islower():
             answer, labirint, players = self.fire(dr, labirint, players)
-            answer = 'NN'
-            #FixMe надо передавать информацию об умерших
-##            if:
-##                answer = 'NG'
-##            else:
-##                answer = 'NN'
         else:
             answer, labirint = self.shift(dr, labirint)
             players = labirint[self.coords[0]][self.coords[1]].get_equipment(players, self.num)
-            
         labirint = self.autoshift(labirint)
         players = labirint[self.coords[0]][self.coords[1]].get_equipment(players, self.num)
 

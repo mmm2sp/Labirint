@@ -29,11 +29,12 @@ def answer_to_client_step(лабиринт, conn, игроки):
     :return: ответ, который отправили серверу
     '''
     data = conn.recv(16)  # возможно стоит передавать дату как параметр функции
+    answer = 'NN00'
     if data.decode('utf-8') == 'W' or data.decode('utf-8') == 'A' or data.decode('utf-8') == 'S' or data.decode(
             'utf-8') == 'D':
         answer, лабиринт, игроки = игроки[0].move(data.decode('utf-8'), лабиринт, игроки)
         conn.send(answer.encode('utf-8'))
-        return answer, лабиринт, игроки
+    return answer, лабиринт, игроки
 
 def say_to_client_about_serv_step(data, conn):
     '''

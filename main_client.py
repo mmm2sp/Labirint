@@ -33,8 +33,8 @@ sock = connection(IP, Port)
 step_flag = int((sock.recv(1024)).decode('utf-8'))  # флаг хода игрока-сервера, получаем начальное значение от сервера
 # 0 - наш шаг, 1 - шаг врага
 
-data_client = 'NN'
-data_server = 'NN'
+data_client = 'NN00'
+data_server = 'NN00'
 width = 1000
 height = 600 
 objects_client = [[]]
@@ -59,7 +59,10 @@ while not finished:
         if event.type == pygame.QUIT:
             finished = True
         elif event.type == pygame.KEYDOWN and step_flag == 0:
-            if event.key == pygame.K_UP:
+            if event.key == pygame.K_ESCAPE:
+                finished = True
+                #FixMe: не должна вылетать ошибка при завершении игры
+            elif event.key == pygame.K_UP:
                 client_step('W')
             elif event.key == pygame.K_DOWN:
                 client_step('S')
@@ -67,6 +70,14 @@ while not finished:
                 client_step('D')
             elif event.key == pygame.K_LEFT:
                 client_step('A')
+            elif event.key == pygame.K_w:
+                client_step('w')
+            elif event.key == pygame.K_s:
+                client_step('s')
+            elif event.key == pygame.K_d:
+                client_step('d')
+            elif event.key == pygame.K_a:
+                client_step('a')
 
     # ход соперника
     if step_flag == 1:

@@ -4,12 +4,6 @@ from basic_pictures import *
 import pygame
 from lab_generation import generate
 
-
-
-
-
-
-
 def serv_step(request):
     '''
     FixMe: Нужна документ-строка!!!!!!!!
@@ -36,20 +30,6 @@ def serv_step(request):
     say_to_client_about_serv_step(data_client, conn)
     # изменение лабиринта в зависимости от data_client!!!!!
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 IP = socket.gethostbyname(socket.gethostname())
 print(IP)
 
@@ -59,8 +39,8 @@ conn = connection(IP, Port)
 step_flag = 1  # флаг хода игрока-сервера, 1 - наш шаг, 0 - шаг врага. можно прикрутить рандом
 conn.send(str(step_flag).encode('utf-8'))  # передача начального флага клиенту
 
-data_client = 'NN'  # клиент - тот, кто рисуется слева
-data_server = 'NN'  # сервер - тот, кто справа (небольшая путаница в обозначениях)
+data_client = 'NN00'  # клиент - тот, кто рисуется слева
+data_server = 'NN00'  # сервер - тот, кто справа (небольшая путаница в обозначениях)
 width = 1000
 height = 600
 objects_client = [[]]
@@ -78,10 +58,10 @@ screen.fill((255, 255, 255))
 pygame.display.update()
 finished = False
 
-visual_client(screen, width, height, 'NN', objects_client,
+visual_client(screen, width, height, 'NN00', objects_client,
                                                   objects_server, x_client, y_client, x_server, y_server)
 
-visual_server(screen, width, height, 'NN', objects_server, objects_client,
+visual_server(screen, width, height, 'NN00', objects_server, objects_client,
                                       x_server, y_server, x_client, y_client)
 
 лабиринт, игроки = generate()
@@ -92,10 +72,10 @@ while not finished:
         if event.type == pygame.QUIT:
             finished = True
         elif event.type == pygame.KEYDOWN and step_flag == 1:
-
-            #antibag = 0  # чтобы инфа отправлялась на сервер только 1 раз
-
-            if event.key == pygame.K_UP:
+            if event.key == pygame.K_ESCAPE:
+                finished = True
+                #FixMe: не должна вылетать ошибка при завершении игры
+            elif event.key == pygame.K_UP:
                 serv_step('W')
             elif event.key == pygame.K_DOWN:
                 serv_step('S')
@@ -103,6 +83,14 @@ while not finished:
                 serv_step('D')
             elif event.key == pygame.K_LEFT:
                 serv_step('A')
+            elif event.key == pygame.K_w:
+                serv_step('w')
+            elif event.key == pygame.K_s:
+                serv_step('s')
+            elif event.key == pygame.K_d:
+                serv_step('d')
+            elif event.key == pygame.K_a:
+                serv_step('a')
 
     # ход соперника
     if step_flag == 0:
@@ -122,8 +110,9 @@ while not finished:
                                                           [len(objects_client) - 2, len(objects_client) - 3],
                                                           [len(objects_server) - 2, len(objects_server) - 3])
             # изменение лабиринта!!!!
-            pygame.event.clear()  # возможно исправит баг
             step_flag = 1  # !!!!!!!!!!!!!!!!! возможно будет ошибка
+            pygame.event.clear()  # возможно исправит баг
+            
 
 pygame.quit()
 conn.close()

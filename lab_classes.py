@@ -117,11 +117,12 @@ class Player:
             self.coords[1] += dr[1]
             cell = labirint[self.coords[0]][self.coords[1]]
             cell.heroes.append(hero)
-            answer = cell.typ
-            if answer == '0':
-                answer = 'N' #FixMe
-            elif answer >= '1' and answer <= '9':
-                answer = 'P' #Номер портала не сообщаем
+            cell_typ = cell.typ
+            if cell_typ == '0':
+                cell_typ = 'N' #FixMe пусть это изначально будут N
+            elif cell_typ >= '1' and cell_typ <= '9':
+                cell_typ = 'P' #Номер портала не сообщаем
+            answer = '_' + cell_typ
         elif labirint[self.coords[0]][self.coords[1]].walls[dr[0]][dr[1]] == '@':
             if dr == [1, 0]:
                 answer = 'B'
@@ -134,8 +135,19 @@ class Player:
             if self.key == True:
                 answer = answer + 'N'
             else:
-                answer = 'N' + answer
-        else: answer = '_'
+                cell_typ = cell.typ
+                if cell_typ == '0':
+                    cell_typ = 'N' #FixMe пусть это изначально будут N
+                elif cell_typ >= '1' and cell_typ <= '9':
+                    cell_typ = 'P' #Номер портала не сообщаем
+                answer = cell_typ + answer
+        else: #Стена
+            cell_typ = cell.typ
+            if cell_typ == '0':
+                cell_typ = 'N' #FixMe пусть это изначально будут N
+            elif cell_typ >= '1' and cell_typ <= '9':
+                cell_typ = 'P' #Номер портала не сообщаем
+            answer = cell_typ + '_'
         return answer, labirint
 
     def kill(self, coords):
@@ -248,10 +260,10 @@ class Player:
         players = labirint[self.coords[0]][self.coords[1]].get_equipment(players, self.num)
 
 
-        if answer == '_':
-            answer = 'N' + direction
-        elif len(answer) == 1:
-            answer = direction + answer
+        if answer[1] == '_':
+            answer = answer[0] + direction
+        if answer[0] == '_':
+            answer = direction + answer[1]
         answer = answer + str(int(self.key)) + str(self.num_bullets)
 
         return answer, labirint, players

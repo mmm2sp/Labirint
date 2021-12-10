@@ -19,37 +19,18 @@ def visual_client(screen, width, height, data_client, objects_client, objects_se
     h_client = 0
     data_movement = str(data_client[0])
     data_object = str(data_client[1])
+    data_key = bool(data_client[2]) #Есть ли у игрока ключ
+    data_bullets = int(data_client[3]) #Количество пуль у игрока
 
     flag = 0
-
-    if str(data_movement) == 'W':
-        y_client -= 20
-    elif str(data_movement) == 'S':
-        y_client += 20
-    elif str(data_movement) == 'A':
-        x_client -= 20
-    elif str(data_movement) == 'D':
-        x_client += 20
 
     N = len(objects_client)
 
     for obj in objects_client[N-1]:
         obj.draw()
 
-    if str(data_object) == 'W':
-        wall = Wall(screen, x_client, y_client, l, (0, 0, 0), 'w')
-        objects_client[N-1].append(wall)
-        wall.draw()
-    elif str(data_object) == 'A':
-        wall = Wall(screen, x_client, y_client, l, (0, 0, 0), 'a')
-        objects_client[N-1].append(wall)
-        wall.draw()
-    elif str(data_object) == 'S':
-        wall = Wall(screen, x_client, y_client, l, (0, 0, 0), 's')
-        objects_client[N-1].append(wall)
-        wall.draw()
-    elif str(data_object) == 'D':
-        wall = Wall(screen, x_client, y_client, l, (0, 0, 0), 'd')
+    if str(data_object) == 'W' or str(data_object) == 'A' or str(data_object) == 'S' or str(data_object) == 'D':
+        wall = Wall(screen, x_client, y_client, l, (0, 0, 0), data_object.lower())
         objects_client[N-1].append(wall)
         wall.draw()
     elif str(data_object) == 'F':
@@ -68,7 +49,32 @@ def visual_client(screen, width, height, data_client, objects_client, objects_se
         door = Door(screen, x_client, y_client, l, (120, 50, 0), 'd')
         objects_client[N-1].append(door)
         door.draw()
-    elif str(data_object) == 'K':
+        
+    if str(data_movement) == 'W':
+        y_client -= 20
+    elif str(data_movement) == 'S':
+        y_client += 20
+    elif str(data_movement) == 'A':
+        x_client -= 20
+    elif str(data_movement) == 'D':
+        x_client += 20
+    elif str(data_movement) == 'F':
+        y_client -= 20
+        final_frame(screen, width, height, 0)
+    elif str(data_movement) == 'V':
+        y_client += 20
+        final_frame(screen, width, height, 0)
+    elif str(data_movement) == 'C':
+        x_client -= 20
+        final_frame(screen, width, height, 0)
+    elif str(data_movement) == 'B':
+        x_client += 20
+        final_frame(screen, width, height, 0)
+    else: #Не переместились
+        data_object = data_movement
+        #Отрисовываем то, что в текущей клетке
+        
+    if str(data_object) == 'K':
         key = Key(screen, x_client, y_client, l)
         objects_client[N-1].append(key)
         key.draw()
@@ -102,7 +108,7 @@ def visual_client(screen, width, height, data_client, objects_client, objects_se
         exp.draw()
 
     #разобраться отдельно
-    elif str(data_object) == 'M':
+    elif str(data_object) == 'M': #FixMe добавить m - мертвого минотавра
         minotaur = Minotaur(screen, x_client, y_client, l)
         objects_client[N-1].append(minotaur)
 
@@ -161,15 +167,8 @@ def visual_server(screen, width, height, data_server, objects_server, objects_cl
     h_server = 0
     data_movement = str(data_server[0])
     data_object = str(data_server[1])
-
-    if str(data_movement) == 'W':
-        y_server -= 20
-    elif str(data_movement) == 'S':
-        y_server += 20
-    elif str(data_movement) == 'A':
-        x_server -= 20
-    elif str(data_movement) == 'D':
-        x_server += 20
+    data_key = bool(data_server[2]) #Есть ли у игрока ключ
+    data_bullets = int(data_server[3]) #Количество пуль у игрока
 
     N = len(objects_server)
 
@@ -178,20 +177,9 @@ def visual_server(screen, width, height, data_server, objects_server, objects_cl
     for obj in objects_server[N - 1]:
         obj.draw()
 
-    if str(data_object) == 'W':
-        wall = Wall(screen, x_server, y_server, l, (0, 0, 0), 'w')
-        objects_server[N - 1].append(wall)
-        wall.draw()
-    elif str(data_object) == 'A':
-        wall = Wall(screen, x_server, y_server, l, (0, 0, 0), 'a')
-        objects_server[N - 1].append(wall)
-        wall.draw()
-    elif str(data_object) == 'S':
-        wall = Wall(screen, x_server, y_server, l, (0, 0, 0), 's')
-        objects_server[N - 1].append(wall)
-        wall.draw()
-    elif str(data_object) == 'D':
-        wall = Wall(screen, x_server, y_server, l, (0, 0, 0), 'd')
+
+    if str(data_object) == 'W' or str(data_object) == 'A' or str(data_object) == 'S' or str(data_object) == 'D':
+        wall = Wall(screen, x_server, y_server, l, (0, 0, 0), data_object.lower())
         objects_server[N - 1].append(wall)
         wall.draw()
     elif str(data_object) == 'F':
@@ -210,7 +198,32 @@ def visual_server(screen, width, height, data_server, objects_server, objects_cl
         door = Door(screen, x_server, y_server, l, (120, 50, 0), 'd')
         objects_server[N - 1].append(door)
         door.draw()
-    elif str(data_object) == 'K':
+        
+    if str(data_movement) == 'W':
+        y_server -= 20
+    elif str(data_movement) == 'S':
+        y_server += 20
+    elif str(data_movement) == 'A':
+        x_server -= 20
+    elif str(data_movement) == 'D':
+        x_server += 20
+    elif str(data_movement) == 'F':
+        y_client -= 20
+        final_frame(screen, width, height, 1)
+    elif str(data_movement) == 'V':
+        y_server += 20
+        final_frame(screen, width, height, 1)
+    elif str(data_movement) == 'C':
+        x_server -= 20
+        final_frame(screen, width, height, 1)
+    elif str(data_movement) == 'B':
+        x_server += 20
+        final_frame(screen, width, height, 1)
+    else: #Не переместились
+        data_object = data_movement
+        #Отрисовываем то, что в текущей клетке
+        
+    if str(data_object) == 'K':
         key = Key(screen, x_server, y_server, l)
         objects_server[N - 1].append(key)
         key.draw()
@@ -241,7 +254,7 @@ def visual_server(screen, width, height, data_server, objects_server, objects_cl
         objects_server[N-1].append(exp)
         exp.draw()
 
-    elif str(data_object) == 'M':
+    elif str(data_object) == 'M': #FixMe добавить m - мертвого минотавра
         minotaur = Minotaur(screen, x_server, y_server, l)
         objects_server[N-1].append(minotaur)
 
@@ -328,7 +341,7 @@ def visual_parts(width, height, objects_server, objects_client, client_parts, se
     pygame.display.update()
     return objects_server, objects_client
 
-def Menu_server(screen, width, height):
+def menu_server(screen, width, height):
     '''
     Функция рисует стартовый экран игрока, создающего сервер
     '''
@@ -367,7 +380,7 @@ def Menu_server(screen, width, height):
     Wall(screen, x, y + 80, 40, (0, 0, 0), 'd').draw()
     pygame.display.update()
     
-def Menu_client(screen, width, height):
+def menu_client(screen, width, height):
     '''
     Функция рисует стартовый экран игрока-клиента, подключающегося к серверу
     '''
@@ -406,7 +419,7 @@ def Menu_client(screen, width, height):
     Wall(screen, x, y + 80, 40, (0, 0, 0), 'd').draw()
     pygame.display.update()
 
-def Final_frame(screen, width, height, situation):
+def final_frame(screen, width, height, situation):
     '''
     Функция рисует на экране "анимацию" с сообщением о ситуации:
     Если situation = 0 - это проигрыш

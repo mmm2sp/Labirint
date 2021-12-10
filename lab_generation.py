@@ -166,7 +166,7 @@ def generate():
     NUM_PORTAL = random.randint(2, 5) #Должно быть строго меньше 10
     
     lab, chosen_cells = generate_objects_in_lab()
-    way_re = []
+    way_re = [] #Путь из больницы в арсенал. Состоит из координат клеток маршрута
     generate_walls_in_lab()
 
     #Определяем, какие клетки заняты

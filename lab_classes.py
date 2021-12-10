@@ -11,18 +11,20 @@ class Cell:
         '''
         self.coords = coords
         self.walls = [['#', '-', '-'], ['|', '#', '#'], ['|', '#', '#']]
-        #walls[x][y] задает нужные стены, где x, y отсчитываются вправо и вниз соответственно из данной клетки
+#walls[x][y] задает нужные стены, где x, y отсчитываются вправо и вниз соответственно из данной клетки
         self.equipment = []
         self.heroes = []
         
         self.typ = lab[coords[0]][coords[1]]
+        if self.typ == '0':
+            self.typ = 'N'
         if self.typ == 'K':
             self.equipment.append('k')
         if self.typ == 'M':
             self.heroes.append('M')
         if self.typ[0] == 'G':
             self.heroes.append(self.typ)
-            self.typ = '0'
+            self.typ = 'N'
             
         self.walls[0][-1] = walls_h[coords[0]][coords[1]]
         self.walls[0][1] = walls_h[coords[0]][coords[1] + 1]
@@ -42,10 +44,7 @@ class Cell:
             players: список игроков
         '''
         answer = self.typ
-        if answer == '0':
-            answer = 'N' #FixMe пусть это изначально будут N
-        elif answer >= '1' and answer <= '9':
-            answer = 'P' #Номер портала не сообщаем
+        if answer >= '1' and answer <= '9': answer = 'P'
         answer = answer + 'N'
         
         for hero in self.heroes:
@@ -57,7 +56,6 @@ class Cell:
                     self.equipment.append('b')
                 if player.key == True:
                     self.equipment.append('k')
-                 #FixMe каждый должен отвечать за свое ...
                 coords = find_in_lab(labirint, 'R')
                 player.kill(coords)            
                 labirint[coords[0]][coords[1]].heroes.append(hero)
@@ -65,7 +63,7 @@ class Cell:
         self.heroes = []
         return answer, labirint, players
 
-    def get_equipment(self, players, num):# player):#FixMe мб можно просто селф
+    def get_equipment(self, players, num):
         '''
         Перемещает снаряжение клетки в снаряжение игрока.
         Если у игрока должно получиться больше 3х пудек, лищние остаются в клетке
@@ -124,35 +122,18 @@ class Player:
             cell = labirint[self.coords[0]][self.coords[1]]
             cell.heroes.append(hero)
             cell_typ = cell.typ
-            if cell_typ == '0':
-                cell_typ = 'N' #FixMe пусть это изначально будут N
-            elif cell_typ >= '1' and cell_typ <= '9':
-                cell_typ = 'P' #Номер портала не сообщаем
+            if cell_typ >= '1' and cell_typ <= '9': cell_typ = 'P'
             answer = '_' + cell_typ
         elif labirint[self.coords[0]][self.coords[1]].walls[dr[0]][dr[1]] == '@':
-            if dr == [1, 0]:
-                answer = 'd'
-            elif dr == [-1, 0]:
-                answer = 'a'
-            elif dr == [0, 1]:
-                answer = 's'
-            else:
-                answer = 'w'
             if self.key == True:
-                answer = answer + 'N'
+                answer = '-N'
             else:
                 cell_typ = cell.typ
-                if cell_typ == '0':
-                    cell_typ = 'N' #FixMe пусть это изначально будут N
-                elif cell_typ >= '1' and cell_typ <= '9':
-                    cell_typ = 'P' #Номер портала не сообщаем
-                answer = cell_typ + answer
+                if cell_typ >= '1' and cell_typ <= '9': cell_typ = 'P'
+                answer = cell_typ + '-'
         else: #Стена
             cell_typ = cell.typ
-            if cell_typ == '0':
-                cell_typ = 'N' #FixMe пусть это изначально будут N
-            elif cell_typ >= '1' and cell_typ <= '9':
-                cell_typ = 'P' #Номер портала не сообщаем
+            if cell_typ >= '1' and cell_typ <= '9': cell_typ = 'P'
             answer = cell_typ + '_'
         return answer, labirint
 
@@ -179,10 +160,7 @@ class Player:
             players: список игроков
         '''
         answer = labirint[self.coords[0]][self.coords[1]].typ
-        if answer == '0':
-            answer = 'N' #FixMe пусть это изначально будут N
-        elif answer >= '1' and answer <= '9':
-            answer = 'P' #Номер портала не сообщаем
+        if answer >= '1' and answer <= '9': answer = 'P'
         answer = answer + 'N'
         
         if self.num_bullets > 0:
@@ -213,7 +191,6 @@ class Player:
                 cell.equipment.append('b')
             if self.key == True:
                 cell.equipment.append('k')
-            #FixMe каждый должен отвечать за свое ...
             coords = find_in_lab(labirint, 'R')
             self.kill(coords)
             hero = 'G' + str(self.num)
@@ -261,13 +238,16 @@ class Player:
         labirint = self.autoshift(labirint)
         players = labirint[self.coords[0]][self.coords[1]].get_equipment(players, self.num)
 
-
-        if answer[1] == '_':
-            answer = answer[0] + direction
         if answer[0] == '_':
             answer = direction + answer[1]
+        if answer[1] == '_':
+            answer = answer[0] + direction
+        if answer[0] == '-':
+            answer = direction.lower() + answer[1]
+        if answer[1] == '-':
+            answer = answer[0] + direction.lower()
         answer = answer + str(int(self.key)) + str(self.num_bullets)
-
+        print(answer)
         return answer, labirint, players
 
 

@@ -25,13 +25,12 @@ def connection(IP, Port):
 def answer_to_client_step(лабиринт, conn, игроки):
     '''
     отвечает клиенту, смог ли он походить и что в той клетке, куда он пришел
-    :param лабиринт: матрица лабиринта со всей инфой о нем
-    :param conn: соединение
-    :param игроки: список игроков
+    :param labirint: матрица лабиринта со всей инфой о нем
     :return: ответ, который отправили серверу
     '''
-    data = conn.recv(1024)  # возможно стоит передавать дату как параметр функции
-    if data.decode('utf-8') == 'W' or data.decode('utf-8') == 'A' or data.decode('utf-8') == 'S' or data.decode('utf-8') == 'D':
+    data = conn.recv(16)  # возможно стоит передавать дату как параметр функции
+    if data.decode('utf-8') == 'W' or data.decode('utf-8') == 'A' or data.decode('utf-8') == 'S' or data.decode(
+            'utf-8') == 'D':
         answer, лабиринт, игроки = игроки[0].move(data.decode('utf-8'), лабиринт, игроки)
         conn.send(answer.encode('utf-8'))
         return answer, лабиринт, игроки
@@ -43,14 +42,3 @@ def say_to_client_about_serv_step(data, conn):
     :param data: две буквы (строка)
     '''
     conn.send(data.encode('utf-8'))
-
-def check(data, labirint):
-    '''
-    проверяет можно ли сходить
-    :param data: строка с направлением хода wasd
-    :param labirint: нформация о лабиринте
-    :return:
-    '''
-    # для проверки лабиринт пуст, сходить можно везде, везде пустые клетки
-    info = data + 'N'
-    return info

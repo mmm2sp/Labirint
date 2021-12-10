@@ -328,10 +328,155 @@ def visual_parts(width, height, objects_server, objects_client, client_parts, se
     pygame.display.update()
     return objects_server, objects_client
 
+def Menu_server(width, height):
+    '''
+    Функция рисует стартовый экран игрока, создающего сервер
+    '''
+    screen.fill((255,255,255))
+    Opened_door(screen, width//8, height//5, 100).draw()
+    Button(screen, width/2, height/2).draw()
+    Minotaur(screen, width*5//6, height//4, 200).draw()
+    Key(screen, width*5.25//6, height*3//4, 200).draw()
+    x = width//24*4
+    y = height*5.5//8
+    Key(screen, x, y, 40).draw()
+    Wall(screen, x, y, 40, (0, 0, 0), 'w').draw()
+    Wall(screen, x, y, 40, (0, 0, 0), 'a').draw()
+    Armory(screen, x, y + 40, 40).draw()
+    Wall(screen, x, y + 40, 40, (0, 0, 0), 'a').draw()
+    Portal(screen, x, y + 80, 40).draw()
+    Wall(screen, x, y + 80, 40, (0, 0, 0), 's').draw()
+    Wall(screen, x, y + 80, 40, (0, 0, 0), 'a').draw()
+    Explored_square(screen, x + 40, y, 40).draw()
+    Player(screen, x + 40, y, 40).draw()
+    Wall(screen, x + 40, y, 40, (0, 0, 0), 'w').draw()
+    Minotaur(screen, x + 40, y + 40, 40).draw()
+    Explored_square(screen, x + 40, y + 80, 40).draw()
+    Door(screen, x + 40, y + 80, 40, (155, 0, 0), 's').draw()
+    Portal(screen, x + 80, y, 40).draw()
+    Wall(screen, x + 80, y, 40, (0, 0, 0), 'w').draw()
+    Wall(screen, x + 80, y, 40, (0, 0, 0), 'd').draw()
+    Explored_square(screen, x + 80, y + 40, 40).draw()
+    Wall(screen, x + 80, y + 40, 40, (0, 0, 0), 's').draw()
+    Wall(screen, x + 80, y + 40, 40, (0, 0, 0), 'a').draw()
+    Wall(screen, x + 80, y + 40, 40, (0, 0, 0), 'd').draw()
+    Explored_square(screen, x + 80, y + 80, 40).draw()
+    Another_Player(screen, x + 80, y + 80, 40).draw()
+    Wall(screen, x + 80, y + 80, 40, (0, 0, 0), 's').draw()
+    Wall(screen, x + 80, y + 80, 40, (0, 0, 0), 'd').draw()
+    Wall(screen, x, y + 80, 40, (0, 0, 0), 'd').draw()
+    pygame.display.update()
+    
+def Menu_client(width, height):
+    '''
+    Функция рисует стартовый экран игрока-клиента, подключающегося к серверу
+    '''
+    screen.fill((255,255,255))
+    Opened_door(screen, width//8, height//5, 100).draw()
+    Typing_window(screen, width/2, height/2).draw()
+    Minotaur(screen, width*5//6, height//4, 200).draw()
+    Key(screen, width*5.25//6, height*3//4, 200).draw()
+    x = width//24*4
+    y = height*5.5//8
+    Key(screen, x, y, 40).draw()
+    Wall(screen, x, y, 40, (0, 0, 0), 'w').draw()
+    Wall(screen, x, y, 40, (0, 0, 0), 'a').draw()
+    Armory(screen, x, y + 40, 40).draw()
+    Wall(screen, x, y + 40, 40, (0, 0, 0), 'a').draw()
+    Portal(screen, x, y + 80, 40).draw()
+    Wall(screen, x, y + 80, 40, (0, 0, 0), 's').draw()
+    Wall(screen, x, y + 80, 40, (0, 0, 0), 'a').draw()
+    Explored_square(screen, x + 40, y, 40).draw()
+    Player(screen, x + 40, y, 40).draw()
+    Wall(screen, x + 40, y, 40, (0, 0, 0), 'w').draw()
+    Minotaur(screen, x + 40, y + 40, 40).draw()
+    Explored_square(screen, x + 40, y + 80, 40).draw()
+    Door(screen, x + 40, y + 80, 40, (155, 0, 0), 's').draw()
+    Portal(screen, x + 80, y, 40).draw()
+    Wall(screen, x + 80, y, 40, (0, 0, 0), 'w').draw()
+    Wall(screen, x + 80, y, 40, (0, 0, 0), 'd').draw()
+    Explored_square(screen, x + 80, y + 40, 40).draw()
+    Wall(screen, x + 80, y + 40, 40, (0, 0, 0), 's').draw()
+    Wall(screen, x + 80, y + 40, 40, (0, 0, 0), 'a').draw()
+    Wall(screen, x + 80, y + 40, 40, (0, 0, 0), 'd').draw()
+    Explored_square(screen, x + 80, y + 80, 40).draw()
+    Another_Player(screen, x + 80, y + 80, 40).draw()
+    Wall(screen, x + 80, y + 80, 40, (0, 0, 0), 's').draw()
+    Wall(screen, x + 80, y + 80, 40, (0, 0, 0), 'd').draw()
+    Wall(screen, x, y + 80, 40, (0, 0, 0), 'd').draw()
+    pygame.display.update()
 
+def Final_frame(width, height, situation):
+    '''
+    Функция рисует на экране "анимацию" с сообщением о ситуации:
+    Если situation = 0 - это проигрыш
+    situation = 1 - это победа
+    '''
+    if situation == 0:
+        winnercolor = (100, 100, 255)
+        losercolor =(0, 200, 0)
+        f = pygame.font.Font(None, 150)
+        text = f.render('DEFEAT...', True, (255, 0, 0))
+        
+    if situation == 1:
+        winnercolor = (0, 200, 0)
+        losercolor =(100, 100, 255)
+        f = pygame.font.Font(None, 150)
+        text = f.render('VICTORY!', True, (0, 200, 0))
+        
+    screen.fill((255,255,255))
+    Men(screen, width*3//4, height*2.5//8, winnercolor).draw_body()
+    Men(screen, width*3//4, height*2.5//8, winnercolor).draw_legs_stand()
+    Closed_door(screen, width//4, height//5, width//4).draw()
+    screen.blit(text,(width*2.5//8, height//20))
+    pygame.display.update()
+    pygame.time.Clock().tick(1)
+    
+    screen.fill((255,255,255))
+    Closed_door(screen, width//4, height//5, width//4).draw()
+    Men(screen, width*4//8, height*2.5//8, winnercolor).draw_body()
+    Men(screen, width*4//8, height*2.5//8, winnercolor).draw_legs_stand()
+    screen.blit(text,(width*2.5//8, height//20))
+    pygame.display.update()
+    pygame.time.Clock().tick(1)
 
+    screen.fill((255,255,255))
+    Fully_opened_door(screen, width//4, height//5, width//4).draw()
+    Men(screen, width*3//8, height*2.5//8, winnercolor).draw_body()
+    Men(screen, width*3//8, height*2.5//8, winnercolor).draw_legs_stand()
+    screen.blit(text,(width*2.5//8, height//20))
+    pygame.display.update()
+    pygame.time.Clock().tick(1)
 
+    screen.fill((255,255,255))
+    Opened_door(screen, width//4, height//5, width//4).draw()
+    screen.blit(text,(width*2.5//8, height//20))
+    pygame.display.update()
+    pygame.time.Clock().tick(1)
 
+    screen.fill((255,255,255))
+    Corner(screen, width, height).draw()
+    Men(screen, width*5//8, height*2.5//8, losercolor).draw_body()
+    Men(screen, width*5//8, height*2.5//8, losercolor).draw_legs_stand()
+    screen.blit(text,(width*2.5//8, height//20))
+    pygame.display.update()
+    pygame.time.Clock().tick(1)
 
+    screen.fill((255,255,255))
+    Corner(screen, width, height).draw()
+    Men(screen, width*5//8, height*3//8, losercolor).draw_body()
+    Men(screen, width*5//8, height*3//8, losercolor).draw_legs_sit()
+    screen.blit(text,(width*2.5//8, height//20))
+    pygame.display.update()
+    pygame.time.Clock().tick(1)
 
-
+    screen.fill((255,255,255))
+    Corner(screen, width, height).draw()
+    Men(screen, width*5//8, height*3//8, (230, 230, 230)).draw_body()
+    Men(screen, width*5//8, height*3//8, (230, 230, 230)).draw_legs_sit()
+    Web(screen, width//4, height//2, 100).draw()
+    Web(screen, width//8*6, height//5*3, 50).draw()
+    Skull(screen, width*5//8, height*3//8, 150).draw()
+    screen.blit(text,(width*2.5//8, height//20))
+    pygame.display.update()
+    pygame.time.Clock().tick(1)

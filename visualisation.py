@@ -328,7 +328,7 @@ def visual_parts(width, height, objects_server, objects_client, client_parts, se
     pygame.display.update()
     return objects_server, objects_client
 
-def Menu_server(width, height):
+def Menu_server(screen, width, height):
     '''
     Функция рисует стартовый экран игрока, создающего сервер
     '''
@@ -367,7 +367,7 @@ def Menu_server(width, height):
     Wall(screen, x, y + 80, 40, (0, 0, 0), 'd').draw()
     pygame.display.update()
     
-def Menu_client(width, height):
+def Menu_client(screen, width, height):
     '''
     Функция рисует стартовый экран игрока-клиента, подключающегося к серверу
     '''
@@ -406,7 +406,7 @@ def Menu_client(width, height):
     Wall(screen, x, y + 80, 40, (0, 0, 0), 'd').draw()
     pygame.display.update()
 
-def Final_frame(width, height, situation):
+def Final_frame(screen, width, height, situation):
     '''
     Функция рисует на экране "анимацию" с сообщением о ситуации:
     Если situation = 0 - это проигрыш

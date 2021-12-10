@@ -13,12 +13,14 @@ def visual_client(screen, width, height, data_client, objects_client, objects_se
     и рисует то, что он открыл для себя за свой ход
     '''
     screen.fill((255, 255, 255))
-    l = 30
+    l = 20
 
     v_client = 0
     h_client = 0
     data_movement = str(data_client[0])
     data_object = str(data_client[1])
+
+    flag = 0
 
     if str(data_movement) == 'W':
         y_client -= 20
@@ -85,8 +87,10 @@ def visual_client(screen, width, height, data_client, objects_client, objects_se
         new_objects_client = []
         new_objects_client.append(portal)
         objects_client.append(new_objects_client)
+        pygame.draw.rect(screen, (255, 255, 255), (0, height / 3 + 5, width / 2 - 5, height * 2 / 3))
         portal.draw()
         # создали навую рисовалку, нужно об этом как-то сообщить
+        flag = 1
 
     elif str(data_object) == 'E':
         armory = Armory(screen, x_client, y_client, l)
@@ -109,9 +113,10 @@ def visual_client(screen, width, height, data_client, objects_client, objects_se
         new_objects_client = []
         new_objects_client.append(revival)
         objects_client.append(new_objects_client)
+        pygame.draw.rect(screen, (255, 255, 255), (0, height/3 + 5, width/2 - 5, height*2 /3))
         revival.draw()
         # создали навую рисовалку, нужно об этом как-то сообщить
-
+        flag = 1
 
     player = Player(screen, x_client, y_client, l)
     player.draw()
@@ -126,9 +131,15 @@ def visual_client(screen, width, height, data_client, objects_client, objects_se
     boundaries = Boundaries(screen, width, height)
     boundaries.draw()
 
+    Arrow_botton1 = Arrow_botton(screen, width, height, 7 / 480 * width)
+    Arrow_botton1.draw()
+
+    Arrow_botton2 = Arrow_botton(screen, width, height, 247 / 480 * width)
+    Arrow_botton2.draw()
+
     pygame.display.update()
 
-    return screen, objects_client, objects_server, x_client, y_client
+    return screen, objects_client, objects_server, x_client, y_client, flag
 
 
 def visual_server(screen, width, height, data_server, objects_server, objects_client, x_server, y_server,
@@ -142,8 +153,9 @@ def visual_server(screen, width, height, data_server, objects_server, objects_cl
     и рисует то, что он открыл для себя за свой ход
     '''
     screen.fill((255, 255, 255))
-    l = 30
-    
+    l = 20
+
+    flag = 0
     pygame.time.Clock().tick(60)
     v_server = 0
     h_server = 0
@@ -216,7 +228,9 @@ def visual_server(screen, width, height, data_server, objects_server, objects_cl
         new_objects_server = []
         new_objects_server.append(portal)
         objects_server.append(new_objects_server)
+        pygame.draw.rect(screen, (255, 255, 255), (width / 2 + 5, height * 1 / 3 + 5, width / 2, height * 2 / 3))
         portal.draw()
+        flag = 1
 
     elif str(data_object) == 'E':
         armory = Armory(screen, x_server, y_server, l)
@@ -238,7 +252,9 @@ def visual_server(screen, width, height, data_server, objects_server, objects_cl
         new_objects_server = []
         new_objects_server.append(revival)
         objects_server.append(new_objects_server)
+        pygame.draw.rect(screen, (255, 255, 255), (width / 2 + 5, height * 1 /3 + 5, width/2, height * 2 / 3))
         revival.draw()
+        flag = 1
 
     another_player = Another_Player(screen, x_server, y_server, l)
     another_player.draw()
@@ -253,6 +269,69 @@ def visual_server(screen, width, height, data_server, objects_server, objects_cl
     boundaries = Boundaries(screen, width, height)
     boundaries.draw()
 
+    Arrow_botton1 = Arrow_botton(screen, width, height, 7 / 480 * width)
+    Arrow_botton1.draw()
+
+    Arrow_botton2 = Arrow_botton(screen, width, height,  247/ 480 * width)
+    Arrow_botton2.draw()
+
     pygame.display.update()
 
-    return screen, objects_server, objects_client, x_server, y_server
+    return screen, objects_server, objects_client, x_server, y_server, flag
+
+
+def visual_parts(width, height, objects_server, objects_client, client_parts, server_parts):
+
+    # рисование левого куска клиента
+    if (client_parts[0] >= 0) and (client_parts[0] <= len(objects_client) - 1):
+        x1 = objects_client[client_parts[0]][0].x
+        y1 = objects_client[client_parts[0]][0].y
+        dx1 = 3 / 8 * width - x1
+        dy1 = 1 / 6 * height - y1
+        for i in objects_client[client_parts[0]]:
+            i.x += dx1
+            i.y += dy1
+            i.draw()
+    # правого
+    if client_parts[1] >= 0 and (client_parts[1] <= len(objects_client) - 1):
+        x2 = objects_client[client_parts[1]][0].x
+        y2 = objects_client[client_parts[1]][0].y
+        dx2 = 1 / 8 * width - x2
+        dy2 = 1 / 6 * height - y2
+        for i in objects_client[client_parts[1]]:
+            i.x += dx2
+            i.y += dy2
+            i.draw()
+
+    # рисование левого у сервера
+    if server_parts[0] >= 0 and (server_parts[0] <= len(objects_server) - 1):
+        x3 = objects_server[server_parts[0]][0].x
+        y3 = objects_server[server_parts[0]][0].y
+        dx3 = 7 / 8 * width - x3
+        dy3 = 1 / 6 * height - y3
+        for i in objects_server[server_parts[0]]:
+            i.x += dx3
+            i.y += dy3
+            i.draw()
+
+    # правого
+    if server_parts[1] >= 0 and (server_parts[1] <= len(objects_server) - 1):
+        x4 = objects_server[server_parts[1]][0].x
+        y4 = objects_server[server_parts[1]][0].y
+        dx4 = 5 / 8 * width - x4
+        dy4 = 1 / 6 * height - y4
+        for i in objects_server[server_parts[1]]:
+            i.x += dx4
+            i.y += dy4
+            i.draw()
+
+    pygame.display.update()
+    return objects_server, objects_client
+
+
+
+
+
+
+
+

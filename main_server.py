@@ -6,7 +6,9 @@ from lab_generation import generate
 from lab_classes import Player
 from lab_classes import Cell
 
-IP = '192.168.0.102'
+IP = socket.gethostbyname(socket.gethostname())
+print(IP)
+
 Port = 9090
 conn = connection(IP, Port)
 
@@ -42,79 +44,12 @@ visual_server(screen, width, height, 'NN', objects_server, objects_client,
 
 while not finished:
 
-    N_client = len(objects_client)
-    N_server = len(objects_server)
-
-    # то какие фрагменты мы рисуем сверху экрана
-    client_pict = [N_client - 2, N_client - 3]
-    server_pict = [N_server - 2, N_server - 3]
-
-    pygame.time.Clock().tick(60)
-    # этот кусок не выполняется
-    # рисование пройденных фрагментов
-    # рисование левого у клиента
-    if client_pict[0] >= 0:
-        x = objects_client[client_pict[0]][0].x
-        y = objects_client[client_pict[0]][0].y
-        dx = 0
-        dy = 0
-        if x != 3/8 * width and y != 1/6 * height:
-            dx = 3/8 * width - x
-            dy = 1/6 * height - y
-        for i in objects_client[client_pict[0]]:
-            i.x += dx
-            i.y += dy
-            i.draw()
-            pygame.display.update()
-    # правого
-    if client_pict[1] >= 0:
-        x1 = objects_client[client_pict[1]][0].x
-        y1 = objects_client[client_pict[1]][0].y
-        dx1 = 0
-        dy1 = 0
-        if x1 != 1/8 * width:
-            dx = 1/8 * width - x1
-            dy = 1/6 * height - y1
-        for i in objects_client[client_pict[1]]:
-            i.x += dx1
-            i.y += dy1
-            i.draw()
-            pygame.display.update()
-
-    # рисование левого у сервера
-    if server_pict[0] >= 0:
-        x = objects_server[server_pict[0]][0].x
-        y = objects_server[server_pict[0]][0].y
-        dx = 0
-        dy = 0
-        if x != 7 / 8 * width and y != 1 / 6 * height:
-            dx = 7 / 8 * width - x
-            dy = 1 / 6 * height - y
-        for i in objects_server[server_pict[0]]:
-            i.x += dx
-            i.y += dy
-            i.draw()
-            pygame.display.update()
-    # правого
-    if server_pict[1] >= 0:
-        x = objects_server[server_pict[1]][0].x
-        y = objects_server[server_pict[1]][0].y
-        dx = 0
-        dy = 0
-        if x != 5 / 8 * width and y != 1 / 6 * height:
-            dx = 5 / 8 * width - x
-            dy = 1 / 6 * height - y
-        for i in objects_server[server_pict[1]]:
-            i.x += dx
-            i.y += dy
-            i.draw()
-            pygame.display.update()
-
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             finished = True
 
         elif event.type == pygame.KEYDOWN:
+
             if step_flag == 1:
 
                 antibag = 0  # чтобы инфа отправлялась на сервер только 1 раз
@@ -123,6 +58,7 @@ while not finished:
                     data_client, лабиринт, игроки = игроки[1].move('W', лабиринт, игроки)  # в первый раз нужно передать 'NN' ПОРАБОТАТЬ!!!!!!!!!!
                     Return_client = visual_client(screen, width, height, data_client, objects_client,
                                                   objects_server, x_client, y_client, x_server, y_server)
+
                     screen = Return_client[0]
                     objects_client = Return_client[1]
                     objects_server = Return_client[2]
@@ -130,6 +66,9 @@ while not finished:
                     y_client = Return_client[4]
                     step_flag = 0
 
+                    objects_server, objects_client = visual_parts(width, height, objects_server, objects_client,
+                                                                  [len(objects_client)-2, len(objects_client)-3],
+                                                                  [len(objects_server)-2, len(objects_server)-3])
                     say_to_client_about_serv_step(data_client, conn)
                     # изменение лабиринта в зависимости от data_client!!!!!
                     antibag = 1
@@ -138,6 +77,7 @@ while not finished:
                     data_client, лабиринт, игроки = игроки[1].move('S', лабиринт, игроки)  # в первый раз нужно передать 'NN'
                     Return_client = visual_client(screen, width, height, data_client, objects_client,
                                                   objects_server, x_client, y_client, x_server, y_server)
+
                     screen = Return_client[0]
                     objects_client = Return_client[1]
                     objects_server = Return_client[2]
@@ -145,6 +85,9 @@ while not finished:
                     y_client = Return_client[4]
                     step_flag = 0
 
+                    objects_server, objects_client = visual_parts(width, height, objects_server, objects_client,
+                                                                  [len(objects_client)-2, len(objects_client)-3],
+                                                                  [len(objects_server)-2, len(objects_server)-3])
                     say_to_client_about_serv_step(data_client, conn)
                     # изменение лабиринта
                     antibag = 1
@@ -153,6 +96,7 @@ while not finished:
                     data_client, лабиринт, игроки = игроки[1].move('D', лабиринт, игроки)  # в первый раз нужно передать 'NN'
                     Return_client = visual_client(screen, width, height, data_client, objects_client,
                                                   objects_server, x_client, y_client, x_server, y_server)
+
                     screen = Return_client[0]
                     objects_client = Return_client[1]
                     objects_server = Return_client[2]
@@ -160,6 +104,9 @@ while not finished:
                     y_client = Return_client[4]
                     step_flag = 0
 
+                    objects_server, objects_client = visual_parts(width, height, objects_server, objects_client,
+                                                                  [len(objects_client) - 2, len(objects_client) - 3],
+                                                                  [len(objects_server) - 2, len(objects_server) - 3])
                     say_to_client_about_serv_step(data_client, conn)
                     # изменение лабиринта
                     antibag = 1
@@ -168,6 +115,7 @@ while not finished:
                     data_client, лабиринт, игроки = игроки[1].move('A', лабиринт, игроки)  # в первый раз нужно передать 'NN'
                     Return_client = visual_client(screen, width, height, data_client, objects_client,
                                                   objects_server, x_client, y_client, x_server, y_server)
+
                     screen = Return_client[0]
                     objects_client = Return_client[1]
                     objects_server = Return_client[2]
@@ -175,6 +123,9 @@ while not finished:
                     y_client = Return_client[4]
                     step_flag = 0
 
+                    objects_server, objects_client = visual_parts(width, height, objects_server, objects_client,
+                                                                  [len(objects_client) - 2, len(objects_client) - 3],
+                                                                  [len(objects_server) - 2, len(objects_server) - 3])
                     say_to_client_about_serv_step(data_client, conn)
                     # изменение лабиринта
                     antibag = 1
@@ -183,20 +134,22 @@ while not finished:
     if step_flag == 0:
         # обработка хода соперника
 
-        data_server, лабиринт, игроки = answer_to_client_step(лабиринт, conn, игроки)  # в первый раз нужно передать 'NN'
+            data_server, лабиринт, игроки = answer_to_client_step(лабиринт, conn, игроки)  # в первый раз нужно передать 'NN'
+            Return_server = visual_server(screen, width, height, data_server, objects_server, objects_client,
+                                          x_server, y_server, x_client, y_client)
 
-        Return_server = visual_server(screen, width, height, data_server, objects_server, objects_client,
-                                      x_server, y_server, x_client, y_client)
-        screen = Return_server[0]
-        objects_server = Return_server[1]
-        objects_client = Return_server[2]
-        x_server = Return_server[3]
-        y_server = Return_server[4]
+            screen = Return_server[0]
+            objects_server = Return_server[1]
+            objects_client = Return_server[2]
+            x_server = Return_server[3]
+            y_server = Return_server[4]
 
-        # изменение лабиринта!!!!
-        pygame.event.clear()  # возможно исправит баг
-        step_flag = 1  # !!!!!!!!!!!!!!!!! возможно будет ошибка
-
+            objects_server, objects_client = visual_parts(width, height, objects_server, objects_client,
+                                                          [len(objects_client) - 2, len(objects_client) - 3],
+                                                          [len(objects_server) - 2, len(objects_server) - 3])
+            # изменение лабиринта!!!!
+            pygame.event.clear()  # возможно исправит баг
+            step_flag = 1  # !!!!!!!!!!!!!!!!! возможно будет ошибка
 
 pygame.quit()
 conn.close()

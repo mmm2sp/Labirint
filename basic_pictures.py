@@ -165,11 +165,25 @@ class Boundaries:
         self.height = height
     def draw(self):
         pygame.draw.line(self.screen, (0, 0, 0), (self.width/2, 0), (self.width/2, self.height), width = 10)
-        pygame.draw.line(self.screen, (0, 0, 0), (self.width/4, 0), (self.width/4, self.height), width = 5)
-        pygame.draw.line(self.screen, (0, 0, 0), (self.width*3/4, 0), (self.width*3/4, self.height), width = 5)
         pygame.draw.line(self.screen, (0, 0, 0), (0, self.height/3), (self.width, self.height/3), width = 5)
-        pygame.draw.line(self.screen, (0, 0, 0), (0, self.height*2/3), (self.width, self.height*2/3), width = 5)
-        
+
+
+class Arrow_botton:
+    '''
+    Рисует кнопки переключения фрагментов
+    '''
+    def __init__(self, screen, width, height, x):
+        self.screen = screen
+        self.width = width
+        self.height = height
+        self.x = x
+    def draw(self):
+        pygame.draw.rect(self.screen, (100, 150, 200),
+                         (self.x, 7/60 * self.height, 1/30 * self.width, 1/20 * self.height))
+
+        pygame.draw.rect(self.screen, (100, 150, 200),
+                         (self.x + 210/480 * self.width, 7/60 * self.height, 1 / 30 * self.width, 1 / 20 * self.height))
+
 class Opened_door:
     '''
     Рисует открытую дверь по координатам верхнего левого угла дверной коробки

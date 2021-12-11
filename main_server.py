@@ -33,29 +33,29 @@ def serv_step(request):
                                                                   [len(objects_server)-2, len(objects_server)-3])
     say_to_client_about_serv_step(data_client, conn)
     # изменение лабиринта в зависимости от data_client!!!!!
-
-IP = socket.gethostbyname(socket.gethostname())
-print(IP)
-pygame.init()
-screen = pygame.display.set_mode((width, height))
-screen.fill((255, 255, 255))
 width = 1000
 height = 600
 
-while not finished:
+IP = socket.gethostbyname(socket.gethostname())
+print(IP)
+Port = 9090
+
+pygame.init()
+screen = pygame.display.set_mode((width, height))
+screen.fill((255, 255, 255))
+
+conn = False
+
+while not conn:
     pygame.time.Clock().tick(30)
     for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            finished = True
         if event.type == pygame.MOUSEBUTTONDOWN:
             x = event.pos[0]
             y = event.pos[1]
             if (x > width/2-200) and (x<width/2+200) and(y>height/2-100) and (y<height/2+100):
-                finished = True
+                conn = connection(IP, Port)
         menu_server(screen, width, height, IP)
 
-Port = 9090
-conn = connection(IP, Port)
 
 step_flag = 1  # флаг хода игрока-сервера, 1 - наш шаг, 0 - шаг врага. можно прикрутить рандом
 conn.send(str(step_flag).encode('utf-8'))  # передача начального флага клиенту

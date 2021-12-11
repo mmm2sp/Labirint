@@ -158,8 +158,8 @@ def generate():
 
     #Определяем основные параметры
     WIDTH = random.randint(2, 7)
-    if WIDTH <= 4:
-        HEIGHT = random.randint(4, 7)
+    if WIDTH == 2: HEIGHT = random.randint(5, 7)
+    elif WIDTH <= 4: HEIGHT = random.randint(4, 7)
     else:
         HEIGHT = random.randint(2, 7)
     SIZE = WIDTH, HEIGHT

@@ -9,26 +9,26 @@ def client_step(request):
         request: запрос на сервер
     '''
     global sock
-    global screen, width, height, data_client, objects_client
-    global objects_server, x_client, y_client, x_server, y_server, step_flag
+    global screen, width, height, data_client, objects_player
+    global objects_enemy, x_player, y_player, x_enemy, y_enemy, step_flag
 
     data_client = ask_server(request, sock)  # в первый раз нужно передать 'NN'
-    Return_client = visual_client(screen, width, height, data_client, objects_client,
-                                  objects_server, x_client, y_client, x_server, y_server)
-    Opponent_step(screen, width, height)
+    Return_client = visual_player(screen, width, height, data_client, objects_player,
+                                  objects_enemy, x_player, y_player, x_enemy, y_enemy)
+    enemy_step(screen, width, height)
     key_and_knifes(screen, width, height, data_client, data_server)
     screen = Return_client[0]
-    objects_client = Return_client[1]
-    objects_server = Return_client[2]
-    x_client = Return_client[3]
-    y_client = Return_client[4]
-    x_server = Return_client[5]
-    y_server = Return_client[6]
+    objects_player = Return_client[1]
+    objects_enemy = Return_client[2]
+    x_player = Return_client[3]
+    y_player = Return_client[4]
+    x_enemy = Return_client[5]
+    y_enemy = Return_client[6]
     step_flag = 1
     if Return_client[8] == 0:
-        objects_server, objects_client = visual_parts(width, height, objects_server, objects_client,
-                                                 [len(objects_client) - 2, len(objects_client) - 3],
-                                                 [len(objects_server) - 2, len(objects_server) - 3])
+        objects_enemy, objects_player = visual_parts(width, height, objects_enemy, objects_player,
+                                                 [len(objects_player) - 2, len(objects_player) - 3],
+                                                 [len(objects_enemy) - 2, len(objects_enemy) - 3])
 
 
 
@@ -36,14 +36,14 @@ data_client = 'NN00'
 data_server = 'NN00'
 width = 1000
 height = 600 
-objects_client = [[]]
-objects_server = [[]]
+objects_player = [[]]
+objects_enemy = [[]]
 
 
-x_client = width / 4
-y_client = height * 2 / 3
-x_server = width * 3 / 4
-y_server = height * 2 / 3
+x_player = width / 4
+y_player = height * 2 / 3
+x_enemy = width * 3 / 4
+y_enemy = height * 2 / 3
 Return_server = []
 Return_client = []
 pygame.init()
@@ -70,16 +70,16 @@ step_flag = int((sock.recv(1024)).decode('utf-8'))  # флаг хода игро
 
 finished = False
 
-visual_client(screen, width, height, 'NN00', objects_client,
-                                                  objects_server, x_client, y_client, x_server, y_server)
+visual_player(screen, width, height, 'NN00', objects_player,
+                                                  objects_enemy, x_player, y_player, x_enemy, y_enemy)
 
-visual_server(screen, width, height, 'NN00', objects_server, objects_client,
-                                      x_server, y_server, x_client, y_client)
+visual_enemy(screen, width, height, 'NN00', objects_enemy, objects_player,
+                                      x_enemy, y_enemy, x_player, y_player)
 
 if step_flag == 0:
-    Your_step(screen, width, height)
+    player_step(screen, width, height)
 elif step_flag == 1:
-    Opponent_step(screen, width, height)
+    enemy_step(screen, width, height)
 pygame.display.update()
 
 while not finished:
@@ -110,21 +110,21 @@ while not finished:
     # ход соперника
     if step_flag == 1:
         data_server = catch_server_steps(sock)  # в первый раз нужно передать 'NN'
-        Return_server = visual_server(screen, width, height, data_server, objects_server, objects_client,
-                                      x_server, y_server, x_client, y_client)
-        Your_step(screen, width, height)
+        Return_server = visual_enemy(screen, width, height, data_server, objects_enemy, objects_player,
+                                      x_enemy, y_enemy, x_player, y_player)
+        player_step(screen, width, height)
         key_and_knifes(screen, width, height, data_client, data_server)
         screen = Return_server[0]
-        objects_server = Return_server[1]
-        objects_client = Return_server[2]
-        x_server = Return_server[3]
-        y_server = Return_server[4]
-        x_client = Return_server[5]
-        y_client = Return_server[6]
+        objects_enemy = Return_server[1]
+        objects_player = Return_server[2]
+        x_enemy = Return_server[3]
+        y_enemy = Return_server[4]
+        x_player = Return_server[5]
+        y_player = Return_server[6]
         if Return_server[8] == 0:
-            objects_server, objects_client = visual_parts(width, height, objects_server, objects_client,
-                                                      [len(objects_client) - 2, len(objects_client) - 3],
-                                                      [len(objects_server) - 2, len(objects_server) - 3])
+            objects_enemy, objects_player = visual_parts(width, height, objects_enemy, objects_player,
+                                                      [len(objects_player) - 2, len(objects_player) - 3],
+                                                      [len(objects_enemy) - 2, len(objects_enemy) - 3])
 
         step_flag = 0  # !!!!!!!!!!!!!!!!!!!!!!!!!
         pygame.event.clear() #Очищаем очередь

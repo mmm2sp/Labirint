@@ -36,6 +36,19 @@ def serv_step(request):
 
 IP = socket.gethostbyname(socket.gethostname())
 print(IP)
+pygame.init()
+screen = pygame.display.set_mode((width, height))
+screen.fill((255, 255, 255))
+width = 1000
+height = 600
+
+conn = 0
+while conn == 0:
+    pygame.time.Clock().tick(30)
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            finished = True
+        menu_server(screen, width, height, IP)
 
 Port = 9090
 conn = connection(IP, Port)
@@ -46,8 +59,7 @@ conn.send(str(step_flag).encode('utf-8'))  # передача начальног
 
 data_client = 'NN00'  # клиент - тот, кто рисуется слева
 data_server = 'NN00'  # сервер - тот, кто справа (небольшая путаница в обозначениях)
-width = 1000
-height = 600
+
 objects_client = [[]]
 objects_server = [[]]
 
@@ -57,10 +69,8 @@ x_server = width * 3 / 4
 y_server = height * 2 / 3
 Return_server = []
 Return_client = []
-pygame.init()
-screen = pygame.display.set_mode((width, height))
-screen.fill((255, 255, 255))
-menu_server(screen, width, height, IP)
+
+
 finished = False
 
 

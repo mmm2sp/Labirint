@@ -49,15 +49,19 @@ def visual_client(screen, width, height, data_client, objects_client, objects_se
     elif data_movement == 'w':
         y_client -= 20
         final_frame(screen, width, height, 1)
+        break
     elif data_movement == 's':
         y_client += 20
         final_frame(screen, width, height, 1)
+        break
     elif data_movement == 'a':
         x_client -= 20
         final_frame(screen, width, height, 1)
+        break
     elif data_movement == 'd':
         x_client += 20
         final_frame(screen, width, height, 1)
+        break
     elif data_movement == 'G': #Умер второй игрок
         print('RRR')
         #FixMe: надо реализовать смерть СЕРВЕРА в этом случае
@@ -188,15 +192,19 @@ def visual_server(screen, width, height, data_server, objects_server, objects_cl
     elif data_movement == 'w':
         y_client -= 20
         final_frame(screen, width, height, 0)
+        break
     elif data_movement == 's':
         y_server += 20
         final_frame(screen, width, height, 0)
+        break
     elif data_movement == 'a':
         x_server -= 20
         final_frame(screen, width, height, 0)
+        break
     elif data_movement == 'd':
         x_server += 20
         final_frame(screen, width, height, 0)
+        break
     elif data_movement == 'G': #Умер второй игрок
         print('RRR')
         #FixMe: надо реализовать смерть КЛИЕНТА в этом случае

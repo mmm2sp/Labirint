@@ -4,6 +4,7 @@
 '''
 
 import socket
+import pygame
 
 
 def connection(IP, Port):
@@ -39,7 +40,7 @@ def catch_server_steps(sock):
 
     return data.decode('utf-8')
 
-def Typing(ip, x, y):
+def Typing(ip, x, y, event, screen):
     '''
     Функция обрабатывает ввод IP-адреса игроком-клиентом
     Функция возвращает введенный адрес,

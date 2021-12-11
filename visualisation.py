@@ -123,7 +123,7 @@ def visual_client(screen, width, height, data_client, objects_client, objects_se
             flag = 1
         elif data_object == 'm':
             dead_minotaur = Dead_minotaur(screen, x_client, y_client, l)
-            objects_client[N-1].append(minotaur)
+            objects_client[N-1].append(dead_minotaur)
             dead_minotaur.draw()
 
         player = Player(screen, x_client, y_client, l)
@@ -269,7 +269,7 @@ def visual_server(screen, width, height, data_server, objects_server, objects_cl
             flag = 1
         elif data_object == 'm':
             dead_minotaur = Dead_minotaur(screen, x_server, y_server, l)
-            objects_server[N-1].append(minotaur)
+            objects_server[N-1].append(dead_minotaur)
             dead_minotaur.draw()
 
         another_player = Another_Player(screen, x_server, y_server, l)

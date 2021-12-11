@@ -24,6 +24,7 @@ def visual_client(screen, width, height, data_client, objects_client, objects_se
     #FixMe: надо выводить на экран наличие ключа и количество пуль
 
     flag = 0
+    final_flag = 0
 
     N = len(objects_client)
 
@@ -49,96 +50,98 @@ def visual_client(screen, width, height, data_client, objects_client, objects_se
     elif data_movement == 'w':
         y_client -= 20
         final_frame(screen, width, height, 1)
-        break
+        final_flag = 1
     elif data_movement == 's':
         y_client += 20
         final_frame(screen, width, height, 1)
-        break
+        final_flag = 1
     elif data_movement == 'a':
         x_client -= 20
         final_frame(screen, width, height, 1)
-        break
+        final_flag = 1
     elif data_movement == 'd':
         x_client += 20
         final_frame(screen, width, height, 1)
-        break
+        final_flag = 1
     elif data_movement == 'G': #Умер второй игрок
         print('RRR')
         #FixMe: надо реализовать смерть СЕРВЕРА в этом случае
     else: #Не переместились
         data_object = data_movement
         #Отрисовываем то, что в текущей клетке
-        
-    if data_object == 'K':
-        key = Key(screen, x_client, y_client, l)
-        objects_client[N-1].append(key)
-        key.draw()
-    elif data_object == 'R':
-        revival = Revival(screen, x_client, y_client, l)
-        objects_client[N-1].append(revival)
-        revival.draw()
-    # разобраться отдельно
-    elif data_object == 'P':
-        portal = Portal(screen, x_client, y_client, l)
-        objects_client[N-1].append(portal)
-        x_client = width / 4
-        y_client = height * 2 / 3
 
-        portal = Portal(screen, x_client, y_client, l)
-        new_objects_client = []
-        new_objects_client.append(portal)
-        objects_client.append(new_objects_client)
-        pygame.draw.rect(screen, (255, 255, 255), (0, height / 3 + 5, width / 2 - 5, height * 2 / 3))
-        portal.draw()
-        # создали навую рисовалку, нужно об этом как-то сообщить
-        flag = 1
+    if final_flag == 0:
 
-    elif data_object == 'E':
-        armory = Armory(screen, x_client, y_client, l)
-        objects_client[N-1].append(armory)
-        armory.draw()
-    elif data_object == 'N':
-        exp = Explored_square(screen, x_client, y_client, l)
-        objects_client[N-1].append(exp)
-        exp.draw()
+        if data_object == 'K':
+            key = Key(screen, x_client, y_client, l)
+            objects_client[N-1].append(key)
+            key.draw()
+        elif data_object == 'R':
+            revival = Revival(screen, x_client, y_client, l)
+            objects_client[N-1].append(revival)
+            revival.draw()
+        # разобраться отдельно
+        elif data_object == 'P':
+            portal = Portal(screen, x_client, y_client, l)
+            objects_client[N-1].append(portal)
+            x_client = width / 4
+            y_client = height * 2 / 3
 
-    #разобраться отдельно
-    elif data_object == 'M': #FixMe добавить m - мертвого минотавра
-        minotaur = Minotaur(screen, x_client, y_client, l)
-        objects_client[N-1].append(minotaur)
+            portal = Portal(screen, x_client, y_client, l)
+            new_objects_client = []
+            new_objects_client.append(portal)
+            objects_client.append(new_objects_client)
+            pygame.draw.rect(screen, (255, 255, 255), (0, height / 3 + 5, width / 2 - 5, height * 2 / 3))
+            portal.draw()
+            # создали навую рисовалку, нужно об этом как-то сообщить
+            flag = 1
 
-        x_client = width * 1 / 4
-        y_client = height * 2 / 3
-        revival = Revival(screen, x_client, y_client, l)
-        # рисуем по-новому
-        new_objects_client = []
-        new_objects_client.append(revival)
-        objects_client.append(new_objects_client)
-        pygame.draw.rect(screen, (255, 255, 255), (0, height/3 + 5, width/2 - 5, height*2 /3))
-        revival.draw()
-        # создали навую рисовалку, нужно об этом как-то сообщить
-        flag = 1
+        elif data_object == 'E':
+            armory = Armory(screen, x_client, y_client, l)
+            objects_client[N-1].append(armory)
+            armory.draw()
+        elif data_object == 'N':
+            exp = Explored_square(screen, x_client, y_client, l)
+            objects_client[N-1].append(exp)
+            exp.draw()
 
-    player = Player(screen, x_client, y_client, l)
-    player.draw()
+        #разобраться отдельно
+        elif data_object == 'M': #FixMe добавить m - мертвого минотавра
+            minotaur = Minotaur(screen, x_client, y_client, l)
+            objects_client[N-1].append(minotaur)
 
-    N1 = len(objects_server)
-    for obj in objects_server[N1-1]:
-            obj.draw()
+            x_client = width * 1 / 4
+            y_client = height * 2 / 3
+            revival = Revival(screen, x_client, y_client, l)
+            # рисуем по-новому
+            new_objects_client = []
+            new_objects_client.append(revival)
+            objects_client.append(new_objects_client)
+            pygame.draw.rect(screen, (255, 255, 255), (0, height/3 + 5, width/2 - 5, height*2 /3))
+            revival.draw()
+            # создали навую рисовалку, нужно об этом как-то сообщить
+            flag = 1
 
-    another_player = Another_Player(screen, x_server, y_server, l)
-    another_player.draw()
+        player = Player(screen, x_client, y_client, l)
+        player.draw()
 
-    boundaries = Boundaries(screen, width, height)
-    boundaries.draw()
+        N1 = len(objects_server)
+        for obj in objects_server[N1-1]:
+                obj.draw()
 
-    Arrow_botton1 = Arrow_botton(screen, width, height, 7 / 480 * width)
-    Arrow_botton1.draw()
+        another_player = Another_Player(screen, x_server, y_server, l)
+        another_player.draw()
 
-    Arrow_botton2 = Arrow_botton(screen, width, height, 247 / 480 * width)
-    Arrow_botton2.draw()
+        boundaries = Boundaries(screen, width, height)
+        boundaries.draw()
 
-    pygame.display.update()
+        Arrow_botton1 = Arrow_botton(screen, width, height, 7 / 480 * width)
+        Arrow_botton1.draw()
+
+        Arrow_botton2 = Arrow_botton(screen, width, height, 247 / 480 * width)
+        Arrow_botton2.draw()
+
+        pygame.display.update()
 
     return screen, objects_client, objects_server, x_client, y_client, flag
 
@@ -156,6 +159,7 @@ def visual_server(screen, width, height, data_server, objects_server, objects_cl
     screen.fill((255, 255, 255))
     l = 20
 
+    final_flag = 0
     flag = 0
     pygame.time.Clock().tick(60)
     v_server = 0
@@ -192,92 +196,94 @@ def visual_server(screen, width, height, data_server, objects_server, objects_cl
     elif data_movement == 'w':
         y_client -= 20
         final_frame(screen, width, height, 0)
-        break
+        final_flag = 1
     elif data_movement == 's':
         y_server += 20
         final_frame(screen, width, height, 0)
-        break
+        final_flag = 1
     elif data_movement == 'a':
         x_server -= 20
         final_frame(screen, width, height, 0)
-        break
+        final_flag = 1
     elif data_movement == 'd':
         x_server += 20
         final_frame(screen, width, height, 0)
-        break
+        final_flag = 1
     elif data_movement == 'G': #Умер второй игрок
         print('RRR')
         #FixMe: надо реализовать смерть КЛИЕНТА в этом случае
     else: #Не переместились
         data_object = data_movement
         #Отрисовываем то, что в текущей клетке
-        
-    if data_object == 'K':
-        key = Key(screen, x_server, y_server, l)
-        objects_server[N - 1].append(key)
-        key.draw()
-    elif data_object == 'R':
-        revival = Revival(screen, x_server, y_server, l)
-        objects_server[N - 1].append(revival)
-        revival.draw()
-    elif data_object == 'P':
-        portal = Portal(screen, x_server, y_server, l)
-        objects_server[N - 1].append(portal)
-        x_server = width * 3 / 4
-        y_server = height * 2 / 3
 
-        portal = Portal(screen, x_server, y_server, l)
-        new_objects_server = []
-        new_objects_server.append(portal)
-        objects_server.append(new_objects_server)
-        pygame.draw.rect(screen, (255, 255, 255), (width / 2 + 5, height * 1 / 3 + 5, width / 2, height * 2 / 3))
-        portal.draw()
-        flag = 1
+    if final_flag == 0:
 
-    elif data_object == 'E':
-        armory = Armory(screen, x_server, y_server, l)
-        objects_server[N-1].append(armory)
-        armory.draw()
-    elif data_object == 'N':
-        exp = Explored_square(screen, x_server, y_server, l)
-        objects_server[N-1].append(exp)
-        exp.draw()
+        if data_object == 'K':
+            key = Key(screen, x_server, y_server, l)
+            objects_server[N - 1].append(key)
+            key.draw()
+        elif data_object == 'R':
+            revival = Revival(screen, x_server, y_server, l)
+            objects_server[N - 1].append(revival)
+            revival.draw()
+        elif data_object == 'P':
+            portal = Portal(screen, x_server, y_server, l)
+            objects_server[N - 1].append(portal)
+            x_server = width * 3 / 4
+            y_server = height * 2 / 3
 
-    elif data_object == 'M': #FixMe добавить m - мертвого минотавра
-        minotaur = Minotaur(screen, x_server, y_server, l)
-        objects_server[N-1].append(minotaur)
+            portal = Portal(screen, x_server, y_server, l)
+            new_objects_server = []
+            new_objects_server.append(portal)
+            objects_server.append(new_objects_server)
+            pygame.draw.rect(screen, (255, 255, 255), (width / 2 + 5, height * 1 / 3 + 5, width / 2, height * 2 / 3))
+            portal.draw()
+            flag = 1
 
-        x_server = width * 3 / 4
-        y_server = height * 2 / 3
-        revival = Revival(screen, x_server, y_server, l)
+        elif data_object == 'E':
+            armory = Armory(screen, x_server, y_server, l)
+            objects_server[N-1].append(armory)
+            armory.draw()
+        elif data_object == 'N':
+            exp = Explored_square(screen, x_server, y_server, l)
+            objects_server[N-1].append(exp)
+            exp.draw()
 
-        new_objects_server = []
-        new_objects_server.append(revival)
-        objects_server.append(new_objects_server)
-        pygame.draw.rect(screen, (255, 255, 255), (width / 2 + 5, height * 1 /3 + 5, width/2, height * 2 / 3))
-        revival.draw()
-        flag = 1
+        elif data_object == 'M': #FixMe добавить m - мертвого минотавра
+            minotaur = Minotaur(screen, x_server, y_server, l)
+            objects_server[N-1].append(minotaur)
 
-    another_player = Another_Player(screen, x_server, y_server, l)
-    another_player.draw()
+            x_server = width * 3 / 4
+            y_server = height * 2 / 3
+            revival = Revival(screen, x_server, y_server, l)
 
-    N1 = len(objects_client)
-    for obj in objects_client[N1 - 1]:
-        obj.draw()
+            new_objects_server = []
+            new_objects_server.append(revival)
+            objects_server.append(new_objects_server)
+            pygame.draw.rect(screen, (255, 255, 255), (width / 2 + 5, height * 1 /3 + 5, width/2, height * 2 / 3))
+            revival.draw()
+            flag = 1
 
-    player = Player(screen, x_client, y_client, l)
-    player.draw()
+        another_player = Another_Player(screen, x_server, y_server, l)
+        another_player.draw()
 
-    boundaries = Boundaries(screen, width, height)
-    boundaries.draw()
+        N1 = len(objects_client)
+        for obj in objects_client[N1 - 1]:
+            obj.draw()
 
-    Arrow_botton1 = Arrow_botton(screen, width, height, 7 / 480 * width)
-    Arrow_botton1.draw()
+        player = Player(screen, x_client, y_client, l)
+        player.draw()
 
-    Arrow_botton2 = Arrow_botton(screen, width, height,  247/ 480 * width)
-    Arrow_botton2.draw()
+        boundaries = Boundaries(screen, width, height)
+        boundaries.draw()
 
-    pygame.display.update()
+        Arrow_botton1 = Arrow_botton(screen, width, height, 7 / 480 * width)
+        Arrow_botton1.draw()
+
+        Arrow_botton2 = Arrow_botton(screen, width, height,  247/ 480 * width)
+        Arrow_botton2.draw()
+
+        pygame.display.update()
 
     return screen, objects_server, objects_client, x_server, y_server, flag
 

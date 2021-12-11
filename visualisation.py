@@ -143,7 +143,7 @@ def visual_client(screen, width, height, data_client, objects_client, objects_se
 
         pygame.display.update()
 
-    return screen, objects_client, objects_server, x_client, y_client, flag
+    return screen, objects_client, objects_server, x_client, y_client, flag, final_flag
 
 
 def visual_server(screen, width, height, data_server, objects_server, objects_client, x_server, y_server,
@@ -285,7 +285,7 @@ def visual_server(screen, width, height, data_server, objects_server, objects_cl
 
         pygame.display.update()
 
-    return screen, objects_server, objects_client, x_server, y_server, flag
+    return screen, objects_server, objects_client, x_server, y_server, flag, final_flag
 
 
 def visual_parts(width, height, objects_server, objects_client, client_parts, server_parts):

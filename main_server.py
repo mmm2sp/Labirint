@@ -24,7 +24,9 @@ def serv_step(request):
     x_client = Return_client[3]
     y_client = Return_client[4]
     step_flag = 0
-    objects_server, objects_client = visual_parts(width, height, objects_server, objects_client,
+
+    if Return_client[6] == 0:
+        objects_server, objects_client = visual_parts(width, height, objects_server, objects_client,
                                                                   [len(objects_client)-2, len(objects_client)-3],
                                                                   [len(objects_server)-2, len(objects_server)-3])
     say_to_client_about_serv_step(data_client, conn)
@@ -106,7 +108,8 @@ while not finished:
             x_server = Return_server[3]
             y_server = Return_server[4]
 
-            objects_server, objects_client = visual_parts(width, height, objects_server, objects_client,
+            if Return_server[6] == 0:
+                objects_server, objects_client = visual_parts(width, height, objects_server, objects_client,
                                                           [len(objects_client) - 2, len(objects_client) - 3],
                                                           [len(objects_server) - 2, len(objects_server) - 3])
             # изменение лабиринта!!!!

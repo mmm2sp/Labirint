@@ -29,14 +29,6 @@ def client_step(request):
                                                  [len(objects_server) - 2, len(objects_server) - 3])
 
 
-IP = '192.168.0.102'
-Port = 9090
-sock = connection(IP, Port)
-
-step_flag = int((sock.recv(1024)).decode('utf-8'))  # флаг хода игрока-сервера, получаем начальное значение от сервера
-# 0 - наш шаг, 1 - шаг врага
-
-
 data_client = 'NN00'
 data_server = 'NN00'
 width = 1000
@@ -54,10 +46,26 @@ Return_client = []
 pygame.init()
 screen = pygame.display.set_mode((width,height))
 screen.fill((255,255,255))
+menu_client(screen, width, height)
+inf = ['', 0]
+IP = ''
+while inf[1] != 1:
+    pygame.time.Clock().tick(30)
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            finished = True
+        inf = Typing(IP, width/2, height/2, event, screen)
+        IP = inf[0]
+        if inf[1] == 1:
+            break
+IP = inf[0]
+Port = 9090
+sock = connection(IP, Port)
+
+step_flag = int((sock.recv(1024)).decode('utf-8'))  # флаг хода игрока-сервера, получаем начальное значение от сервера
+# 0 - наш шаг, 1 - шаг врага
 
 finished = False
-
-
 
 visual_client(screen, width, height, 'NN00', objects_client,
                                                   objects_server, x_client, y_client, x_server, y_server)

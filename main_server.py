@@ -60,7 +60,7 @@ Return_client = []
 pygame.init()
 screen = pygame.display.set_mode((width, height))
 screen.fill((255, 255, 255))
-
+menu_server(screen, width, height, IP)
 finished = False
 
 

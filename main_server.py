@@ -12,7 +12,7 @@ def serv_step(request):
     '''
     global data_client, лабиринт, игроки
     global screen, objects_client, objects_server
-    global x_client, y_client, step_flag
+    global x_client, y_client, x_server, y_server, step_flag
 
     data_client, лабиринт, игроки = игроки[1].move(request, лабиринт, игроки)
     # в первый раз нужно передать 'NN' ПОРАБОТАТЬ!!!!!!!!!!
@@ -25,9 +25,11 @@ def serv_step(request):
     objects_server = Return_client[2]
     x_client = Return_client[3]
     y_client = Return_client[4]
+    x_server = Return_client[5]
+    y_server = Return_client[6]
     step_flag = 0
 
-    if Return_client[6] == 0:
+    if Return_client[8] == 0:
         objects_server, objects_client = visual_parts(width, height, objects_server, objects_client,
                                                                   [len(objects_client)-2, len(objects_client)-3],
                                                                   [len(objects_server)-2, len(objects_server)-3])
@@ -117,8 +119,10 @@ while not finished:
             objects_client = Return_server[2]
             x_server = Return_server[3]
             y_server = Return_server[4]
+            x_client = Return_server[5]
+            y_client = Return_server[6]
 
-            if Return_server[6] == 0:
+            if Return_server[8] == 0:
                 objects_server, objects_client = visual_parts(width, height, objects_server, objects_client,
                                                           [len(objects_client) - 2, len(objects_client) - 3],
                                                           [len(objects_server) - 2, len(objects_server) - 3])

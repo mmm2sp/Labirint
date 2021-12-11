@@ -612,7 +612,7 @@ def Your_step(screen, width, height):
     Flag(screen, width//4, height//3 + 40, 60, (0, 220, 0)).draw()
 
 def Opponent_step(screen, width, height):
-    Flag(screen, width//4*3, height//3 + 40, 60, (255, 0, 0)).draw()
+    Flag(screen, width//4*3, height//3 + 40, 60, (100, 100, 255)).draw()
     
 
         

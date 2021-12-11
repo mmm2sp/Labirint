@@ -15,7 +15,7 @@ def client_step(request):
     data_client = ask_server(request, sock)  # в первый раз нужно передать 'NN'
     Return_client = visual_client(screen, width, height, data_client, objects_client,
                                   objects_server, x_client, y_client, x_server, y_server)
-    Your_step(screen, width, height)
+    Opponent_step(screen, width, height)
     key_and_knifes(screen, width, height, data_client, data_server)
     screen = Return_client[0]
     objects_client = Return_client[1]
@@ -92,7 +92,7 @@ while not finished:
         data_server = catch_server_steps(sock)  # в первый раз нужно передать 'NN'
         Return_server = visual_server(screen, width, height, data_server, objects_server, objects_client,
                                       x_server, y_server, x_client, y_client)
-        Opponent_step(screen, width, height)
+        Your_step(screen, width, height)
         key_and_knifes(screen, width, height, data_client, data_server)
         screen = Return_server[0]
         objects_server = Return_server[1]

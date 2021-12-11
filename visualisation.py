@@ -121,6 +121,10 @@ def visual_client(screen, width, height, data_client, objects_client, objects_se
             revival.draw()
             # создали навую рисовалку, нужно об этом как-то сообщить
             flag = 1
+        elif data_object == 'm':
+            dead_minotaur = Dead_minotaur(screen, x_client, y_client, l)
+            objects_client[N-1].append(minotaur)
+            dead_minotaur.draw()
 
         player = Player(screen, x_client, y_client, l)
         player.draw()
@@ -263,6 +267,10 @@ def visual_server(screen, width, height, data_server, objects_server, objects_cl
             pygame.draw.rect(screen, (255, 255, 255), (width / 2 + 5, height * 1 /3 + 5, width/2, height * 2 / 3))
             revival.draw()
             flag = 1
+        elif data_object == 'm':
+            dead_minotaur = Dead_minotaur(screen, x_server, y_server, l)
+            objects_server[N-1].append(minotaur)
+            dead_minotaur.draw()
 
         another_player = Another_Player(screen, x_server, y_server, l)
         another_player.draw()

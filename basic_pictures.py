@@ -77,6 +77,25 @@ class Minotaur:
         pygame.draw.polygon(self.screen, (0, 0, 0), [(self.x+self.l//20*5,self.y-self.l//20*7),(self.x+self.l//20*4,self.y-self.l//20*9),(self.x+self.l//20*4,self.y-self.l//20*7)])
         pygame.draw.circle(self.screen, (255, 0, 0), (self.x-self.l//20*2,self.y-self.l//20*2), self.l//20*1)
         pygame.draw.circle(self.screen, (255, 0, 0), (self.x+self.l//20*2,self.y-self.l//20*2), self.l//20*1)
+
+class Dead_minotaur:
+    '''
+    Рисует убитого минотавра по координатам центра клетки
+    '''
+    def __init__(self, screen, x, y, l):
+        self.screen = screen
+        self.x = x
+        self.y = y
+        self.l = l
+    def draw(self):
+        pygame.draw.rect(self.screen, (230, 230, 230), (self.x-self.l//20*9, self.y-self.l//20*9, self.l//10*9, self.l//10*9))
+        pygame.draw.polygon(self.screen, (120, 50, 0), [(self.x - self.l//20*9, self.y + self.l//20*9), (self.x + self.l//20*9, self.y + self.l//20*9), (self.x + self.l//20*2, self.y)])
+        pygame.draw.polygon(self.screen, (0, 0, 0), [(self.x + self.l//20*4, self.y + self.l//20), (self.x + self.l//20*6, self.y + self.l//20),
+                                                     (self.x + self.l//20*5, self.y + self.l//20*2)])
+        pygame.draw.polygon(self.screen, (0, 0, 0), [(self.x + self.l//20*7, self.y + self.l//20*7), (self.x + self.l//20*8, self.y + self.l//20*8),
+                                                     (self.x + self.l//20*9, self.y + self.l//20*7)])
+        pygame.draw.polygon(self.screen, (0, 0, 0), (self.x + self.l//20, self.y + self.l//20*3), self.l//20*2)
+        pygame.draw.polygon(self.screen, (0, 0, 0), (self.x + self.l//20*3, self.y + self.l//20*7), self.l//20*2)
         
 class Revival:
     '''
@@ -347,4 +366,4 @@ class Skull:
         pygame.draw.circle(self.screen, (0, 0, 0), (self.x - self.l//4, self.y - self.l//4), self.l//15)
         pygame.draw.circle(self.screen, (0, 0, 0), (self.x + self.l//4, self.y - self.l//4), self.l//15)
         pygame.draw.rect(self.screen, (0, 0, 0), (self.x - self.l//4, self.y + self.l//4, self.l//2, self.l//10))
-
+        

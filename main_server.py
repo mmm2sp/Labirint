@@ -12,7 +12,7 @@ def serv_step(request):
     '''
     global data_client, лабиринт, игроки
     global screen, objects_client, objects_server
-    global x_client, y_client, x_server, y_server, step_flag
+    global x_client, y_client, step_flag
 
     data_client, лабиринт, игроки = игроки[1].move(request, лабиринт, игроки)
     # в первый раз нужно передать 'NN' ПОРАБОТАТЬ!!!!!!!!!!
@@ -25,11 +25,9 @@ def serv_step(request):
     objects_server = Return_client[2]
     x_client = Return_client[3]
     y_client = Return_client[4]
-    x_server = Return_client[5]
-    y_server = Return_client[6]
     step_flag = 0
 
-    if Return_client[8] == 0:
+    if Return_client[6] == 0:
         objects_server, objects_client = visual_parts(width, height, objects_server, objects_client,
                                                                   [len(objects_client)-2, len(objects_client)-3],
                                                                   [len(objects_server)-2, len(objects_server)-3])
@@ -38,6 +36,24 @@ def serv_step(request):
 
 IP = socket.gethostbyname(socket.gethostname())
 print(IP)
+width = 1000
+height = 600
+finished = False
+pygame.init()
+screen = pygame.display.set_mode((width, height))
+screen.fill((255, 255, 255))
+
+while not finished:
+    pygame.time.Clock().tick(30)
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            finished = True
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            x = event.pos[0]
+            y = event.pos[1]
+            if (x > width/2-200) and (x<width/2+200) and(y>height/2-100) and (y<height/2+100):
+                finished = True
+        menu_server(screen, width, height, IP)
 
 Port = 9090
 conn = connection(IP, Port)
@@ -48,8 +64,7 @@ conn.send(str(step_flag).encode('utf-8'))  # передача начальног
 
 data_client = 'NN00'  # клиент - тот, кто рисуется слева
 data_server = 'NN00'  # сервер - тот, кто справа (небольшая путаница в обозначениях)
-width = 1000
-height = 600
+
 objects_client = [[]]
 objects_server = [[]]
 
@@ -59,9 +74,7 @@ x_server = width * 3 / 4
 y_server = height * 2 / 3
 Return_server = []
 Return_client = []
-pygame.init()
-screen = pygame.display.set_mode((width, height))
-screen.fill((255, 255, 255))
+
 
 finished = False
 
@@ -119,10 +132,8 @@ while not finished:
             objects_client = Return_server[2]
             x_server = Return_server[3]
             y_server = Return_server[4]
-            x_client = Return_server[5]
-            y_client = Return_server[6]
 
-            if Return_server[8] == 0:
+            if Return_server[6] == 0:
                 objects_server, objects_client = visual_parts(width, height, objects_server, objects_client,
                                                           [len(objects_client) - 2, len(objects_client) - 3],
                                                           [len(objects_server) - 2, len(objects_server) - 3])

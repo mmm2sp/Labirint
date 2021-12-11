@@ -22,21 +22,11 @@ def client_step(request):
     objects_server = Return_client[2]
     x_client = Return_client[3]
     y_client = Return_client[4]
-    x_server = Return_client[5]
-    y_server = Return_client[6]
     step_flag = 1
-    if Return_client[8] == 0:
+    if Return_client[6] == 0:
         objects_server, objects_client = visual_parts(width, height, objects_server, objects_client,
                                                  [len(objects_client) - 2, len(objects_client) - 3],
                                                  [len(objects_server) - 2, len(objects_server) - 3])
-
-
-IP = '192.168.1.65'
-Port = 9090
-sock = connection(IP, Port)
-
-step_flag = int((sock.recv(1024)).decode('utf-8'))  # флаг хода игрока-сервера, получаем начальное значение от сервера
-# 0 - наш шаг, 1 - шаг врага
 
 
 data_client = 'NN00'
@@ -56,10 +46,26 @@ Return_client = []
 pygame.init()
 screen = pygame.display.set_mode((width,height))
 screen.fill((255,255,255))
+menu_client(screen, width, height)
+inf = ['', 0]
+IP = ''
+while inf[1] != 1:
+    pygame.time.Clock().tick(30)
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            finished = True
+        inf = Typing(IP, width/2, height/2, event, screen)
+        IP = inf[0]
+        if inf[1] == 1:
+            break
+IP = inf[0]
+Port = 9090
+sock = connection(IP, Port)
+
+step_flag = int((sock.recv(1024)).decode('utf-8'))  # флаг хода игрока-сервера, получаем начальное значение от сервера
+# 0 - наш шаг, 1 - шаг врага
 
 finished = False
-
-
 
 visual_client(screen, width, height, 'NN00', objects_client,
                                                   objects_server, x_client, y_client, x_server, y_server)
@@ -110,9 +116,7 @@ while not finished:
         objects_client = Return_server[2]
         x_server = Return_server[3]
         y_server = Return_server[4]
-        x_client = Return_server[5]
-        y_client = Return_server[6]
-        if Return_server[8] == 0:
+        if Return_server[6] == 0:
             objects_server, objects_client = visual_parts(width, height, objects_server, objects_client,
                                                       [len(objects_client) - 2, len(objects_client) - 3],
                                                       [len(objects_server) - 2, len(objects_server) - 3])

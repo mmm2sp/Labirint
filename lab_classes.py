@@ -31,12 +31,11 @@ class Cell:
         self.walls[-1][0] = walls_v[coords[0]][coords[1]]
         self.walls[1][0] = walls_v[coords[0] + 1][coords[1]]
 
-    def kill(self, answer, labirint, players):
+    def kill(self, labirint, players):
         '''
         Уничтожает всех heroes, снаряжение убитого игрока переходит
         в equipment клетки, минотавр меняет тип клетки на 'm'
         Args:
-            answer: информация об умерших игроках
             labirint: матрица лабиринта
             players: список игроков
         Returns:
@@ -44,6 +43,10 @@ class Cell:
             labirint: матрица лабиринта
             players: список игроков
         '''
+        answer = self.typ
+        if answer >= '1' and answer <= '9': answer = 'P'
+        answer = answer + 'N'
+        
         for hero in self.heroes:
             if hero == 'M':
                 self.typ = 'm'
@@ -79,7 +82,7 @@ class Cell:
                     remaining_bullets.append(obj)
             elif obj == 'k':
                 player.key = True
-        self.equipment = remaining_bullets
+        self.equipment == remaining_bullets
         return players
             
 
@@ -165,7 +168,7 @@ class Player:
             if labirint[self.coords[0]][self.coords[1]].walls[dr[0]][dr[1]] == '*':
                 x = self.coords[0] + dr[0]
                 y = self.coords[1] + dr[1]
-                answer, labirint, players = labirint[x][y].kill(answer, labirint, players)
+                answer, labirint, players = labirint[x][y].kill(labirint, players)
         return answer, labirint, players
 
 
@@ -244,6 +247,7 @@ class Player:
         if answer[1] == '-':
             answer = answer[0] + direction.lower()
         answer = answer + str(int(self.key)) + str(self.num_bullets)
+        print(answer)
         return answer, labirint, players
 
 

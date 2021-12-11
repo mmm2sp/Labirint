@@ -21,7 +21,6 @@ def visual_client(screen, width, height, data_client, objects_client, objects_se
     data_object = str(data_client[1])
     data_key = bool(data_client[2]) #Есть ли у игрока ключ
     data_bullets = int(data_client[3]) #Количество пуль у игрока
-    #FixMe: надо выводить на экран наличие ключа и количество пуль
 
     flag = 0
     final_flag = 0
@@ -106,7 +105,7 @@ def visual_client(screen, width, height, data_client, objects_client, objects_se
             exp.draw()
 
         #разобраться отдельно
-        elif data_object == 'M': #FixMe добавить m - мертвого минотавра
+        elif data_object == 'M':
             minotaur = Minotaur(screen, x_client, y_client, l)
             objects_client[N-1].append(minotaur)
 
@@ -172,7 +171,6 @@ def visual_server(screen, width, height, data_server, objects_server, objects_cl
     data_object = str(data_server[1])
     data_key = bool(data_server[2]) #Есть ли у игрока ключ
     data_bullets = int(data_server[3]) #Количество пуль у игрока
-    #FixMe: надо выводить на экран наличие ключа и количество пуль
 
     N = len(objects_server)
 
@@ -496,3 +494,129 @@ def final_frame(screen, width, height, situation):
     screen.blit(text,(width*2.5//8, height//20))
     pygame.display.update()
     pygame.time.Clock().tick(1)
+    Explored_square(screen, x + 40, y, 40).draw()
+    Player(screen, x + 40, y, 40).draw()
+    Wall(screen, x + 40, y, 40, (0, 0, 0), 'w').draw()
+    Minotaur(screen, x + 40, y + 40, 40).draw()
+    Explored_square(screen, x + 40, y + 80, 40).draw()
+    Door(screen, x + 40, y + 80, 40, (155, 0, 0), 's').draw()
+    Portal(screen, x + 80, y, 40).draw()
+    Wall(screen, x + 80, y, 40, (0, 0, 0), 'w').draw()
+    Wall(screen, x + 80, y, 40, (0, 0, 0), 'd').draw()
+    Explored_square(screen, x + 80, y + 40, 40).draw()
+    Wall(screen, x + 80, y + 40, 40, (0, 0, 0), 's').draw()
+    Wall(screen, x + 80, y + 40, 40, (0, 0, 0), 'a').draw()
+    Wall(screen, x + 80, y + 40, 40, (0, 0, 0), 'd').draw()
+    Explored_square(screen, x + 80, y + 80, 40).draw()
+    Another_Player(screen, x + 80, y + 80, 40).draw()
+    Wall(screen, x + 80, y + 80, 40, (0, 0, 0), 's').draw()
+    Wall(screen, x + 80, y + 80, 40, (0, 0, 0), 'd').draw()
+    Wall(screen, x, y + 80, 40, (0, 0, 0), 'd').draw()
+    pygame.display.update()
+
+def final_frame(screen, width, height, situation):
+    '''
+    Функция рисует на экране "анимацию" с сообщением о ситуации:
+    Если situation = 0 - это проигрыш
+    situation = 1 - это победа
+    '''
+    if situation == 0:
+        winnercolor = (100, 100, 255)
+        losercolor =(0, 200, 0)
+        f = pygame.font.Font(None, 150)
+        text = f.render('DEFEAT...', True, (255, 0, 0))
+        
+    if situation == 1:
+        winnercolor = (0, 200, 0)
+        losercolor =(100, 100, 255)
+        f = pygame.font.Font(None, 150)
+        text = f.render('VICTORY!', True, (0, 200, 0))
+        
+    screen.fill((255,255,255))
+    Men(screen, width*3//4, height*2.5//8, winnercolor).draw_body()
+    Men(screen, width*3//4, height*2.5//8, winnercolor).draw_legs_stand()
+    Closed_door(screen, width//4, height//5, width//4).draw()
+    screen.blit(text,(width*2.5//8, height//20))
+    pygame.display.update()
+    pygame.time.Clock().tick(1)
+    
+    screen.fill((255,255,255))
+    Closed_door(screen, width//4, height//5, width//4).draw()
+    Men(screen, width*4//8, height*2.5//8, winnercolor).draw_body()
+    Men(screen, width*4//8, height*2.5//8, winnercolor).draw_legs_stand()
+    screen.blit(text,(width*2.5//8, height//20))
+    pygame.display.update()
+    pygame.time.Clock().tick(1)
+
+    screen.fill((255,255,255))
+    Fully_opened_door(screen, width//4, height//5, width//4).draw()
+    Men(screen, width*3//8, height*2.5//8, winnercolor).draw_body()
+    Men(screen, width*3//8, height*2.5//8, winnercolor).draw_legs_stand()
+    screen.blit(text,(width*2.5//8, height//20))
+    pygame.display.update()
+    pygame.time.Clock().tick(1)
+
+    screen.fill((255,255,255))
+    Opened_door(screen, width//4, height//5, width//4).draw()
+    screen.blit(text,(width*2.5//8, height//20))
+    pygame.display.update()
+    pygame.time.Clock().tick(1)
+
+    screen.fill((255,255,255))
+    Corner(screen, width, height).draw()
+    Men(screen, width*5//8, height*2.5//8, losercolor).draw_body()
+    Men(screen, width*5//8, height*2.5//8, losercolor).draw_legs_stand()
+    screen.blit(text,(width*2.5//8, height//20))
+    pygame.display.update()
+    pygame.time.Clock().tick(1)
+
+    screen.fill((255,255,255))
+    Corner(screen, width, height).draw()
+    Men(screen, width*5//8, height*3//8, losercolor).draw_body()
+    Men(screen, width*5//8, height*3//8, losercolor).draw_legs_sit()
+    screen.blit(text,(width*2.5//8, height//20))
+    pygame.display.update()
+    pygame.time.Clock().tick(1)
+
+    screen.fill((255,255,255))
+    Corner(screen, width, height).draw()
+    Men(screen, width*5//8, height*3//8, (230, 230, 230)).draw_body()
+    Men(screen, width*5//8, height*3//8, (230, 230, 230)).draw_legs_sit()
+    Web(screen, width//4, height//2, 100).draw()
+    Web(screen, width//8*6, height//5*3, 50).draw()
+    Skull(screen, width*5//8, height*3//8, 150).draw()
+    screen.blit(text,(width*2.5//8, height//20))
+    pygame.display.update()
+    pygame.time.Clock().tick(1)
+
+def key_and_knifes(screen, width, height, data_client, data_server):
+    data_key_client = int(data_client[2]) #Есть ли у КЛИЕНТА ключ
+    data_bullets_client = int(data_client[3]) #Количество пуль у КЛИЕНТА
+    data_key_server = int(data_server[2]) #Есть ли у СЕРВЕРА ключ
+    data_bullets_server = int(data_server[3]) #Количество пуль у СЕРВЕРА
+    if data_key_client == 1:
+        Getted_key(screen, width*7//16, height*7//8, 40).draw()
+    if data_key_server == 1:
+        Getted_key(screen, width*15//16, height*7//8, 40).draw()
+    x = width//16
+    y = height*7//8
+    for i in range (data_bullets_client):
+        Knife(screen, x, y, 40).draw()
+        x+=40
+    x = width*9//16
+    for i in range (data_bullets_server):
+        Knife(screen, x, y, 40).draw()
+        x+=40
+
+def Your_step(screen, width, height):
+    Flag(screen, width//4, height//3 + 40, 60, (0, 220, 0)).draw()
+
+def Opponent_step(screen, width, height):
+    Flag(screen, width//4*3, height//3 + 40, 60, (255, 0, 0)).draw()
+    
+
+        
+
+
+
+    

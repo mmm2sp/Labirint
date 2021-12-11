@@ -15,6 +15,8 @@ def client_step(request):
     data_client = ask_server(request, sock)  # в первый раз нужно передать 'NN'
     Return_client = visual_client(screen, width, height, data_client, objects_client,
                                   objects_server, x_client, y_client, x_server, y_server)
+    Your_step(screen, width, height)
+    key_and_knifes(screen, width, height, data_client, data_server)
     screen = Return_client[0]
     objects_client = Return_client[1]
     objects_server = Return_client[2]
@@ -27,7 +29,7 @@ def client_step(request):
                                                  [len(objects_server) - 2, len(objects_server) - 3])
 
 
-IP = '192.168.1.65'
+IP = '192.168.0.102'
 Port = 9090
 sock = connection(IP, Port)
 
@@ -54,6 +56,12 @@ screen.fill((255,255,255))
 pygame.display.update()
 finished = False
 
+visual_client(screen, width, height, 'NN00', objects_client,
+                                                  objects_server, x_client, y_client, x_server, y_server)
+
+visual_server(screen, width, height, 'NN00', objects_server, objects_client,
+                                      x_server, y_server, x_client, y_client)
+
 while not finished:
 
     for event in pygame.event.get():
@@ -62,7 +70,6 @@ while not finished:
         elif event.type == pygame.KEYDOWN and step_flag == 0:
             if event.key == pygame.K_ESCAPE:
                 finished = True
-                #FixMe: не должна вылетать ошибка при завершении игры
             elif event.key == pygame.K_UP:
                 client_step('W')
             elif event.key == pygame.K_DOWN:
@@ -85,6 +92,8 @@ while not finished:
         data_server = catch_server_steps(sock)  # в первый раз нужно передать 'NN'
         Return_server = visual_server(screen, width, height, data_server, objects_server, objects_client,
                                       x_server, y_server, x_client, y_client)
+        Opponent_step(screen, width, height)
+        key_and_knifes(screen, width, height, data_client, data_server)
         screen = Return_server[0]
         objects_server = Return_server[1]
         objects_client = Return_server[2]

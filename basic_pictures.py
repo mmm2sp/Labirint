@@ -61,6 +61,21 @@ class Key:
         pygame.draw.circle(self.screen, (210, 210, 0), (self.x,self.y+self.l//5), self.l*2//9.5)
         pygame.draw.rect(self.screen, (210, 210, 0), (self.x, self.y-self.l*2//5,self.l*3//20, self.l//5))
 
+class Getted_key:
+    '''
+    Рисует ключ по координатам его "центра"
+    этот нужен для информации о наличии ключа
+    '''
+    def __init__(self, screen, x, y, l):
+        self.screen = screen
+        self.x = x
+        self.y = y
+        self.l = l
+    def draw(self):
+        pygame.draw.line(self.screen, (210, 210, 0), (self.x, self.y+self.l*2//5), (self.x, self.y-self.l*2//5), width = self.l//10)
+        pygame.draw.circle(self.screen, (210, 210, 0), (self.x,self.y+self.l//5), self.l*2//9.5)
+        pygame.draw.rect(self.screen, (210, 210, 0), (self.x, self.y-self.l*2//5,self.l*3//20, self.l//5))   
+
 class Minotaur:
     '''
     Рисует минотавра по координатам центра клетки
@@ -173,6 +188,20 @@ class Armory:
         pygame.draw.rect(self.screen, (230, 230, 230), (self.x-self.l//20*9, self.y-self.l//20*9, self.l//10*9, self.l//10*9))
         pygame.draw.line(self.screen, (120, 50, 0), (self.x-self.l//20*9, self.y+self.l//20*9), (self.x-self.l//20*5, self.y+self.l//20*5) , width = self.l//20*3)
         pygame.draw.polygon(self.screen, (160, 160, 160), [(self.x-self.l//20*8,self.y+self.l//20*3),(self.x-self.l//20*3,self.y+self.l//20*8),(self.x+self.l//20*8,self.y-self.l//20*8)])
+
+class Knife:
+    '''
+    Рисует кинжал по координатам его "центра"
+    нужно для информации о наличии оружия
+    '''
+    def __init__(self, screen, x, y, l):
+        self.screen = screen
+        self.x = x
+        self.y = y
+        self.l = l
+    def draw(self):
+        pygame.draw.line(self.screen, (120, 50, 0), (self.x-self.l//20*9, self.y+self.l//20*9), (self.x-self.l//20*5, self.y+self.l//20*5) , width = self.l//20*3)
+        pygame.draw.polygon(self.screen, (160, 160, 160), [(self.x-self.l//20*8,self.y+self.l//20*3),(self.x-self.l//20*3,self.y+self.l//20*8),(self.x+self.l//20*8,self.y-self.l//20*8)])    
 
 class Boundaries:
     '''
@@ -366,4 +395,23 @@ class Skull:
         pygame.draw.circle(self.screen, (0, 0, 0), (self.x - self.l//4, self.y - self.l//4), self.l//15)
         pygame.draw.circle(self.screen, (0, 0, 0), (self.x + self.l//4, self.y - self.l//4), self.l//15)
         pygame.draw.rect(self.screen, (0, 0, 0), (self.x - self.l//4, self.y + self.l//4, self.l//2, self.l//10))
-        
+
+class Flag:
+    '''
+    Рисует флаг, обозначающий ход
+    по координатам верхнего конца флагштока
+    длина флагштока l
+    '''
+    def __init__(self, screen, x, y, l, color):
+        self.screen = screen
+        self.x = x
+        self.y = y
+        self.l = l
+        self.color = color
+    def draw(self):
+        pygame.draw.line(self.screen, (0, 0, 0), (self.x, self.y), (self.x, self.y + self.l))
+        pygame.draw.polygon(self.screen, self.color, [(self.x, self.y),(self.x + self.l, self.y),
+                                                      (self.x + self.l//2, self.y + self.l//4),
+                                                      (self.x + self.l, self.y + self.l//2),
+                                                      (self.x, self.y + self.l//2)])
+    

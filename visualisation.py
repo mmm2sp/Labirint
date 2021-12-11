@@ -372,6 +372,7 @@ def menu_server(screen, width, height):
     Функция рисует стартовый экран игрока, создающего сервер
     '''
     screen.fill((255,255,255))
+    screen.blit(pygame.font.Font(None, 80).render(str('Ваш IP-адрес: ')+str(), True, (0, 0, 0)), (width//12*2, height//20))
     Opened_door(screen, width//8, height//5, 100).draw()
     Button(screen, width/2, height/2).draw()
     Minotaur(screen, width*5//6, height//4, 200).draw()
@@ -544,10 +545,3 @@ def Your_step(screen, width, height):
 
 def Opponent_step(screen, width, height):
     Flag(screen, width//4*3, height//3 + 40, 60, (100, 100, 255)).draw()
-    
-
-        
-
-
-
-    

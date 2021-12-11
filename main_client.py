@@ -36,6 +36,7 @@ sock = connection(IP, Port)
 step_flag = int((sock.recv(1024)).decode('utf-8'))  # флаг хода игрока-сервера, получаем начальное значение от сервера
 # 0 - наш шаг, 1 - шаг врага
 
+
 data_client = 'NN00'
 data_server = 'NN00'
 width = 1000
@@ -53,14 +54,22 @@ Return_client = []
 pygame.init()
 screen = pygame.display.set_mode((width,height))
 screen.fill((255,255,255))
-pygame.display.update()
+
 finished = False
+
+
 
 visual_client(screen, width, height, 'NN00', objects_client,
                                                   objects_server, x_client, y_client, x_server, y_server)
 
 visual_server(screen, width, height, 'NN00', objects_server, objects_client,
                                       x_server, y_server, x_client, y_client)
+
+if step_flag == 0:
+    Your_step(screen, width, height)
+elif step_flag == 1:
+    Opponent_step(screen, width, height)
+pygame.display.update()
 
 while not finished:
 

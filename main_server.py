@@ -43,6 +43,7 @@ conn = connection(IP, Port)
 step_flag = 1  # флаг хода игрока-сервера, 1 - наш шаг, 0 - шаг врага. можно прикрутить рандом
 conn.send(str(step_flag).encode('utf-8'))  # передача начального флага клиенту
 
+
 data_client = 'NN00'  # клиент - тот, кто рисуется слева
 data_server = 'NN00'  # сервер - тот, кто справа (небольшая путаница в обозначениях)
 width = 1000
@@ -59,14 +60,20 @@ Return_client = []
 pygame.init()
 screen = pygame.display.set_mode((width, height))
 screen.fill((255, 255, 255))
-pygame.display.update()
+
 finished = False
+
 
 visual_client(screen, width, height, 'NN00', objects_client,
                                                   objects_server, x_client, y_client, x_server, y_server)
 
 visual_server(screen, width, height, 'NN00', objects_server, objects_client,
                                       x_server, y_server, x_client, y_client)
+if step_flag == 1:
+    Your_step(screen, width, height)
+elif step_flag == 0:
+    Opponent_step(screen, width, height)
+pygame.display.update()
 
 лабиринт, игроки = generate()
 

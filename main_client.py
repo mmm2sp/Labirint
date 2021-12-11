@@ -22,11 +22,14 @@ def client_step(request):
     objects_server = Return_client[2]
     x_client = Return_client[3]
     y_client = Return_client[4]
+    x_server = Return_client[5]
+    y_server = Return_client[6]
     step_flag = 1
-    if Return_client[6] == 0:
+    if Return_client[8] == 0:
         objects_server, objects_client = visual_parts(width, height, objects_server, objects_client,
                                                  [len(objects_client) - 2, len(objects_client) - 3],
                                                  [len(objects_server) - 2, len(objects_server) - 3])
+
 
 
 data_client = 'NN00'
@@ -116,7 +119,9 @@ while not finished:
         objects_client = Return_server[2]
         x_server = Return_server[3]
         y_server = Return_server[4]
-        if Return_server[6] == 0:
+        x_client = Return_server[5]
+        y_client = Return_server[6]
+        if Return_server[8] == 0:
             objects_server, objects_client = visual_parts(width, height, objects_server, objects_client,
                                                       [len(objects_client) - 2, len(objects_client) - 3],
                                                       [len(objects_server) - 2, len(objects_server) - 3])

@@ -17,6 +17,9 @@ def visual_client(screen, width, height, data_client, objects_client, objects_se
 
     v_client = 0
     h_client = 0
+
+    print('ПРИШЛО', data_client)
+    
     data_movement = str(data_client[0])
     data_object = str(data_client[1])
     data_key = bool(data_client[2]) #Есть ли у игрока ключ
@@ -40,6 +43,23 @@ def visual_client(screen, width, height, data_client, objects_client, objects_se
         door = Door(screen, x_client, y_client, l, (120, 50, 0), data_object.lower())
         objects_client[N-1].append(door)
         door.draw()
+    # залазим на часть экрана, где отрисовывается соперник
+    if data_object == 'G': #Умер второй игрок
+
+        x_server = width * 3 / 4
+        y_server = height * 2 / 3
+        revival = Revival(screen, x_server, y_server, l)
+        # рисуем по-новому
+        new_objects_server = []
+        new_objects_server.append(revival)
+        objects_server.append(new_objects_server)
+        pygame.draw.rect(screen, (255, 255, 255),
+                         (width / 2 + 5, height / 3 + 5, width / 2 - 5, height * 2 / 3))  # здесь может быть ошибка с флажком
+        revival.draw()
+
+        visual_parts(width, height, objects_server, objects_client, [len(objects_client)-2, len(objects_client)-3],
+                                                                    [len(objects_server)-2, len(objects_server)-3])
+        # что делать с flag
         
     #Сдвигаем изображение, если первый символ указывает направление или что там дверь, а игрок с ключом   
     if data_movement == 'W': y_client -= 20
@@ -62,29 +82,12 @@ def visual_client(screen, width, height, data_client, objects_client, objects_se
         x_client += 20
         final_frame(screen, width, height, 1)
         final_flag = 1
-    # залазим на часть экрана, где отрисовывается соперник
-    elif data_movement == 'G': #Умер второй игрок
-
-        x_server = width * 3 / 4
-        y_server = height * 2 / 3
-        revival = Revival(screen, x_server, y_server, l)
-        # рисуем по-новому
-        new_objects_server = []
-        new_objects_server.append(revival)
-        objects_server.append(new_objects_server)
-        pygame.draw.rect(screen, (255, 255, 255),
-                         (width / 2 + 5, height / 3 + 5, width / 2 - 5, height * 2 / 3))  # здесь может быть ошибка с флажком
-        revival.draw()
-
-        visual_parts(width, height, objects_server, objects_client, [len(objects_client)-2, len(objects_client)-3],
-                                                                    [len(objects_server)-2, len(objects_server)-3])
-        # что делать с flag
     else: #Не переместились
         data_object = data_movement
         #Отрисовываем то, что в текущей клетке
 
     if final_flag == 0:
-
+        
         if data_object == 'K':
             key = Key(screen, x_client, y_client, l)
             objects_client[N-1].append(key)
@@ -160,7 +163,7 @@ def visual_client(screen, width, height, data_client, objects_client, objects_se
 
         pygame.display.update()
 
-    return screen, objects_client, objects_server, x_client, y_client, flag, final_flag
+    return screen, objects_client, objects_server, x_client, y_client, x_server, y_server, flag, final_flag
 
 
 def visual_server(screen, width, height, data_server, objects_server, objects_client, x_server, y_server,
@@ -181,6 +184,9 @@ def visual_server(screen, width, height, data_server, objects_server, objects_cl
     pygame.time.Clock().tick(60)
     v_server = 0
     h_server = 0
+
+    print('ПРИШЛО', data_server)
+    
     data_movement = str(data_server[0])
     data_object = str(data_server[1])
     data_key = bool(data_server[2]) #Есть ли у игрока ключ
@@ -203,6 +209,20 @@ def visual_server(screen, width, height, data_server, objects_server, objects_cl
         door = Door(screen, x_server, y_server, l, (120, 50, 0), data_object.lower())
         objects_server[N - 1].append(door)
         door.draw()
+    elif data_object == 'G': #Умер второй игрок
+        x_client = width * 1 / 4
+        y_client = height * 2 / 3
+        revival = Revival(screen, x_client, y_client, l)
+
+        new_objects_client = []
+        new_objects_client.append(revival)
+        objects_client.append(new_objects_client)
+        pygame.draw.rect(screen, (255, 255, 255), (0, height * 1 / 3 + 5, width / 2, height * 2 / 3))
+        revival.draw()
+
+        visual_parts(width, height, objects_server, objects_client, [len(objects_client) - 2, len(objects_client) - 3],
+                     [len(objects_server) - 2, len(objects_server) - 3])
+        #FixMe: надо реализовать смерть КЛИЕНТА в этом случае
 
     #Сдвигаем изображение, если первый символ указывает направление или что там дверь, а игрок с ключом     
     if data_movement == 'W': y_server -= 20
@@ -225,26 +245,12 @@ def visual_server(screen, width, height, data_server, objects_server, objects_cl
         x_server += 20
         final_frame(screen, width, height, 0)
         final_flag = 1
-    elif data_movement == 'G': #Умер второй игрок
-        x_client = width * 1 / 4
-        y_client = height * 2 / 3
-        revival = Revival(screen, x_client, y_client, l)
-
-        new_objects_client = []
-        new_objects_client.append(revival)
-        objects_client.append(new_objects_client)
-        pygame.draw.rect(screen, (255, 255, 255), (0, height * 1 / 3 + 5, width / 2, height * 2 / 3))
-        revival.draw()
-
-        visual_parts(width, height, objects_server, objects_client, [len(objects_client) - 2, len(objects_client) - 3],
-                     [len(objects_server) - 2, len(objects_server) - 3])
-        #FixMe: надо реализовать смерть КЛИЕНТА в этом случае
     else: #Не переместились
         data_object = data_movement
         #Отрисовываем то, что в текущей клетке
 
     if final_flag == 0:
-
+        
         if data_object == 'K':
             key = Key(screen, x_server, y_server, l)
             objects_server[N - 1].append(key)
@@ -316,7 +322,8 @@ def visual_server(screen, width, height, data_server, objects_server, objects_cl
 
         pygame.display.update()
 
-    return screen, objects_server, objects_client, x_server, y_server, flag, final_flag
+    return screen, objects_server, objects_client, x_server, y_server, x_client, y_client, flag, final_flag
+
 
 
 def visual_parts(width, height, objects_server, objects_client, client_parts, server_parts):

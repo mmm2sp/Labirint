@@ -253,7 +253,7 @@ def visual_server(screen, width, height, data_server, objects_server, objects_cl
             objects_server[N-1].append(exp)
             exp.draw()
 
-        elif data_object == 'M': #FixMe добавить m - мертвого минотавра
+        elif data_object == 'M':
             minotaur = Minotaur(screen, x_server, y_server, l)
             objects_server[N-1].append(minotaur)
 

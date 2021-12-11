@@ -42,12 +42,16 @@ screen.fill((255, 255, 255))
 width = 1000
 height = 600
 
-conn = 0
-while conn == 0:
+while not finished:
     pygame.time.Clock().tick(30)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             finished = True
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            x = event.pos[0]
+            y = event.pos[1]
+            if (x > width/2-200) and (x<width/2+200) and(y>height/2-100) and (y<height/2+100):
+                finished = True
         menu_server(screen, width, height, IP)
 
 Port = 9090

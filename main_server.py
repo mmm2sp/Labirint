@@ -20,6 +20,7 @@ def serv_step(request):
     # запрос в матрицу лабиринта для совершения хода
     data_client, лабиринт, игроки = игроки[1].move(request, лабиринт, игроки)
     # визуализация хода
+    say_to_client_about_serv_step(data_client, conn)
     Return_client = visual_player(screen, width, height, data_client, objects_player,
                                   objects_enemy, x_player, y_player, x_enemy, y_enemy)
     enemy_step(screen, width, height)
@@ -40,8 +41,8 @@ def serv_step(request):
                                                      [len(objects_enemy) - 2, len(objects_enemy) - 3])
         key_and_knifes(screen, width, height, data_client, data_server)
     # сообщение сопернику о ходе
-    say_to_client_about_serv_step(data_client, conn)
     return Return_client[8]
+
 
 IP = socket.gethostbyname(socket.gethostname())
 
@@ -139,7 +140,7 @@ while not finished:
                     finished = True
 
     # ход соперника
-    if step_flag == 0:
+    if step_flag == 0 and (finished is False):
         # обработка хода соперника, аналогично ходу игрока
 
         data_server, лабиринт, игроки = answer_to_client_step(лабиринт, conn,

@@ -129,7 +129,7 @@ while not finished:
                     finished = True
 
     # ход соперника, аналогичен ходу игрока
-    if step_flag == 1:
+    if step_flag == 1 and (finished is False):
         data_server = catch_server_steps(sock)
         Return_server = visual_enemy(screen, width, height, data_server, objects_enemy, objects_player,
                                      x_enemy, y_enemy, x_player, y_player)

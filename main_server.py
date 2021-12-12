@@ -160,7 +160,7 @@ while not finished:
         if Return_server[8] == 0:
             objects_enemy, objects_player = visual_parts(width, height, objects_enemy, objects_player,
                                                          [len(objects_player) - 2, len(objects_player) - 3],
-                                                         [len(objects_player) - 2, len(objects_player) - 3])
+                                                         [len(objects_enemy) - 2, len(objects_enemy) - 3])
             key_and_knifes(screen, width, height, data_client, data_server)
         if Return_server[8] == 1:
             finished = True

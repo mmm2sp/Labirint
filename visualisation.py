@@ -2,8 +2,8 @@ from basic_pictures import *
 import pygame
 
 
-def visual_client(screen, width, height, data_client, objects_client, objects_server, x_client, y_client,
-                  x_server, y_server):
+def visual_player(screen, width, height, data_player, objects_player, objects_enemy, x_player, y_player,
+                  x_enemy, y_enemy):
     '''
     Функция получает: данные об экране(высота, ширина),
     информацию, которую передали игроку-клиенту,
@@ -15,138 +15,146 @@ def visual_client(screen, width, height, data_client, objects_client, objects_se
     screen.fill((255, 255, 255))
     l = 20
 
-    v_client = 0
-    h_client = 0
-    data_movement = str(data_client[0])
-    data_object = str(data_client[1])
-    data_key = bool(data_client[2]) #Есть ли у игрока ключ
-    data_bullets = int(data_client[3]) #Количество пуль у игрока
+    v_player = 0
+    h_player = 0
+
+    print('ПРИШЛО', data_player)
+
+    data_movement = str(data_player[0])
+    data_object = str(data_player[1])
+    data_key = bool(data_player[2])  # Есть ли у игрока ключ
+    data_bullets = int(data_player[3])  # Количество пуль у игрока
 
     flag = 0
     final_flag = 0
 
-    N = len(objects_client)
+    N = len(objects_player)
 
-    for obj in objects_client[N-1]:
+    for obj in objects_player[N - 1]:
         obj.draw()
 
-    #Сначала проверяем второй символ: действия, если стена или дверь
+    # Сначала проверяем второй символ: действия, если стена или дверь
     set_move = {'W', 'A', 'S', 'D'}
     if data_object in set_move:
-        wall = Wall(screen, x_client, y_client, l, (0, 0, 0), data_object.lower())
-        objects_client[N-1].append(wall)
+        wall = Wall(screen, x_player, y_player, l, (0, 0, 0), data_object.lower())
+        objects_player[N - 1].append(wall)
         wall.draw()
     elif data_object.upper() in set_move:
-        door = Door(screen, x_client, y_client, l, (120, 50, 0), data_object.lower())
-        objects_client[N-1].append(door)
+        door = Door(screen, x_player, y_player, l, (120, 50, 0), data_object.lower())
+        objects_player[N - 1].append(door)
         door.draw()
-        
-    #Сдвигаем изображение, если первый символ указывает направление или что там дверь, а игрок с ключом   
-    if data_movement == 'W': y_client -= 20
-    elif data_movement == 'S': y_client += 20
-    elif data_movement == 'A': x_client -= 20
-    elif data_movement == 'D': x_client += 20
+    # залазим на часть экрана, где отрисовывается соперник
+    if data_object == 'G':  # Умер второй игрок
+
+        x_enemy = width * 3 / 4
+        y_enemy = height * 2 / 3
+        revival = Revival(screen, x_enemy, y_enemy, l)
+        # рисуем по-новому
+        new_objects_enemy = []
+        new_objects_enemy.append(revival)
+        objects_enemy.append(new_objects_enemy)
+        pygame.draw.rect(screen, (255, 255, 255),
+                         (width / 2 + 5, height / 3 + 5, width / 2 - 5,
+                          height * 2 / 3))  # здесь может быть ошибка с флажком
+        revival.draw()
+
+        visual_parts(width, height, objects_enemy, objects_player, [len(objects_player) - 2, len(objects_player) - 3],
+                     [len(objects_enemy) - 2, len(objects_enemy) - 3])
+        # что делать с flag
+
+    # Сдвигаем изображение, если первый символ указывает направление или что там дверь, а игрок с ключом
+    if data_movement == 'W':
+        y_player -= 20
+    elif data_movement == 'S':
+        y_player += 20
+    elif data_movement == 'A':
+        x_player -= 20
+    elif data_movement == 'D':
+        x_player += 20
     elif data_movement == 'w':
-        y_client -= 20
+        y_player -= 20
         final_frame(screen, width, height, 1)
         final_flag = 1
     elif data_movement == 's':
-        y_client += 20
+        y_player += 20
         final_frame(screen, width, height, 1)
         final_flag = 1
     elif data_movement == 'a':
-        x_client -= 20
+        x_player -= 20
         final_frame(screen, width, height, 1)
         final_flag = 1
     elif data_movement == 'd':
-        x_client += 20
+        x_player += 20
         final_frame(screen, width, height, 1)
         final_flag = 1
-    # залазим на часть экрана, где отрисовывается соперник
-    elif data_movement == 'G': #Умер второй игрок
-
-        x_server = width * 3 / 4
-        y_server = height * 2 / 3
-        revival = Revival(screen, x_server, y_server, l)
-        # рисуем по-новому
-        new_objects_server = []
-        new_objects_server.append(revival)
-        objects_server.append(new_objects_server)
-        pygame.draw.rect(screen, (255, 255, 255),
-                         (width / 2 + 5, height / 3 + 5, width / 2 - 5, height * 2 / 3))  # здесь может быть ошибка с флажком
-        revival.draw()
-
-        visual_parts(width, height, objects_server, objects_client, [len(objects_client)-2, len(objects_client)-3],
-                                                                    [len(objects_server)-2, len(objects_server)-3])
-        # что делать с flag
-    else: #Не переместились
+    else:  # Не переместились
         data_object = data_movement
-        #Отрисовываем то, что в текущей клетке
+        # Отрисовываем то, что в текущей клетке
 
     if final_flag == 0:
 
         if data_object == 'K':
-            key = Key(screen, x_client, y_client, l)
-            objects_client[N-1].append(key)
+            key = Key(screen, x_player, y_player, l)
+            objects_player[N - 1].append(key)
             key.draw()
         elif data_object == 'R':
-            revival = Revival(screen, x_client, y_client, l)
-            objects_client[N-1].append(revival)
+            revival = Revival(screen, x_player, y_player, l)
+            objects_player[N - 1].append(revival)
             revival.draw()
         # разобраться отдельно
         elif data_object == 'P':
-            portal = Portal(screen, x_client, y_client, l)
-            objects_client[N-1].append(portal)
-            x_client = width / 4
-            y_client = height * 2 / 3
+            portal = Portal(screen, x_player, y_player, l)
+            objects_player[N - 1].append(portal)
+            x_player = width / 4
+            y_player = height * 2 / 3
 
-            portal = Portal(screen, x_client, y_client, l)
-            new_objects_client = []
-            new_objects_client.append(portal)
-            objects_client.append(new_objects_client)
+            portal = Portal(screen, x_player, y_player, l)
+            new_objects_player = []
+            new_objects_player.append(portal)
+            objects_player.append(new_objects_player)
             pygame.draw.rect(screen, (255, 255, 255), (0, height / 3 + 5, width / 2 - 5, height * 2 / 3))
             portal.draw()
             # создали навую рисовалку, нужно об этом как-то сообщить
             flag = 1
 
         elif data_object == 'E':
-            armory = Armory(screen, x_client, y_client, l)
-            objects_client[N-1].append(armory)
+            armory = Armory(screen, x_player, y_player, l)
+            objects_player[N - 1].append(armory)
             armory.draw()
         elif data_object == 'N':
-            exp = Explored_square(screen, x_client, y_client, l)
-            objects_client[N-1].append(exp)
+            exp = Explored_square(screen, x_player, y_player, l)
+            objects_player[N - 1].append(exp)
             exp.draw()
 
-        #разобраться отдельно
+        # разобраться отдельно
         elif data_object == 'M':
-            minotaur = Minotaur(screen, x_client, y_client, l)
-            objects_client[N-1].append(minotaur)
+            minotaur = Minotaur(screen, x_player, y_player, l)
+            objects_player[N - 1].append(minotaur)
 
-            x_client = width * 1 / 4
-            y_client = height * 2 / 3
-            revival = Revival(screen, x_client, y_client, l)
+            x_player = width * 1 / 4
+            y_player = height * 2 / 3
+            revival = Revival(screen, x_player, y_player, l)
             # рисуем по-новому
-            new_objects_client = []
-            new_objects_client.append(revival)
-            objects_client.append(new_objects_client)
-            pygame.draw.rect(screen, (255, 255, 255), (0, height/3 + 5, width/2 - 5, height*2 /3))
+            new_objects_player = []
+            new_objects_player.append(revival)
+            objects_player.append(new_objects_player)
+            pygame.draw.rect(screen, (255, 255, 255), (0, height / 3 + 5, width / 2 - 5, height * 2 / 3))
             revival.draw()
             # создали навую рисовалку, нужно об этом как-то сообщить
             flag = 1
         elif data_object == 'm':
-            dead_minotaur = Dead_minotaur(screen, x_client, y_client, l)
-            objects_client[N-1].append(dead_minotaur)
+            dead_minotaur = Dead_minotaur(screen, x_player, y_player, l)
+            objects_player[N - 1].append(dead_minotaur)
             dead_minotaur.draw()
 
-        player = Player(screen, x_client, y_client, l)
+        player = Player(screen, x_player, y_player, l)
         player.draw()
 
-        N1 = len(objects_server)
-        for obj in objects_server[N1-1]:
-                obj.draw()
+        N1 = len(objects_enemy)
+        for obj in objects_enemy[N1 - 1]:
+            obj.draw()
 
-        another_player = Another_Player(screen, x_server, y_server, l)
+        another_player = Another_Player(screen, x_enemy, y_enemy, l)
         another_player.draw()
 
         boundaries = Boundaries(screen, width, height)
@@ -160,11 +168,11 @@ def visual_client(screen, width, height, data_client, objects_client, objects_se
 
         pygame.display.update()
 
-    return screen, objects_client, objects_server, x_client, y_client, flag, final_flag
+    return screen, objects_player, objects_enemy, x_player, y_player, x_enemy, y_enemy, flag, final_flag
 
 
-def visual_server(screen, width, height, data_server, objects_server, objects_client, x_server, y_server,
-                  x_client, y_client):
+def visual_enemy(screen, width, height, data_enemy, objects_enemy, objects_player, x_enemy, y_enemy,
+                 x_player, y_player):
     '''
     Функция получает: данные об экране(высота, ширина),
     информацию, которую передали игроку-серверу,
@@ -179,130 +187,134 @@ def visual_server(screen, width, height, data_server, objects_server, objects_cl
     final_flag = 0
     flag = 0
     pygame.time.Clock().tick(60)
-    v_server = 0
-    h_server = 0
-    data_movement = str(data_server[0])
-    data_object = str(data_server[1])
-    data_key = bool(data_server[2]) #Есть ли у игрока ключ
-    data_bullets = int(data_server[3]) #Количество пуль у игрока
+    v_enemy = 0
+    h_enemy = 0
 
-    N = len(objects_server)
+    print('ПРИШЛО', data_enemy)
 
-    #for i in range(0, 6, 1):
+    data_movement = str(data_enemy[0])
+    data_object = str(data_enemy[1])
+    data_key = bool(data_enemy[2])  # Есть ли у игрока ключ
+    data_bullets = int(data_enemy[3])  # Количество пуль у игрока
 
-    for obj in objects_server[N - 1]:
+    N = len(objects_enemy)
+
+    for obj in objects_enemy[N - 1]:
         obj.draw()
 
-    #Сначала проверяем второй символ: действия, если стена или дверь
+    # Сначала проверяем второй символ: действия, если стена или дверь
     set_move = {'W', 'A', 'S', 'D'}
     if data_object in set_move:
-        wall = Wall(screen, x_server, y_server, l, (0, 0, 0), data_object.lower())
-        objects_server[N - 1].append(wall)
+        wall = Wall(screen, x_enemy, y_enemy, l, (0, 0, 0), data_object.lower())
+        objects_enemy[N - 1].append(wall)
         wall.draw()
     elif data_object.upper() in set_move:
-        door = Door(screen, x_server, y_server, l, (120, 50, 0), data_object.lower())
-        objects_server[N - 1].append(door)
+        door = Door(screen, x_enemy, y_enemy, l, (120, 50, 0), data_object.lower())
+        objects_enemy[N - 1].append(door)
         door.draw()
+    elif data_object == 'G':  # Умер второй игрок
+        x_player = width * 1 / 4
+        y_player = height * 2 / 3
+        revival = Revival(screen, x_player, y_player, l)
 
-    #Сдвигаем изображение, если первый символ указывает направление или что там дверь, а игрок с ключом     
-    if data_movement == 'W': y_server -= 20
-    elif data_movement == 'S': y_server += 20
-    elif data_movement == 'A': x_server -= 20
-    elif data_movement == 'D': x_server += 20
-    elif data_movement == 'w':
-        y_client -= 20
-        final_frame(screen, width, height, 0)
-        final_flag = 1
-    elif data_movement == 's':
-        y_server += 20
-        final_frame(screen, width, height, 0)
-        final_flag = 1
-    elif data_movement == 'a':
-        x_server -= 20
-        final_frame(screen, width, height, 0)
-        final_flag = 1
-    elif data_movement == 'd':
-        x_server += 20
-        final_frame(screen, width, height, 0)
-        final_flag = 1
-    elif data_movement == 'G': #Умер второй игрок
-        x_client = width * 1 / 4
-        y_client = height * 2 / 3
-        revival = Revival(screen, x_client, y_client, l)
-
-        new_objects_client = []
-        new_objects_client.append(revival)
-        objects_client.append(new_objects_client)
+        new_objects_player = []
+        new_objects_player.append(revival)
+        objects_player.append(new_objects_player)
         pygame.draw.rect(screen, (255, 255, 255), (0, height * 1 / 3 + 5, width / 2, height * 2 / 3))
         revival.draw()
 
-        visual_parts(width, height, objects_server, objects_client, [len(objects_client) - 2, len(objects_client) - 3],
-                     [len(objects_server) - 2, len(objects_server) - 3])
-        #FixMe: надо реализовать смерть КЛИЕНТА в этом случае
-    else: #Не переместились
+        visual_parts(width, height, objects_enemy, objects_player, [len(objects_player) - 2, len(objects_player) - 3],
+                     [len(objects_enemy) - 2, len(objects_enemy) - 3])
+
+    # Сдвигаем изображение, если первый символ указывает направление или что там дверь, а игрок с ключом
+    if data_movement == 'W':
+        y_enemy -= 20
+    elif data_movement == 'S':
+        y_enemy += 20
+    elif data_movement == 'A':
+        x_enemy -= 20
+    elif data_movement == 'D':
+        x_enemy += 20
+    elif data_movement == 'w':
+        y_player -= 20
+        final_frame(screen, width, height, 0)
+        final_flag = 1
+    elif data_movement == 's':
+        y_enemy += 20
+        final_frame(screen, width, height, 0)
+        final_flag = 1
+    elif data_movement == 'a':
+        x_enemy -= 20
+        final_frame(screen, width, height, 0)
+        final_flag = 1
+    elif data_movement == 'd':
+        x_enemy += 20
+        final_frame(screen, width, height, 0)
+        final_flag = 1
+    else:  # Не переместились
         data_object = data_movement
-        #Отрисовываем то, что в текущей клетке
+        # Отрисовываем то, что в текущей клетке
 
     if final_flag == 0:
 
         if data_object == 'K':
-            key = Key(screen, x_server, y_server, l)
-            objects_server[N - 1].append(key)
+            key = Key(screen, x_enemy, y_enemy, l)
+            objects_enemy[N - 1].append(key)
             key.draw()
         elif data_object == 'R':
-            revival = Revival(screen, x_server, y_server, l)
-            objects_server[N - 1].append(revival)
+            revival = Revival(screen, x_enemy, y_enemy, l)
+            objects_enemy[N - 1].append(revival)
             revival.draw()
         elif data_object == 'P':
-            portal = Portal(screen, x_server, y_server, l)
-            objects_server[N - 1].append(portal)
-            x_server = width * 3 / 4
-            y_server = height * 2 / 3
+            portal = Portal(screen, x_enemy, y_enemy, l)
+            objects_enemy[N - 1].append(portal)
+            x_enemy = width * 3 / 4
+            y_enemy = height * 2 / 3
 
-            portal = Portal(screen, x_server, y_server, l)
-            new_objects_server = []
-            new_objects_server.append(portal)
-            objects_server.append(new_objects_server)
+            portal = Portal(screen, x_enemy, y_enemy, l)
+            new_objects_enemy = []
+            new_objects_enemy.append(portal)
+            objects_enemy.append(new_objects_enemy)
             pygame.draw.rect(screen, (255, 255, 255), (width / 2 + 5, height * 1 / 3 + 5, width / 2, height * 2 / 3))
             portal.draw()
             flag = 1
 
         elif data_object == 'E':
-            armory = Armory(screen, x_server, y_server, l)
-            objects_server[N-1].append(armory)
+            armory = Armory(screen, x_enemy, y_enemy, l)
+            objects_enemy[N - 1].append(armory)
             armory.draw()
         elif data_object == 'N':
-            exp = Explored_square(screen, x_server, y_server, l)
-            objects_server[N-1].append(exp)
+            exp = Explored_square(screen, x_enemy, y_enemy, l)
+            objects_enemy[N - 1].append(exp)
             exp.draw()
 
         elif data_object == 'M':
-            minotaur = Minotaur(screen, x_server, y_server, l)
-            objects_server[N-1].append(minotaur)
+            minotaur = Minotaur(screen, x_enemy, y_enemy, l)
+            objects_enemy[N - 1].append(minotaur)
 
-            x_server = width * 3 / 4
-            y_server = height * 2 / 3
-            revival = Revival(screen, x_server, y_server, l)
+            x_enemy = width * 3 / 4
+            y_enemy = height * 2 / 3
+            revival = Revival(screen, x_enemy, y_enemy, l)
 
-            new_objects_server = []
-            new_objects_server.append(revival)
-            objects_server.append(new_objects_server)
-            pygame.draw.rect(screen, (255, 255, 255), (width / 2 + 5, height * 1 /3 + 5, width/2, height * 2 / 3))
+            new_objects_enemy = []
+            new_objects_enemy.append(revival)
+            objects_enemy.append(new_objects_enemy)
+            pygame.draw.rect(screen, (255, 255, 255), (width / 2 + 5, height * 1 / 3 + 5, width / 2, height * 2 / 3))
             revival.draw()
             flag = 1
         elif data_object == 'm':
-            dead_minotaur = Dead_minotaur(screen, x_server, y_server, l)
-            objects_server[N-1].append(dead_minotaur)
+            dead_minotaur = Dead_minotaur(screen, x_enemy, y_enemy, l)
+            objects_enemy[N - 1].append(dead_minotaur)
             dead_minotaur.draw()
 
-        another_player = Another_Player(screen, x_server, y_server, l)
+        another_player = Another_Player(screen, x_enemy, y_enemy, l)
         another_player.draw()
 
-        N1 = len(objects_client)
-        for obj in objects_client[N1 - 1]:
+        N1 = len(objects_player)
+        for obj in objects_player[N1 - 1]:
             obj.draw()
 
-        player = Player(screen, x_client, y_client, l)
+        player = Player(screen, x_player, y_player, l)
         player.draw()
 
         boundaries = Boundaries(screen, width, height)
@@ -311,74 +323,80 @@ def visual_server(screen, width, height, data_server, objects_server, objects_cl
         Arrow_botton1 = Arrow_botton(screen, width, height, 7 / 480 * width)
         Arrow_botton1.draw()
 
-        Arrow_botton2 = Arrow_botton(screen, width, height,  247/ 480 * width)
+        Arrow_botton2 = Arrow_botton(screen, width, height, 247 / 480 * width)
         Arrow_botton2.draw()
 
         pygame.display.update()
 
-    return screen, objects_server, objects_client, x_server, y_server, flag, final_flag
+    return screen, objects_enemy, objects_player, x_enemy, y_enemy, x_player, y_player, flag, final_flag
 
 
-def visual_parts(width, height, objects_server, objects_client, client_parts, server_parts):
-
-    # рисование левого куска клиента
-    if (client_parts[0] >= 0) and (client_parts[0] <= len(objects_client) - 1):
-        x1 = objects_client[client_parts[0]][0].x
-        y1 = objects_client[client_parts[0]][0].y
+def visual_parts(width, height, objects_enemy, objects_player, player_parts, enemy_parts):
+    '''
+    Функция рисует уже открытые куски карты в верхней части экрана в количестве 2
+    :param player_parts: массив из двух элементов, который укфзывает, какие куски нужно рисовать у игрока
+    :param enemy_parts: массив из двух элементов, который укфзывает, какие куски нужно рисовать у противника
+    '''
+    # рисование левого куска игрока
+    if (player_parts[0] >= 0) and (player_parts[0] <= len(objects_player) - 1):
+        x1 = objects_player[player_parts[0]][0].x
+        y1 = objects_player[player_parts[0]][0].y
         dx1 = 3 / 8 * width - x1
         dy1 = 1 / 6 * height - y1
-        for i in objects_client[client_parts[0]]:
+        for i in objects_player[player_parts[0]]:
             i.x += dx1
             i.y += dy1
             i.draw()
     # правого
-    if client_parts[1] >= 0 and (client_parts[1] <= len(objects_client) - 1):
-        x2 = objects_client[client_parts[1]][0].x
-        y2 = objects_client[client_parts[1]][0].y
+    if player_parts[1] >= 0 and (player_parts[1] <= len(objects_player) - 1):
+        x2 = objects_player[player_parts[1]][0].x
+        y2 = objects_player[player_parts[1]][0].y
         dx2 = 1 / 8 * width - x2
         dy2 = 1 / 6 * height - y2
-        for i in objects_client[client_parts[1]]:
+        for i in objects_player[player_parts[1]]:
             i.x += dx2
             i.y += dy2
             i.draw()
 
-    # рисование левого у сервера
-    if server_parts[0] >= 0 and (server_parts[0] <= len(objects_server) - 1):
-        x3 = objects_server[server_parts[0]][0].x
-        y3 = objects_server[server_parts[0]][0].y
+    # рисование левого у противника
+    if enemy_parts[0] >= 0 and (enemy_parts[0] <= len(objects_enemy) - 1):
+        x3 = objects_enemy[enemy_parts[0]][0].x
+        y3 = objects_enemy[enemy_parts[0]][0].y
         dx3 = 7 / 8 * width - x3
         dy3 = 1 / 6 * height - y3
-        for i in objects_server[server_parts[0]]:
+        for i in objects_enemy[enemy_parts[0]]:
             i.x += dx3
             i.y += dy3
             i.draw()
 
     # правого
-    if server_parts[1] >= 0 and (server_parts[1] <= len(objects_server) - 1):
-        x4 = objects_server[server_parts[1]][0].x
-        y4 = objects_server[server_parts[1]][0].y
+    if enemy_parts[1] >= 0 and (enemy_parts[1] <= len(objects_enemy) - 1):
+        x4 = objects_enemy[enemy_parts[1]][0].x
+        y4 = objects_enemy[enemy_parts[1]][0].y
         dx4 = 5 / 8 * width - x4
         dy4 = 1 / 6 * height - y4
-        for i in objects_server[server_parts[1]]:
+        for i in objects_enemy[enemy_parts[1]]:
             i.x += dx4
             i.y += dy4
             i.draw()
 
     pygame.display.update()
-    return objects_server, objects_client
+    return objects_enemy, objects_player
+
 
 def menu_server(screen, width, height, IP):
     '''
     Функция рисует стартовый экран игрока, создающего сервер
     '''
-    screen.fill((255,255,255))
-    screen.blit(pygame.font.Font(None, 50).render(str('Ваш IP-адрес: ')+str(IP), True, (0, 0, 0)), (width//12*2, height//20))
-    Opened_door(screen, width//8, height//5, 100).draw()
-    Button(screen, width/2, height/2).draw()
-    Minotaur(screen, width*5//6, height//4, 200).draw()
-    Key(screen, width*5.25//6, height*3//4, 200).draw()
-    x = width//24*4
-    y = height*5.5//8
+    screen.fill((255, 255, 255))
+    screen.blit(pygame.font.Font(None, 50).render(str('Ваш IP-адрес: ') + str(IP), True, (0, 0, 0)),
+                (width // 12 * 2, height // 20))
+    Opened_door(screen, width // 8, height // 5, 100).draw()
+    Button(screen, width / 2, height / 2).draw()
+    Minotaur(screen, width * 5 // 6, height // 4, 200).draw()
+    Key(screen, width * 5.25 // 6, height * 3 // 4, 200).draw()
+    x = width // 24 * 4
+    y = height * 5.5 // 8
     Key(screen, x, y, 40).draw()
     Wall(screen, x, y, 40, (0, 0, 0), 'w').draw()
     Wall(screen, x, y, 40, (0, 0, 0), 'a').draw()
@@ -406,18 +424,19 @@ def menu_server(screen, width, height, IP):
     Wall(screen, x + 80, y + 80, 40, (0, 0, 0), 'd').draw()
     Wall(screen, x, y + 80, 40, (0, 0, 0), 'd').draw()
     pygame.display.update()
-    
+
+
 def menu_client(screen, width, height):
     '''
     Функция рисует стартовый экран игрока-клиента, подключающегося к серверу
     '''
-    screen.fill((255,255,255))
-    Opened_door(screen, width//8, height//5, 100).draw()
-    Typing_window(screen, width/2, height/2).draw()
-    Minotaur(screen, width*5//6, height//4, 200).draw()
-    Key(screen, width*5.25//6, height*3//4, 200).draw()
-    x = width//24*4
-    y = height*5.5//8
+    screen.fill((255, 255, 255))
+    Opened_door(screen, width // 8, height // 5, 100).draw()
+    Typing_window(screen, width / 2, height / 2).draw()
+    Minotaur(screen, width * 5 // 6, height // 4, 200).draw()
+    Key(screen, width * 5.25 // 6, height * 3 // 4, 200).draw()
+    x = width // 24 * 4
+    y = height * 5.5 // 8
     Key(screen, x, y, 40).draw()
     Wall(screen, x, y, 40, (0, 0, 0), 'w').draw()
     Wall(screen, x, y, 40, (0, 0, 0), 'a').draw()
@@ -445,6 +464,7 @@ def menu_client(screen, width, height):
     Wall(screen, x + 80, y + 80, 40, (0, 0, 0), 'd').draw()
     Wall(screen, x, y + 80, 40, (0, 0, 0), 'd').draw()
     pygame.display.update()
+
 
 def final_frame(screen, width, height, situation):
     '''
@@ -454,94 +474,98 @@ def final_frame(screen, width, height, situation):
     '''
     if situation == 0:
         winnercolor = (100, 100, 255)
-        losercolor =(0, 200, 0)
+        losercolor = (0, 200, 0)
         f = pygame.font.Font(None, 150)
         text = f.render('DEFEAT...', True, (255, 0, 0))
-        
+
     if situation == 1:
         winnercolor = (0, 200, 0)
-        losercolor =(100, 100, 255)
+        losercolor = (100, 100, 255)
         f = pygame.font.Font(None, 150)
         text = f.render('VICTORY!', True, (0, 200, 0))
-        
-    screen.fill((255,255,255))
-    Men(screen, width*3//4, height*2.5//8, winnercolor).draw_body()
-    Men(screen, width*3//4, height*2.5//8, winnercolor).draw_legs_stand()
-    Closed_door(screen, width//4, height//5, width//4).draw()
-    screen.blit(text,(width*2.5//8, height//20))
-    pygame.display.update()
-    pygame.time.Clock().tick(1)
-    
-    screen.fill((255,255,255))
-    Closed_door(screen, width//4, height//5, width//4).draw()
-    Men(screen, width*4//8, height*2.5//8, winnercolor).draw_body()
-    Men(screen, width*4//8, height*2.5//8, winnercolor).draw_legs_stand()
-    screen.blit(text,(width*2.5//8, height//20))
+
+    screen.fill((255, 255, 255))
+    Men(screen, width * 3 // 4, height * 2.5 // 8, winnercolor).draw_body()
+    Men(screen, width * 3 // 4, height * 2.5 // 8, winnercolor).draw_legs_stand()
+    Closed_door(screen, width // 4, height // 5, width // 4).draw()
+    screen.blit(text, (width * 2.5 // 8, height // 20))
     pygame.display.update()
     pygame.time.Clock().tick(1)
 
-    screen.fill((255,255,255))
-    Fully_opened_door(screen, width//4, height//5, width//4).draw()
-    Men(screen, width*3//8, height*2.5//8, winnercolor).draw_body()
-    Men(screen, width*3//8, height*2.5//8, winnercolor).draw_legs_stand()
-    screen.blit(text,(width*2.5//8, height//20))
+    screen.fill((255, 255, 255))
+    Closed_door(screen, width // 4, height // 5, width // 4).draw()
+    Men(screen, width * 4 // 8, height * 2.5 // 8, winnercolor).draw_body()
+    Men(screen, width * 4 // 8, height * 2.5 // 8, winnercolor).draw_legs_stand()
+    screen.blit(text, (width * 2.5 // 8, height // 20))
     pygame.display.update()
     pygame.time.Clock().tick(1)
 
-    screen.fill((255,255,255))
-    Opened_door(screen, width//4, height//5, width//4).draw()
-    screen.blit(text,(width*2.5//8, height//20))
+    screen.fill((255, 255, 255))
+    Fully_opened_door(screen, width // 4, height // 5, width // 4).draw()
+    Men(screen, width * 3 // 8, height * 2.5 // 8, winnercolor).draw_body()
+    Men(screen, width * 3 // 8, height * 2.5 // 8, winnercolor).draw_legs_stand()
+    screen.blit(text, (width * 2.5 // 8, height // 20))
     pygame.display.update()
     pygame.time.Clock().tick(1)
 
-    screen.fill((255,255,255))
+    screen.fill((255, 255, 255))
+    Opened_door(screen, width // 4, height // 5, width // 4).draw()
+    screen.blit(text, (width * 2.5 // 8, height // 20))
+    pygame.display.update()
+    pygame.time.Clock().tick(1)
+
+    screen.fill((255, 255, 255))
     Corner(screen, width, height).draw()
-    Men(screen, width*5//8, height*2.5//8, losercolor).draw_body()
-    Men(screen, width*5//8, height*2.5//8, losercolor).draw_legs_stand()
-    screen.blit(text,(width*2.5//8, height//20))
+    Men(screen, width * 5 // 8, height * 2.5 // 8, losercolor).draw_body()
+    Men(screen, width * 5 // 8, height * 2.5 // 8, losercolor).draw_legs_stand()
+    screen.blit(text, (width * 2.5 // 8, height // 20))
     pygame.display.update()
     pygame.time.Clock().tick(1)
 
-    screen.fill((255,255,255))
+    screen.fill((255, 255, 255))
     Corner(screen, width, height).draw()
-    Men(screen, width*5//8, height*3//8, losercolor).draw_body()
-    Men(screen, width*5//8, height*3//8, losercolor).draw_legs_sit()
-    screen.blit(text,(width*2.5//8, height//20))
+    Men(screen, width * 5 // 8, height * 3 // 8, losercolor).draw_body()
+    Men(screen, width * 5 // 8, height * 3 // 8, losercolor).draw_legs_sit()
+    screen.blit(text, (width * 2.5 // 8, height // 20))
     pygame.display.update()
     pygame.time.Clock().tick(1)
 
-    screen.fill((255,255,255))
+    screen.fill((255, 255, 255))
     Corner(screen, width, height).draw()
-    Men(screen, width*5//8, height*3//8, (230, 230, 230)).draw_body()
-    Men(screen, width*5//8, height*3//8, (230, 230, 230)).draw_legs_sit()
-    Web(screen, width//4, height//2, 100).draw()
-    Web(screen, width//8*6, height//5*3, 50).draw()
-    Skull(screen, width*5//8, height*3//8, 150).draw()
-    screen.blit(text,(width*2.5//8, height//20))
+    Men(screen, width * 5 // 8, height * 3 // 8, (230, 230, 230)).draw_body()
+    Men(screen, width * 5 // 8, height * 3 // 8, (230, 230, 230)).draw_legs_sit()
+    Web(screen, width // 4, height // 2, 100).draw()
+    Web(screen, width // 8 * 6, height // 5 * 3, 50).draw()
+    Skull(screen, width * 5 // 8, height * 3 // 8, 150).draw()
+    screen.blit(text, (width * 2.5 // 8, height // 20))
     pygame.display.update()
     pygame.time.Clock().tick(1)
 
-def key_and_knifes(screen, width, height, data_client, data_server):
-    data_key_client = int(data_client[2]) #Есть ли у КЛИЕНТА ключ
-    data_bullets_client = int(data_client[3]) #Количество пуль у КЛИЕНТА
-    data_key_server = int(data_server[2]) #Есть ли у СЕРВЕРА ключ
-    data_bullets_server = int(data_server[3]) #Количество пуль у СЕРВЕРА
-    if data_key_client == 1:
-        Getted_key(screen, width*7//16, height*7//8, 40).draw()
-    if data_key_server == 1:
-        Getted_key(screen, width*15//16, height*7//8, 40).draw()
-    x = width//16
-    y = height*7//8
-    for i in range (data_bullets_client):
+
+def key_and_knifes(screen, width, height, data_player, data_enemy):
+    data_key_player = int(data_player[2])  # Есть ли у игрока ключ
+    data_bullets_player = int(data_player[3])  # Количество пуль у игрока
+    data_key_enemy = int(data_enemy[2])  # Есть ли у противника ключ
+    data_bullets_enemy = int(data_enemy[3])  # Количество пуль у противника
+    if data_key_player == 1:
+        Getted_key(screen, width * 7 // 16, height * 7 // 8, 40).draw()
+    if data_key_enemy == 1:
+        Getted_key(screen, width * 15 // 16, height * 7 // 8, 40).draw()
+    x = width // 16
+    y = height * 7 // 8
+    for i in range(data_bullets_player):
         Knife(screen, x, y, 40).draw()
-        x+=40
-    x = width*9//16
-    for i in range (data_bullets_server):
+        x += 40
+    x = width * 9 // 16
+    for i in range(data_bullets_enemy):
         Knife(screen, x, y, 40).draw()
-        x+=40
+        x += 40
+    pygame.display.update()
 
-def Your_step(screen, width, height):
-    Flag(screen, width//4, height//3 + 40, 60, (0, 220, 0)).draw()
 
-def Opponent_step(screen, width, height):
-    Flag(screen, width//4*3, height//3 + 40, 60, (100, 100, 255)).draw()
+def player_step(screen, width, height):
+    Flag(screen, width // 4, height // 3 + 40, 60, (0, 220, 0)).draw()
+
+
+def enemy_step(screen, width, height):
+    Flag(screen, width // 4 * 3, height // 3 + 40, 60, (100, 100, 255)).draw()

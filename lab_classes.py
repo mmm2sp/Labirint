@@ -1,5 +1,6 @@
 class Cell:
-    '''Класс клетка, хранящий всю необходимую информацию о клетке лабиринта'''    
+    '''Класс клетка, хранящий всю необходимую информацию о клетке лабиринта'''
+
     def __init__(self, coords, lab, walls_v, walls_h):
         '''
         Заполняет параметры в соответствии с полученными данными
@@ -11,10 +12,10 @@ class Cell:
         '''
         self.coords = coords
         self.walls = [['#', '-', '-'], ['|', '#', '#'], ['|', '#', '#']]
-#walls[x][y] задает нужные стены, где x, y отсчитываются вправо и вниз соответственно из данной клетки
+        # walls[x][y] задает нужные стены, где x, y отсчитываются вправо и вниз соответственно из данной клетки
         self.equipment = []
         self.heroes = []
-        
+
         self.typ = lab[coords[0]][coords[1]]
         if self.typ == '0':
             self.typ = 'N'
@@ -25,7 +26,7 @@ class Cell:
         if self.typ[0] == 'G':
             self.heroes.append(self.typ)
             self.typ = 'N'
-            
+
         self.walls[0][-1] = walls_h[coords[0]][coords[1]]
         self.walls[0][1] = walls_h[coords[0]][coords[1] + 1]
         self.walls[-1][0] = walls_v[coords[0]][coords[1]]
@@ -54,7 +55,7 @@ class Cell:
                 if player.key == True:
                     self.equipment.append('k')
                 coords = find_in_lab(labirint, 'R')
-                player.kill(coords)            
+                player.kill(coords)
                 labirint[coords[0]][coords[1]].heroes.append(hero)
                 answer = answer[0] + 'G'
         self.heroes = []
@@ -73,7 +74,7 @@ class Cell:
         remaining_bullets = []
         for obj in self.equipment:
             if obj == 'b':
-                if player.num_bullets < 3: 
+                if player.num_bullets < 3:
                     player.num_bullets += 1
                 else:
                     remaining_bullets.append(obj)
@@ -81,14 +82,13 @@ class Cell:
                 player.key = True
         self.equipment = remaining_bullets
         return players
-            
 
 
 class Player:
     '''Класс игрока, хранящий всю необходимую информацию о нем'''
     num_bullets = 0
     key = False
-    
+
     def __init__(self, num, coords):
         '''
         Заполняет параметры в соответствии с полученными данными
@@ -128,7 +128,7 @@ class Player:
                 cell_typ = cell.typ
                 if cell_typ >= '1' and cell_typ <= '9': cell_typ = 'P'
                 answer = cell_typ + '-'
-        else: #Стена
+        else:  # Стена
             cell_typ = cell.typ
             if cell_typ >= '1' and cell_typ <= '9': cell_typ = 'P'
             answer = cell_typ + '_'
@@ -142,7 +142,7 @@ class Player:
         self.num_bullets = 0
         self.key = False
         self.coords = list(coords)
-        
+
     def fire(self, dr, labirint, players):
         '''
         Реализует попытку выстрела в соседнюю клетку в заданном направлении
@@ -159,7 +159,7 @@ class Player:
         answer = labirint[self.coords[0]][self.coords[1]].typ
         if answer >= '1' and answer <= '9': answer = 'P'
         answer = answer + 'N'
-        
+
         if self.num_bullets > 0:
             self.num_bullets -= 1
             if labirint[self.coords[0]][self.coords[1]].walls[dr[0]][dr[1]] == '*':
@@ -167,7 +167,6 @@ class Player:
                 y = self.coords[1] + dr[1]
                 answer, labirint, players = labirint[x][y].kill(answer, labirint, players)
         return answer, labirint, players
-
 
     def autoshift(self, labirint):
         '''
@@ -182,7 +181,7 @@ class Player:
         cell = labirint[self.coords[0]][self.coords[1]]
         if cell.typ == 'E':
             self.num_bullets = 3
-            
+
         elif cell.typ == 'M':
             for i in range(self.num_bullets):
                 cell.equipment.append('b')
@@ -193,7 +192,7 @@ class Player:
             hero = 'G' + str(self.num)
             labirint[coords[0]][coords[1]].heroes.append(hero)
             cell.heroes.remove(hero)
-            
+
         elif cell.typ >= '1' and cell.typ <= '9':
             hero = 'G' + str(self.num)
             cell.heroes.remove(hero)
@@ -206,7 +205,7 @@ class Player:
             cell = labirint[self.coords[0]][self.coords[1]]
             cell.heroes.append(hero)
         return labirint
-            
+
     def move(self, direction, labirint, players):
         '''
         Осуществляет ход
@@ -259,10 +258,11 @@ def find_in_lab(labirint, typ):
     '''
     coords = [-1, -1]
     for string in labirint:
-            for cell in string:
-                if cell.typ == typ:
-                    coords = cell.coords
+        for cell in string:
+            if cell.typ == typ:
+                coords = cell.coords
     return coords
+
 
 if __name__ == "__main__":
     print("This module is not for direct call!")

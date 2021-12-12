@@ -2,21 +2,25 @@ from client2 import *
 from visualisation import *
 import pygame
 
+
 def client_step(request):
     '''
-    FixMe: Нужна документ-строка!!!!!!!!
+    Функция обрабатывает ход клиента: отправляет запрос на сервер о своем ходе,
+    получает ответ от сервера, рисует изменения в случае удачного хода
     Args:
-        request: запрос на сервер
+        request: запрос на сервер (направление стрельбы (wasd) или ходьбы(WASD))
     '''
     global sock
     global screen, width, height, data_client, objects_player
     global objects_enemy, x_player, y_player, x_enemy, y_enemy, step_flag
 
-    data_client = ask_server(request, sock)  # в первый раз нужно передать 'NN'
+    # запрос на сервер, сообщение серверу о ходе
+    data_client = ask_server(request, sock)
+    # рисование изменений
     Return_client = visual_player(screen, width, height, data_client, objects_player,
                                   objects_enemy, x_player, y_player, x_enemy, y_enemy)
     enemy_step(screen, width, height)
-    key_and_knifes(screen, width, height, data_client, data_server)
+
     screen = Return_client[0]
     objects_player = Return_client[1]
     objects_enemy = Return_client[2]
@@ -25,20 +29,21 @@ def client_step(request):
     x_enemy = Return_client[5]
     y_enemy = Return_client[6]
     step_flag = 1
+
+    # отдельно рассмотрен случай окончания игры для избежания бага
     if Return_client[8] == 0:
         objects_enemy, objects_player = visual_parts(width, height, objects_enemy, objects_player,
-                                                 [len(objects_player) - 2, len(objects_player) - 3],
-                                                 [len(objects_enemy) - 2, len(objects_enemy) - 3])
-
+                                                     [len(objects_player) - 2, len(objects_player) - 3],
+                                                     [len(objects_enemy) - 2, len(objects_enemy) - 3])
+        key_and_knifes(screen, width, height, data_client, data_server)
 
 
 data_client = 'NN00'
 data_server = 'NN00'
 width = 1000
-height = 600 
+height = 600
 objects_player = [[]]
 objects_enemy = [[]]
-
 
 x_player = width / 4
 y_player = height * 2 / 3
@@ -47,8 +52,10 @@ y_enemy = height * 2 / 3
 Return_server = []
 Return_client = []
 pygame.init()
-screen = pygame.display.set_mode((width,height))
-screen.fill((255,255,255))
+screen = pygame.display.set_mode((width, height))
+screen.fill((255, 255, 255))
+
+# рисование стортового меню
 menu_client(screen, width, height)
 inf = ['', 0]
 IP = ''
@@ -57,8 +64,10 @@ while inf[1] != 1:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             finished = True
-        inf = Typing(IP, width/2, height/2, event, screen)
+        # ввод адреса сервера, к которому подключаемся
+        inf = Typing(IP, width / 2, height / 2, event, screen)
         IP = inf[0]
+        # в случае нажатия на пробел, производим подключение
         if inf[1] == 1:
             break
 IP = inf[0]
@@ -68,13 +77,11 @@ sock = connection(IP, Port)
 step_flag = int((sock.recv(1024)).decode('utf-8'))  # флаг хода игрока-сервера, получаем начальное значение от сервера
 # 0 - наш шаг, 1 - шаг врага
 
-finished = False
-
 visual_player(screen, width, height, 'NN00', objects_player,
-                                                  objects_enemy, x_player, y_player, x_enemy, y_enemy)
+              objects_enemy, x_player, y_player, x_enemy, y_enemy)
 
 visual_enemy(screen, width, height, 'NN00', objects_enemy, objects_player,
-                                      x_enemy, y_enemy, x_player, y_player)
+             x_enemy, y_enemy, x_player, y_player)
 
 if step_flag == 0:
     player_step(screen, width, height)
@@ -82,11 +89,14 @@ elif step_flag == 1:
     enemy_step(screen, width, height)
 pygame.display.update()
 
+finished = False
+
 while not finished:
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             finished = True
+        # ход игрока
         elif event.type == pygame.KEYDOWN and step_flag == 0:
             if event.key == pygame.K_ESCAPE:
                 finished = True
@@ -107,13 +117,13 @@ while not finished:
             elif event.key == pygame.K_a:
                 client_step('a')
 
-    # ход соперника
+    # ход соперника, аналогичен ходу игрока
     if step_flag == 1:
-        data_server = catch_server_steps(sock)  # в первый раз нужно передать 'NN'
+        data_server = catch_server_steps(sock)
         Return_server = visual_enemy(screen, width, height, data_server, objects_enemy, objects_player,
-                                      x_enemy, y_enemy, x_player, y_player)
+                                     x_enemy, y_enemy, x_player, y_player)
         player_step(screen, width, height)
-        key_and_knifes(screen, width, height, data_client, data_server)
+
         screen = Return_server[0]
         objects_enemy = Return_server[1]
         objects_player = Return_server[2]
@@ -123,11 +133,12 @@ while not finished:
         y_player = Return_server[6]
         if Return_server[8] == 0:
             objects_enemy, objects_player = visual_parts(width, height, objects_enemy, objects_player,
-                                                      [len(objects_player) - 2, len(objects_player) - 3],
-                                                      [len(objects_enemy) - 2, len(objects_enemy) - 3])
+                                                         [len(objects_player) - 2, len(objects_player) - 3],
+                                                         [len(objects_enemy) - 2, len(objects_enemy) - 3])
+            key_and_knifes(screen, width, height, data_client, data_server)
 
-        step_flag = 0  # !!!!!!!!!!!!!!!!!!!!!!!!!
-        pygame.event.clear() #Очищаем очередь
+        step_flag = 0
+        pygame.event.clear()  # очистка очереди для избежания багов
 
 pygame.quit()
 sock.close()

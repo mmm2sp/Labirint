@@ -41,7 +41,7 @@ def serv_step(request):
         key_and_knifes(screen, width, height, data_client, data_server)
     # сообщение сопернику о ходе
     say_to_client_about_serv_step(data_client, conn)
-
+    return Return_client[8]
 
 IP = socket.gethostbyname(socket.gethostname())
 
@@ -113,21 +113,30 @@ while not finished:
                 finished = True
                 # FixMe: не должна вылетать ошибка при завершении игры
             elif event.key == pygame.K_UP:
-                serv_step('W')
+                # проверка на конец игры
+                if serv_step('W') == 1:
+                    finished = True
             elif event.key == pygame.K_DOWN:
-                serv_step('S')
+                if serv_step('S') == 1:
+                    finished = True
             elif event.key == pygame.K_RIGHT:
-                serv_step('D')
+                if serv_step('D') == 1:
+                    finished = True
             elif event.key == pygame.K_LEFT:
-                serv_step('A')
+                if serv_step('A') == 1:
+                    finished = True
             elif event.key == pygame.K_w:
-                serv_step('w')
+                if serv_step('w') == 1:
+                    finished = True
             elif event.key == pygame.K_s:
-                serv_step('s')
+                if serv_step('s') == 1:
+                    finished = True
             elif event.key == pygame.K_d:
-                serv_step('d')
+                if serv_step('d') == 1:
+                    finished = True
             elif event.key == pygame.K_a:
-                serv_step('a')
+                if serv_step('a') == 1:
+                    finished = True
 
     # ход соперника
     if step_flag == 0:
@@ -152,6 +161,9 @@ while not finished:
                                                          [len(objects_player) - 2, len(objects_player) - 3],
                                                          [len(objects_player) - 2, len(objects_player) - 3])
             key_and_knifes(screen, width, height, data_client, data_server)
+        if Return_server[8] == 1:
+            finished = True
+
         step_flag = 1
         pygame.event.clear()
 

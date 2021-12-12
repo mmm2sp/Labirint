@@ -37,6 +37,8 @@ def client_step(request):
                                                      [len(objects_enemy) - 2, len(objects_enemy) - 3])
         key_and_knifes(screen, width, height, data_client, data_server)
 
+    return Return_client[8]
+
 
 data_client = 'NN00'
 data_server = 'NN00'
@@ -101,21 +103,30 @@ while not finished:
             if event.key == pygame.K_ESCAPE:
                 finished = True
             elif event.key == pygame.K_UP:
-                client_step('W')
+                # проверка на конец игры
+                if client_step('W') == 1:
+                    finished = True
             elif event.key == pygame.K_DOWN:
-                client_step('S')
+                if client_step('S') == 1:
+                    finished = True
             elif event.key == pygame.K_RIGHT:
-                client_step('D')
+                if client_step('D') == 1:
+                    finished = True
             elif event.key == pygame.K_LEFT:
-                client_step('A')
+                if client_step('A') == 1:
+                    finished = True
             elif event.key == pygame.K_w:
-                client_step('w')
+                if client_step('w') == 1:
+                    finished = True
             elif event.key == pygame.K_s:
-                client_step('s')
+                if client_step('s') == 1:
+                    finished = True
             elif event.key == pygame.K_d:
-                client_step('d')
+                if client_step('d') == 1:
+                    finished = True
             elif event.key == pygame.K_a:
-                client_step('a')
+                if client_step('a') == 1:
+                    finished = True
 
     # ход соперника, аналогичен ходу игрока
     if step_flag == 1:
@@ -136,6 +147,9 @@ while not finished:
                                                          [len(objects_player) - 2, len(objects_player) - 3],
                                                          [len(objects_enemy) - 2, len(objects_enemy) - 3])
             key_and_knifes(screen, width, height, data_client, data_server)
+
+        if Return_server[8] == 1:
+            finished = True
 
         step_flag = 0
         pygame.event.clear()  # очистка очереди для избежания багов

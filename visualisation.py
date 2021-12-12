@@ -15,6 +15,8 @@ def visual_player(screen, width, height, data_player, objects_player, objects_en
     screen.fill((255, 255, 255))
     l = 20
 
+    pygame.time.Clock().tick(10)
+
     v_player = 0
     h_player = 0
 
@@ -186,7 +188,7 @@ def visual_enemy(screen, width, height, data_enemy, objects_enemy, objects_playe
 
     final_flag = 0
     flag = 0
-    pygame.time.Clock().tick(60)
+    pygame.time.Clock().tick(10)
     v_enemy = 0
     h_enemy = 0
 

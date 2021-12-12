@@ -165,11 +165,12 @@ def visual_player(screen, width, height, data_player, objects_player, objects_en
         boundaries = Boundaries(screen, width, height)
         boundaries.draw()
 
-        Arrow_botton1 = Arrow_botton(screen, width, height, 7 / 480 * width)
-        Arrow_botton1.draw()
+        # может быть будет доработано
+        #Arrow_botton1 = Arrow_botton(screen, width, height, 7 / 480 * width)
+        #Arrow_botton1.draw()
 
-        Arrow_botton2 = Arrow_botton(screen, width, height, 247 / 480 * width)
-        Arrow_botton2.draw()
+        #Arrow_botton2 = Arrow_botton(screen, width, height, 247 / 480 * width)
+        #Arrow_botton2.draw()
 
         pygame.display.update()
 
@@ -327,11 +328,12 @@ def visual_enemy(screen, width, height, data_enemy, objects_enemy, objects_playe
         boundaries = Boundaries(screen, width, height)
         boundaries.draw()
 
-        Arrow_botton1 = Arrow_botton(screen, width, height, 7 / 480 * width)
-        Arrow_botton1.draw()
+        # может быть будет доработано
+        #Arrow_botton1 = Arrow_botton(screen, width, height, 7 / 480 * width)
+        #Arrow_botton1.draw()
 
-        Arrow_botton2 = Arrow_botton(screen, width, height, 247 / 480 * width)
-        Arrow_botton2.draw()
+        #Arrow_botton2 = Arrow_botton(screen, width, height, 247 / 480 * width)
+        #Arrow_botton2.draw()
 
         pygame.display.update()
 

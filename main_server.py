@@ -116,7 +116,6 @@ while not finished:
         elif event.type == pygame.KEYDOWN and step_flag == 1:
             if event.key == pygame.K_ESCAPE:
                 finished = True
-                # FixMe: не должна вылетать ошибка при завершении игры
             elif event.key == pygame.K_UP:
                 # проверка на конец игры
                 if serv_step('W') == 1:

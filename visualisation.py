@@ -63,7 +63,6 @@ def visual_client(screen, width, height, data_client, objects_client, objects_se
         final_frame(screen, width, height, 1)
         final_flag = 1
     # залазим на часть экрана, где отрисовывается соперник
-    # стоит не в том месте, нужно засунуть в нижний иф
     elif data_movement == 'G': #Умер второй игрок
 
         x_server = width * 3 / 4
@@ -76,6 +75,9 @@ def visual_client(screen, width, height, data_client, objects_client, objects_se
         pygame.draw.rect(screen, (255, 255, 255),
                          (width / 2 + 5, height / 3 + 5, width / 2 - 5, height * 2 / 3))  # здесь может быть ошибка с флажком
         revival.draw()
+
+        visual_parts(width, height, objects_server, objects_client, [len(objects_client)-2, len(objects_client)-3],
+                                                                    [len(objects_server)-2, len(objects_server)-3])
         # что делать с flag
     else: #Не переместились
         data_object = data_movement
@@ -223,7 +225,6 @@ def visual_server(screen, width, height, data_server, objects_server, objects_cl
         x_server += 20
         final_frame(screen, width, height, 0)
         final_flag = 1
-    # стоит не в том месте, нужно засунуть в нижний иф
     elif data_movement == 'G': #Умер второй игрок
         x_client = width * 1 / 4
         y_client = height * 2 / 3

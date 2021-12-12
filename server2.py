@@ -30,8 +30,8 @@ def answer_to_client_step(лабиринт, conn, игроки):
     '''
     data = conn.recv(16)  # возможно стоит передавать дату как параметр функции
     answer = 'NN00'
-    if data.decode('utf-8') == 'W' or data.decode('utf-8') == 'A' or data.decode('utf-8') == 'S' or data.decode(
-            'utf-8') == 'D':
+    set_move = {'W', 'A', 'S', 'D'}
+    if data.decode('utf-8').upper() in set_move:
         answer, лабиринт, игроки = игроки[0].move(data.decode('utf-8'), лабиринт, игроки)
         conn.send(answer.encode('utf-8'))
     return answer, лабиринт, игроки

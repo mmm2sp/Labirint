@@ -109,8 +109,8 @@ class Dead_minotaur:
                                                      (self.x + self.l//20*5, self.y + self.l//20*2)])
         pygame.draw.polygon(self.screen, (0, 0, 0), [(self.x + self.l//20*7, self.y + self.l//20*7), (self.x + self.l//20*8, self.y + self.l//20*8),
                                                      (self.x + self.l//20*9, self.y + self.l//20*7)])
-        pygame.draw.polygon(self.screen, (0, 0, 0), (self.x + self.l//20, self.y + self.l//20*3), self.l//20*2)
-        pygame.draw.polygon(self.screen, (0, 0, 0), (self.x + self.l//20*3, self.y + self.l//20*7), self.l//20*2)
+        pygame.draw.circle(self.screen, (0, 0, 0), (self.x + self.l//20, self.y + self.l//20*3), self.l//20*2)
+        pygame.draw.circle(self.screen, (0, 0, 0), (self.x + self.l//20*3, self.y + self.l//20*7), self.l//20*2)
         
 class Revival:
     '''

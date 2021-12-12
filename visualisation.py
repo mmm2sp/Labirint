@@ -541,7 +541,7 @@ def final_frame(screen, width, height, situation):
     Skull(screen, width * 5 // 8, height * 3 // 8, 150).draw()
     screen.blit(text, (width * 2.5 // 8, height // 20))
     pygame.display.update()
-    pygame.time.Clock().tick(1)
+    pygame.time.Clock().tick(2)
 
 
 def key_and_knifes(screen, width, height, data_player, data_enemy):

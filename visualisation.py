@@ -61,9 +61,6 @@ def visual_player(screen, width, height, data_player, objects_player, objects_en
                          (width / 2 + 5, height / 3 + 5, width / 2 - 5,
                           height * 2 / 3))  # здесь может быть ошибка с флажком
 
-        pygame.draw.rect(screen, (255, 255, 255),
-                         (width / 2 + 5, height * 4 / 5, width / 2 - 5,
-                          height / 5 - 5))  # здесь может быть ошибка с закрашиванием
         revival.draw()
 
         visual_parts(width, height, objects_enemy, objects_player, [len(objects_player) - 2, len(objects_player) - 3],
@@ -230,9 +227,7 @@ def visual_enemy(screen, width, height, data_enemy, objects_enemy, objects_playe
         objects_player.append(new_objects_player)
         # закрашиваем неугодные элементы
         pygame.draw.rect(screen, (255, 255, 255), (0, height * 1 / 3 + 5, width / 2, height * 2 / 3))
-        pygame.draw.rect(screen, (255, 255, 255),
-                         (0, height * 4 / 5, width / 2 - 5,
-                          height / 5 - 5))  # здесь может быть ошибка с закрашиванием
+
         revival.draw()
 
         visual_parts(width, height, objects_enemy, objects_player, [len(objects_player) - 2, len(objects_player) - 3],

@@ -1,7 +1,24 @@
 import pygame
-from modules.client import *
+import random
+from modules.server import *
 from modules.visualisation import *
+from modules.lab_generation import generate
 
+class User:
+    def __init__(self, typ_player, width, height):
+        
+        self.is_player = typ_player #True-игрок, False-противник
+        self.objects = [[]]
+        self.data = 'NN00'
+        self.y = height * 2 / 3
+        if self.is_player:
+            self.x = width / 4
+        else:
+            self.x = width * 3 / 4
+        
+
+        
+    
 
 def game_preparing():
     #FixMe: Нужна документ-строка
@@ -30,21 +47,22 @@ def game_preparing():
     
     pygame.display.update()
 
-    
-def client_step(request):
+def serv_step(request):
     '''
-    Функция обрабатывает ход клиента: отправляет запрос на сервер о своем ходе,
-    получает ответ от сервера, рисует изменения в случае удачного хода
+    Функция обрабатывает ход сервера: рисует изменения вследствие хода на экране и отправляет данные о ходе на
+    удаленный компьютер соперника.
     Args:
-        request: запрос на сервер (направление стрельбы (wasd) или ходьбы(WASD))
+        request: запрос в лабиринт (направление стрельбы (wasd) или ходьбы(WASD))
     '''
-    global sock
-    global screen, width, height, data_player, objects_player
-    global objects_enemy, x_player, y_player, x_enemy, y_enemy, step_flag
 
-    # запрос на сервер, сообщение серверу о ходе
-    data_player = ask_server(request, sock)
-    # рисование изменений
+    global data_player, лабиринт, игроки
+    global screen, objects_player, objects_enemy
+    global x_player, y_player, x_enemy, y_enemy, step_flag
+
+    # запрос в матрицу лабиринта для совершения хода
+    data_player, лабиринт, игроки = игроки[1].move(request, лабиринт, игроки)
+    # визуализация хода
+    say_to_client_about_serv_step(data_player, conn)
     vis = visual_player(screen, width, height, data_player, objects_player,
                                   objects_enemy, x_player, y_player, x_enemy, y_enemy)
     enemy_step(screen, width, height)
@@ -59,7 +77,7 @@ def client_step(request):
     step_flag = False
 
     # отдельно рассмотрен случай окончания игры для избежания бага
-    if vis[7] == 0:
+    if vis[8] == 0:
         objects_enemy, objects_player = visual_parts(width, height, objects_enemy, objects_player,
                                                      [len(objects_player) - 2, len(objects_player) - 3],
                                                      [len(objects_enemy) - 2, len(objects_enemy) - 3])
@@ -68,8 +86,8 @@ def client_step(request):
             key_and_knifes(screen, width, height, data_player, 'AB00')
         else:
             key_and_knifes(screen, width, height, data_player, data_enemy)
-
-    return  bool(vis[7])
+    # сообщение сопернику о ходе
+    return bool(vis[8])     # проверка на конец игры
 
 
 width = 1000
@@ -79,29 +97,29 @@ pygame.init()
 screen = pygame.display.set_mode((width, height))
 screen.fill((255, 255, 255))
 
-# рисование стартового меню
-menu_client(screen, width, height)
-inf = ['', 0]
-IP = ''
-while inf[1] != 1:
+IP = socket.gethostbyname(socket.gethostname())
+conn = False
+Port = 9090
+
+# рисование главного меню перед стартом игры
+menu_server(screen, width, height, IP)
+while not conn:
     pygame.time.Clock().tick(30)
     for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            finished = True
-        # ввод адреса сервера, к которому подключаемся
-        inf = Typing(IP, width / 2, height / 2, event, screen)
-        IP = inf[0]
-        # в случае нажатия на пробел, производим подключение
-        if inf[1] == 1:
-            break
-IP = inf[0]
-Port = 9090
-sock = connection(IP, Port)
+        # в случае нажатия на клавишу подключиться, создает соедиение с клиентом
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            x = event.pos[0]
+            y = event.pos[1]
+            if (x > width / 2 - 200) and (x < width / 2 + 200) and (y > height / 2 - 100) and (y < height / 2 + 100):
+                conn = connection(IP, Port)
 
 
-step_flag = int((sock.recv(1024)).decode('utf-8'))  # флаг хода игрока-сервера, получаем начальное значение от сервера
-step_flag = not bool(step_flag) #True, если ход пользователя
+# кто ходит первым выбирается случайным образом
+step_flag = random.randint(0, 1)  # флаг хода игрока-сервера, 1 - наш шаг, 0 - шаг врага
+conn.send(str(step_flag).encode('utf-8'))  # передача начального флага клиенту
+step_flag = bool(step_flag) #True, если ход пользователя
 
+лабиринт, игроки = generate() # создание лабиринта
 game_preparing()
 finished = False
 
@@ -111,18 +129,21 @@ while not finished:
         elif event.type == pygame.KEYDOWN and step_flag:
             if event.key == pygame.K_ESCAPE: finished = True
             # ход игрока
-            elif event.key == pygame.K_UP: finished = client_step('W')
-            elif event.key == pygame.K_DOWN: finished = client_step('S')
-            elif event.key == pygame.K_RIGHT: finished = client_step('D')
-            elif event.key == pygame.K_LEFT: finished = client_step('A')
-            elif event.key == pygame.K_w: finished = client_step('w')
-            elif event.key == pygame.K_s: finished = client_step('s')
-            elif event.key == pygame.K_d: finished = client_step('d')
-            elif event.key == pygame.K_a: finished = client_step('a')
+            elif event.key == pygame.K_UP: finished = serv_step('W')
+            elif event.key == pygame.K_DOWN: finished = serv_step('S')
+            elif event.key == pygame.K_RIGHT: finished = serv_step('D')
+            elif event.key == pygame.K_LEFT: finished = serv_step('A')
+            elif event.key == pygame.K_w: finished = serv_step('w')
+            elif event.key == pygame.K_s: finished = serv_step('s')
+            elif event.key == pygame.K_d: finished = serv_step('d')
+            elif event.key == pygame.K_a: finished = serv_step('a')
 
-    # ход соперника, аналогичен ходу игрока
+    # ход соперника
     if not step_flag and not finished:
-        data_enemy = catch_server_steps(sock)
+        # обработка хода соперника, аналогично ходу игрока
+
+        data_enemy, лабиринт, игроки = answer_to_client_step(лабиринт, conn,
+                                                              игроки)
         vis = visual_enemy(screen, width, height, data_enemy, objects_enemy, objects_player,
                                      x_enemy, y_enemy, x_player, y_player)
         player_step(screen, width, height)
@@ -134,8 +155,8 @@ while not finished:
         y_enemy = vis[4]
         x_player = vis[5]
         y_player = vis[6]
-
-        if vis[7] == 0:
+        
+        if vis[8] == 0:
             objects_enemy, objects_player = visual_parts(width, height, objects_enemy, objects_player,
                                                          [len(objects_player) - 2, len(objects_player) - 3],
                                                          [len(objects_enemy) - 2, len(objects_enemy) - 3])
@@ -150,4 +171,4 @@ while not finished:
         #Очистка очереди, чтобы не обрабатывались нажатия во время чужого хода
 
 pygame.quit()
-sock.close()
+conn.close()

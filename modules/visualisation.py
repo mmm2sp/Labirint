@@ -14,7 +14,7 @@ def visual_player(screen, width, height, data_player, objects_player, objects_en
     Функция возвращает: измененные массивы объектов игроков, измененные координаты, индикатор окончания игры
     '''
     screen.fill((255, 255, 255))
-    l = 20
+    l = 20 #сторона клетки
 
     pygame.time.Clock().tick(10)
 
@@ -23,7 +23,6 @@ def visual_player(screen, width, height, data_player, objects_player, objects_en
     data_key = bool(data_player[2])  # Есть ли у игрока ключ
     data_bullets = int(data_player[3])  # Количество пуль у игрока
 
-    flag = 0
     final_flag = 0
 
     N = len(objects_player)
@@ -61,31 +60,30 @@ def visual_player(screen, width, height, data_player, objects_player, objects_en
 
         visual_parts(width, height, objects_enemy, objects_player, [len(objects_player) - 2, len(objects_player) - 3],
                      [len(objects_enemy) - 2, len(objects_enemy) - 3])
-        # что делать с flag
 
     # Сдвигаем изображение, если первый символ указывает направление или что там дверь, а игрок с ключом
     if data_movement == 'W':
-        y_player -= 20
+        y_player -= l
     elif data_movement == 'S':
-        y_player += 20
+        y_player += l
     elif data_movement == 'A':
-        x_player -= 20
+        x_player -= l
     elif data_movement == 'D':
-        x_player += 20
+        x_player += l
     elif data_movement == 'w':
-        y_player -= 20
+        y_player -= l
         final_frame(screen, width, height, 1)
         final_flag = 1
     elif data_movement == 's':
-        y_player += 20
+        y_player += l
         final_frame(screen, width, height, 1)
         final_flag = 1
     elif data_movement == 'a':
-        x_player -= 20
+        x_player -= l
         final_frame(screen, width, height, 1)
         final_flag = 1
     elif data_movement == 'd':
-        x_player += 20
+        x_player += l
         final_frame(screen, width, height, 1)
         final_flag = 1
     else:  # Не переместились
@@ -102,7 +100,6 @@ def visual_player(screen, width, height, data_player, objects_player, objects_en
             revival = Revival(screen, x_player, y_player, l)
             objects_player[N - 1].append(revival)
             revival.draw()
-        # разобраться отдельно
         elif data_object == 'P':#На открытой клетке портал, перемещаемся в следующий
             portal = Portal(screen, x_player, y_player, l)
             objects_player[N - 1].append(portal)
@@ -115,9 +112,6 @@ def visual_player(screen, width, height, data_player, objects_player, objects_en
             objects_player.append(new_objects_player)
             pygame.draw.rect(screen, (255, 255, 255), (0, height / 3 + 5, width / 2 - 5, height * 2 / 3))
             portal.draw()
-            # создали навую рисовалку, нужно об этом как-то сообщить
-            flag = 1
-
         elif data_object == 'E':# На открытой клетке оружейная
             armory = Armory(screen, x_player, y_player, l)
             objects_player[N - 1].append(armory)
@@ -126,8 +120,6 @@ def visual_player(screen, width, height, data_player, objects_player, objects_en
             exp = Explored_square(screen, x_player, y_player, l)
             objects_player[N - 1].append(exp)
             exp.draw()
-
-        # разобраться отдельно
         elif data_object == 'M': #На открытой клетке минотавр, попадаем в больницу
             minotaur = Minotaur(screen, x_player, y_player, l)
             objects_player[N - 1].append(minotaur)
@@ -141,8 +133,6 @@ def visual_player(screen, width, height, data_player, objects_player, objects_en
             objects_player.append(new_objects_player)
             pygame.draw.rect(screen, (255, 255, 255), (0, height / 3 + 5, width / 2 - 5, height * 2 / 3))
             revival.draw()
-            # создали навую рисовалку, нужно об этом как-то сообщить
-            flag = 1
         elif data_object == 'm':# На открытой клетке убитый минотавр
             dead_minotaur = Dead_minotaur(screen, x_player, y_player, l)
             objects_player[N - 1].append(dead_minotaur)
@@ -170,7 +160,7 @@ def visual_player(screen, width, height, data_player, objects_player, objects_en
 
         pygame.display.update()
 
-    return screen, objects_player, objects_enemy, x_player, y_player, x_enemy, y_enemy, flag, final_flag
+    return screen, objects_player, objects_enemy, x_player, y_player, x_enemy, y_enemy, final_flag
 
 
 def visual_enemy(screen, width, height, data_enemy, objects_enemy, objects_player, x_enemy, y_enemy,
@@ -187,7 +177,6 @@ def visual_enemy(screen, width, height, data_enemy, objects_enemy, objects_playe
     l = 20
 
     final_flag = 0
-    flag = 0
     pygame.time.Clock().tick(10)
 
     data_movement = str(data_enemy[0])# Смещение противника
@@ -228,27 +217,27 @@ def visual_enemy(screen, width, height, data_enemy, objects_enemy, objects_playe
 
     # Сдвигаем изображение, если первый символ указывает направление или что там дверь, а игрок с ключом
     if data_movement == 'W':
-        y_enemy -= 20
+        y_enemy -= l
     elif data_movement == 'S':
-        y_enemy += 20
+        y_enemy += l
     elif data_movement == 'A':
-        x_enemy -= 20
+        x_enemy -= l
     elif data_movement == 'D':
-        x_enemy += 20
+        x_enemy += l
     elif data_movement == 'w':
-        y_player -= 20
+        y_player -= l
         final_frame(screen, width, height, 0)
         final_flag = 1
     elif data_movement == 's':
-        y_enemy += 20
+        y_enemy += l
         final_frame(screen, width, height, 0)
         final_flag = 1
     elif data_movement == 'a':
-        x_enemy -= 20
+        x_enemy -= l
         final_frame(screen, width, height, 0)
         final_flag = 1
     elif data_movement == 'd':
-        x_enemy += 20
+        x_enemy += l
         final_frame(screen, width, height, 0)
         final_flag = 1
     else:  # Не переместились
@@ -277,8 +266,6 @@ def visual_enemy(screen, width, height, data_enemy, objects_enemy, objects_playe
             objects_enemy.append(new_objects_enemy)
             pygame.draw.rect(screen, (255, 255, 255), (width / 2 + 5, height * 1 / 3 + 5, width / 2, height * 2 / 3))
             portal.draw()
-            flag = 1
-
         elif data_object == 'E':# На открытой клетке оружейная
             armory = Armory(screen, x_enemy, y_enemy, l)
             objects_enemy[N - 1].append(armory)
@@ -301,7 +288,6 @@ def visual_enemy(screen, width, height, data_enemy, objects_enemy, objects_playe
             objects_enemy.append(new_objects_enemy)
             pygame.draw.rect(screen, (255, 255, 255), (width / 2 + 5, height * 1 / 3 + 5, width / 2, height * 2 / 3))
             revival.draw()
-            flag = 1
         elif data_object == 'm':# На открытой клетке убитый минотавр
             dead_minotaur = Dead_minotaur(screen, x_enemy, y_enemy, l)
             objects_enemy[N - 1].append(dead_minotaur)
@@ -329,7 +315,7 @@ def visual_enemy(screen, width, height, data_enemy, objects_enemy, objects_playe
 
         pygame.display.update()
 
-    return screen, objects_enemy, objects_player, x_enemy, y_enemy, x_player, y_player, flag, final_flag
+    return screen, objects_enemy, objects_player, x_enemy, y_enemy, x_player, y_player, final_flag
 
 
 def visual_parts(width, height, objects_enemy, objects_player, player_parts, enemy_parts):

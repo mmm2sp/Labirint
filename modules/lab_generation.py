@@ -190,7 +190,7 @@ def generate():
     generate_minotaurus()
 
     labirint = generate_labirint()
-    visualisation_of_generated_lab()
+    #visualisation_of_generated_lab()
 
     return labirint, players
 

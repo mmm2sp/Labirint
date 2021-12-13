@@ -61,7 +61,7 @@ def serv_step(request):
     step_flag = False
 
     # отдельно рассмотрен случай окончания игры для избежания бага
-    if vis[8] == 0:
+    if vis[7] == 0:
         objects_enemy, objects_player = visual_parts(width, height, objects_enemy, objects_player,
                                                      [len(objects_player) - 2, len(objects_player) - 3],
                                                      [len(objects_enemy) - 2, len(objects_enemy) - 3])
@@ -71,7 +71,7 @@ def serv_step(request):
         else:
             key_and_knifes(screen, width, height, data_player, data_enemy)
     # сообщение сопернику о ходе
-    return bool(vis[8])     # проверка на конец игры
+    return bool(vis[7])     # проверка на конец игры
 
 
 width = 1000
@@ -140,7 +140,7 @@ while not finished:
         x_player = vis[5]
         y_player = vis[6]
         
-        if vis[8] == 0:
+        if vis[7] == 0:
             objects_enemy, objects_player = visual_parts(width, height, objects_enemy, objects_player,
                                                          [len(objects_player) - 2, len(objects_player) - 3],
                                                          [len(objects_enemy) - 2, len(objects_enemy) - 3])

@@ -243,7 +243,6 @@ class Player:
         if answer[1] == '-':
             answer = answer[0] + direction.lower()
         answer = answer + str(int(self.key)) + str(self.num_bullets)
-        print(answer)
         return answer, labirint, players
 
 

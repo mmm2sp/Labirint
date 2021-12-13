@@ -1,10 +1,9 @@
+import socket
+
 '''
 Модуль сервера
 Описаны функции для сервера, реализующие взаимодействие между клиентом и сервером
 '''
-
-import socket
-
 
 def connection(IP, Port):
     '''
@@ -43,3 +42,7 @@ def say_to_client_about_serv_step(data, conn):
     :param data: две буквы (строка)
     '''
     conn.send(data.encode('utf-8'))
+
+
+if __name__ == "__main__":
+    print("This module is not for direct call!")

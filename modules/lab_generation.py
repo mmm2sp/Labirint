@@ -1,7 +1,7 @@
 import numpy as np  # При отладке так удобнее смотреть вывод лабиринта
 import random
-from lab_classes import Cell
-from lab_classes import Player
+from modules.lab_classes import Cell
+from modules.lab_classes import Player
 
 
 def find_neighbors(coords):

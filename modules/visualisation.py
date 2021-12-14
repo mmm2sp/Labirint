@@ -1,4 +1,3 @@
-import pygame
 from modules.basic_pictures import *
 
 
@@ -14,12 +13,12 @@ def visual_player(screen, width, height, data_player, objects_player, objects_en
     Функция возвращает: измененные массивы объектов игроков, измененные координаты, индикатор окончания игры
     '''
     screen.fill((255, 255, 255))
-    l = 20 #сторона клетки
+    l = 20  # сторона клетки
 
     pygame.time.Clock().tick(10)
 
-    data_movement = str(data_player[0]) # Смещение игрока
-    data_object = str(data_player[1]) # Открытый элемент лабиринта
+    data_movement = str(data_player[0])  # Смещение игрока
+    data_object = str(data_player[1])  # Открытый элемент лабиринта
     data_key = bool(data_player[2])  # Есть ли у игрока ключ
     data_bullets = int(data_player[3])  # Количество пуль у игрока
 
@@ -28,16 +27,18 @@ def visual_player(screen, width, height, data_player, objects_player, objects_en
     N = len(objects_player)
 
     for obj in objects_player[N - 1]:
-        obj.draw()#Рисуем все уже имеющиеся в массивах объекты на полуэкране игрока
+        obj.draw()  # Рисуем все уже имеющиеся в массивах объекты на полуэкране игрока
 
     # Сначала проверяем второй символ: действия, если стена или дверь
     set_move = {'W', 'A', 'S', 'D'}
     if data_object in set_move:
-        wall = Wall(screen, x_player, y_player, l, (0, 0, 0), data_object.lower())#Рисуем стену согласно ее ориентации
+        wall = Wall(screen, x_player, y_player, l, (0, 0, 0),
+                    data_object.lower())  # Рисуем стену согласно ее ориентации
         objects_player[N - 1].append(wall)
         wall.draw()
     elif data_object.upper() in set_move:
-        door = Door(screen, x_player, y_player, l, (120, 50, 0), data_object.lower())#Рисуем дверь согласно ее ориентации
+        door = Door(screen, x_player, y_player, l, (120, 50, 0),
+                    data_object.lower())  # Рисуем дверь согласно ее ориентации
         objects_player[N - 1].append(door)
         door.draw()
     # залазим на часть экрана, где отрисовывается соперник
@@ -92,15 +93,15 @@ def visual_player(screen, width, height, data_player, objects_player, objects_en
 
     if final_flag == 0:
 
-        if data_object == 'K':# На открытой клетке ключ
+        if data_object == 'K':  # На открытой клетке ключ
             key = Key(screen, x_player, y_player, l)
             objects_player[N - 1].append(key)
             key.draw()
-        elif data_object == 'R':# На открытой клетке больница
+        elif data_object == 'R':  # На открытой клетке больница
             revival = Revival(screen, x_player, y_player, l)
             objects_player[N - 1].append(revival)
             revival.draw()
-        elif data_object == 'P':#На открытой клетке портал, перемещаемся в следующий
+        elif data_object == 'P':  # На открытой клетке портал, перемещаемся в следующий
             portal = Portal(screen, x_player, y_player, l)
             objects_player[N - 1].append(portal)
             x_player = width / 4
@@ -112,15 +113,15 @@ def visual_player(screen, width, height, data_player, objects_player, objects_en
             objects_player.append(new_objects_player)
             pygame.draw.rect(screen, (255, 255, 255), (0, height / 3 + 5, width / 2 - 5, height * 2 / 3))
             portal.draw()
-        elif data_object == 'E':# На открытой клетке оружейная
+        elif data_object == 'E':  # На открытой клетке оружейная
             armory = Armory(screen, x_player, y_player, l)
             objects_player[N - 1].append(armory)
             armory.draw()
-        elif data_object == 'N':# На открытой клетке ничего нет
+        elif data_object == 'N':  # На открытой клетке ничего нет
             exp = Explored_square(screen, x_player, y_player, l)
             objects_player[N - 1].append(exp)
             exp.draw()
-        elif data_object == 'M': #На открытой клетке минотавр, попадаем в больницу
+        elif data_object == 'M':  # На открытой клетке минотавр, попадаем в больницу
             minotaur = Minotaur(screen, x_player, y_player, l)
             objects_player[N - 1].append(minotaur)
 
@@ -133,30 +134,23 @@ def visual_player(screen, width, height, data_player, objects_player, objects_en
             objects_player.append(new_objects_player)
             pygame.draw.rect(screen, (255, 255, 255), (0, height / 3 + 5, width / 2 - 5, height * 2 / 3))
             revival.draw()
-        elif data_object == 'm':# На открытой клетке убитый минотавр
+        elif data_object == 'm':  # На открытой клетке убитый минотавр
             dead_minotaur = Dead_minotaur(screen, x_player, y_player, l)
             objects_player[N - 1].append(dead_minotaur)
             dead_minotaur.draw()
 
-        player = Player(screen, x_player, y_player, l)# Рисуем игрока
+        player = Player(screen, x_player, y_player, l)  # Рисуем игрока
         player.draw()
 
         N1 = len(objects_enemy)
         for obj in objects_enemy[N1 - 1]:
-            obj.draw()# Рисуем все объекты на полуэкране противника
+            obj.draw()  # Рисуем все объекты на полуэкране противника
 
         another_player = Another_Player(screen, x_enemy, y_enemy, l)
-        another_player.draw()#Рисуем противника
+        another_player.draw()  # Рисуем противника
 
         boundaries = Boundaries(screen, width, height)
-        boundaries.draw()#Рисуем разделение экрана на зоны
-
-        # может быть будет доработано
-        #Arrow_botton1 = Arrow_botton(screen, width, height, 7 / 480 * width)
-        #Arrow_botton1.draw()
-
-        #Arrow_botton2 = Arrow_botton(screen, width, height, 247 / 480 * width)
-        #Arrow_botton2.draw()
+        boundaries.draw()  # Рисуем разделение экрана на зоны
 
         pygame.display.update()
 
@@ -179,30 +173,31 @@ def visual_enemy(screen, width, height, data_enemy, objects_enemy, objects_playe
     final_flag = 0
     pygame.time.Clock().tick(10)
 
-    data_movement = str(data_enemy[0])# Смещение противника
-    data_object = str(data_enemy[1])# Объект, открытый противником
+    data_movement = str(data_enemy[0])  # Смещение противника
+    data_object = str(data_enemy[1])  # Объект, открытый противником
     data_key = bool(data_enemy[2])  # Есть ли у игрока ключ
     data_bullets = int(data_enemy[3])  # Количество пуль у игрока
 
     N = len(objects_enemy)
 
     for obj in objects_enemy[N - 1]:
-        obj.draw()#Рисуем все уже изученные противником объекты
+        obj.draw()  # Рисуем все уже изученные противником объекты
 
     # Сначала проверяем второй символ: действия, если стена или дверь
     set_move = {'W', 'A', 'S', 'D'}
     if data_object in set_move:
-        wall = Wall(screen, x_enemy, y_enemy, l, (0, 0, 0), data_object.lower())#Рисуем стену согласно ее ориентации
+        wall = Wall(screen, x_enemy, y_enemy, l, (0, 0, 0), data_object.lower())  # Рисуем стену согласно ее ориентации
         objects_enemy[N - 1].append(wall)
         wall.draw()
     elif data_object.upper() in set_move:
-        door = Door(screen, x_enemy, y_enemy, l, (120, 50, 0), data_object.lower())#Рисуем дверь согласно ее ориентации
+        door = Door(screen, x_enemy, y_enemy, l, (120, 50, 0),
+                    data_object.lower())  # Рисуем дверь согласно ее ориентации
         objects_enemy[N - 1].append(door)
         door.draw()
     elif data_object == 'G':  # Умер второй игрок
         x_player = width * 1 / 4
         y_player = height * 2 / 3
-        revival = Revival(screen, x_player, y_player, l)#Помещаем его на возрождение
+        revival = Revival(screen, x_player, y_player, l)  # Помещаем его на возрождение
 
         new_objects_player = []
         new_objects_player.append(revival)
@@ -246,15 +241,15 @@ def visual_enemy(screen, width, height, data_enemy, objects_enemy, objects_playe
 
     if final_flag == 0:
 
-        if data_object == 'K':# На открытой клетке ключ
+        if data_object == 'K':  # На открытой клетке ключ
             key = Key(screen, x_enemy, y_enemy, l)
             objects_enemy[N - 1].append(key)
             key.draw()
-        elif data_object == 'R':# На открытой клетке больница
+        elif data_object == 'R':  # На открытой клетке больница
             revival = Revival(screen, x_enemy, y_enemy, l)
             objects_enemy[N - 1].append(revival)
             revival.draw()
-        elif data_object == 'P':# На открытой клетке портал, перемещаемся в следующий портал
+        elif data_object == 'P':  # На открытой клетке портал, перемещаемся в следующий портал
             portal = Portal(screen, x_enemy, y_enemy, l)
             objects_enemy[N - 1].append(portal)
             x_enemy = width * 3 / 4
@@ -266,16 +261,16 @@ def visual_enemy(screen, width, height, data_enemy, objects_enemy, objects_playe
             objects_enemy.append(new_objects_enemy)
             pygame.draw.rect(screen, (255, 255, 255), (width / 2 + 5, height * 1 / 3 + 5, width / 2, height * 2 / 3))
             portal.draw()
-        elif data_object == 'E':# На открытой клетке оружейная
+        elif data_object == 'E':  # На открытой клетке оружейная
             armory = Armory(screen, x_enemy, y_enemy, l)
             objects_enemy[N - 1].append(armory)
             armory.draw()
-        elif data_object == 'N':# На открытой клетке ничего нет
+        elif data_object == 'N':  # На открытой клетке ничего нет
             exp = Explored_square(screen, x_enemy, y_enemy, l)
             objects_enemy[N - 1].append(exp)
             exp.draw()
 
-        elif data_object == 'M':# На открытой клетке минотавр, противник попадает в больницу
+        elif data_object == 'M':  # На открытой клетке минотавр, противник попадает в больницу
             minotaur = Minotaur(screen, x_enemy, y_enemy, l)
             objects_enemy[N - 1].append(minotaur)
 
@@ -288,30 +283,30 @@ def visual_enemy(screen, width, height, data_enemy, objects_enemy, objects_playe
             objects_enemy.append(new_objects_enemy)
             pygame.draw.rect(screen, (255, 255, 255), (width / 2 + 5, height * 1 / 3 + 5, width / 2, height * 2 / 3))
             revival.draw()
-        elif data_object == 'm':# На открытой клетке убитый минотавр
+        elif data_object == 'm':  # На открытой клетке убитый минотавр
             dead_minotaur = Dead_minotaur(screen, x_enemy, y_enemy, l)
             objects_enemy[N - 1].append(dead_minotaur)
             dead_minotaur.draw()
 
         another_player = Another_Player(screen, x_enemy, y_enemy, l)
-        another_player.draw()# Рисуем противника
+        another_player.draw()  # Рисуем противника
 
         N1 = len(objects_player)
         for obj in objects_player[N1 - 1]:
-            obj.draw()# Рисуем все объекты на полуэкране игрока
+            obj.draw()  # Рисуем все объекты на полуэкране игрока
 
         player = Player(screen, x_player, y_player, l)
-        player.draw()# Рисуем игрока
+        player.draw()  # Рисуем игрока
 
         boundaries = Boundaries(screen, width, height)
-        boundaries.draw()# Рисуем границы, разделяющие игровые поля
+        boundaries.draw()  # Рисуем границы, разделяющие игровые поля
 
         # может быть будет доработано
-        #Arrow_botton1 = Arrow_botton(screen, width, height, 7 / 480 * width)
-        #Arrow_botton1.draw()
+        # Arrow_botton1 = Arrow_botton(screen, width, height, 7 / 480 * width)
+        # Arrow_botton1.draw()
 
-        #Arrow_botton2 = Arrow_botton(screen, width, height, 247 / 480 * width)
-        #Arrow_botton2.draw()
+        # Arrow_botton2 = Arrow_botton(screen, width, height, 247 / 480 * width)
+        # Arrow_botton2.draw()
 
         pygame.display.update()
 
@@ -379,11 +374,11 @@ def menu_server(screen, width, height, IP):
     '''
     screen.fill((255, 255, 255))
     screen.blit(pygame.font.Font(None, 50).render(str('Ваш IP-адрес: ') + str(IP), True, (0, 0, 0)),
-                (width // 12 * 2, height // 20))# Отображаем IP
-    Opened_door(screen, width // 8, height // 5, 100).draw()#Декоративная дверь
-    Button(screen, width / 2, height / 2).draw()# Рисуем кнопку, по которой можно нажать
-    Minotaur(screen, width * 5 // 6, height // 4, 200).draw()# Декоративный минотавр
-    Key(screen, width * 5.25 // 6, height * 3 // 4, 200).draw()# Декоративный ключ
+                (width // 12 * 2, height // 20))  # Отображаем IP
+    Opened_door(screen, width // 8, height // 5, 100).draw()  # Декоративная дверь
+    Button(screen, width / 2, height / 2).draw()  # Рисуем кнопку, по которой можно нажать
+    Minotaur(screen, width * 5 // 6, height // 4, 200).draw()  # Декоративный минотавр
+    Key(screen, width * 5.25 // 6, height * 3 // 4, 200).draw()  # Декоративный ключ
     # Далее рисуем небольшой декоративный лабиринтик
     x = width // 24 * 4
     y = height * 5.5 // 8
@@ -421,10 +416,10 @@ def menu_client(screen, width, height):
     Функция рисует стартовый экран игрока-клиента, подключающегося к серверу
     '''
     screen.fill((255, 255, 255))
-    Opened_door(screen, width // 8, height // 5, 100).draw()#Декоративная дверь
-    Typing_window(screen, width / 2, height / 2).draw()# Рисуем окошко, в которое нужно вводить IP-адрес сервера
-    Minotaur(screen, width * 5 // 6, height // 4, 200).draw()# Декоративный минотавр
-    Key(screen, width * 5.25 // 6, height * 3 // 4, 200).draw()# Декоративный ключ
+    Opened_door(screen, width // 8, height // 5, 100).draw()  # Декоративная дверь
+    Typing_window(screen, width / 2, height / 2).draw()  # Рисуем окошко, в которое нужно вводить IP-адрес сервера
+    Minotaur(screen, width * 5 // 6, height // 4, 200).draw()  # Декоративный минотавр
+    Key(screen, width * 5.25 // 6, height * 3 // 4, 200).draw()  # Декоративный ключ
     # Далее рисуем небольшой декоративный лабиринтик
     x = width // 24 * 4
     y = height * 5.5 // 8
@@ -475,7 +470,7 @@ def final_frame(screen, width, height, situation):
         losercolor = (100, 100, 255)
         f = pygame.font.Font(None, 150)
         text = f.render('VICTORY!', True, (0, 200, 0))
-        
+
     # Первый кадр
     screen.fill((255, 255, 255))
     Men(screen, width * 3 // 4, height * 2.5 // 8, winnercolor).draw_body()
@@ -502,7 +497,7 @@ def final_frame(screen, width, height, situation):
     screen.blit(text, (width * 2.5 // 8, height // 20))
     pygame.display.update()
     pygame.time.Clock().tick(1)
-    
+
     # Четвертый кадр
     screen.fill((255, 255, 255))
     Opened_door(screen, width // 4, height // 5, width // 4).draw()

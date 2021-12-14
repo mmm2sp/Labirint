@@ -1,18 +1,19 @@
-import pygame
 from modules.client import *
 from modules.visualisation import *
 
 
 def game_preparing():
-    #FixMe: Нужна документ-строка
+    '''
+    Функция задает начальные значения переменных перед началом игры
+    '''
 
     global data_player, data_enemy, objects_player, objects_enemy
     global x_player, y_player, x_enemy, y_enemy, return_player, return_enemy
-    
+
     data_player = 'NN00'  # информация о начальном состоянии игрока (слева)
     data_enemy = 'NN00'  # информация о начальном состоянии противника (справа)
-    objects_player = [[]] # открытые куски карты игрока
-    objects_enemy = [[]] # открытые куски карты противника
+    objects_player = [[]]  # открытые куски карты игрока
+    objects_enemy = [[]]  # открытые куски карты противника
 
     x_player = width / 4
     y_player = height * 2 / 3
@@ -25,12 +26,14 @@ def game_preparing():
                  objects_player, x_enemy, y_enemy, x_player, y_player)
 
     # начальное рисование флажка над ходящим игроком
-    if step_flag: player_step(screen, width, height)
-    else: enemy_step(screen, width, height)
-    
+    if step_flag:
+        player_step(screen, width, height)
+    else:
+        enemy_step(screen, width, height)
+
     pygame.display.update()
 
-    
+
 def client_step(request):
     '''
     Функция обрабатывает ход клиента: отправляет запрос на сервер о своем ходе,
@@ -46,7 +49,7 @@ def client_step(request):
     data_player = ask_server(request, sock)
     # рисование изменений
     vis = visual_player(screen, width, height, data_player, objects_player,
-                                  objects_enemy, x_player, y_player, x_enemy, y_enemy)
+                        objects_enemy, x_player, y_player, x_enemy, y_enemy)
     enemy_step(screen, width, height)
 
     screen = vis[0]
@@ -69,7 +72,7 @@ def client_step(request):
         else:
             key_and_knifes(screen, width, height, data_player, data_enemy)
 
-    return  bool(vis[7])
+    return bool(vis[7])
 
 
 width = 1000
@@ -98,33 +101,42 @@ IP = inf[0]
 Port = 9090
 sock = connection(IP, Port)
 
-
 step_flag = int((sock.recv(1024)).decode('utf-8'))  # флаг хода игрока-сервера, получаем начальное значение от сервера
-step_flag = not bool(step_flag) #True, если ход пользователя
+step_flag = not bool(step_flag)  # True, если ход пользователя
 
 game_preparing()
 finished = False
 
 while not finished:
     for event in pygame.event.get():
-        if event.type == pygame.QUIT: finished = True
+        if event.type == pygame.QUIT:
+            finished = True
         elif event.type == pygame.KEYDOWN and step_flag:
-            if event.key == pygame.K_ESCAPE: finished = True
+            if event.key == pygame.K_ESCAPE:
+                finished = True
             # ход игрока
-            elif event.key == pygame.K_UP: finished = client_step('W')
-            elif event.key == pygame.K_DOWN: finished = client_step('S')
-            elif event.key == pygame.K_RIGHT: finished = client_step('D')
-            elif event.key == pygame.K_LEFT: finished = client_step('A')
-            elif event.key == pygame.K_w: finished = client_step('w')
-            elif event.key == pygame.K_s: finished = client_step('s')
-            elif event.key == pygame.K_d: finished = client_step('d')
-            elif event.key == pygame.K_a: finished = client_step('a')
+            elif event.key == pygame.K_UP:
+                finished = client_step('W')
+            elif event.key == pygame.K_DOWN:
+                finished = client_step('S')
+            elif event.key == pygame.K_RIGHT:
+                finished = client_step('D')
+            elif event.key == pygame.K_LEFT:
+                finished = client_step('A')
+            elif event.key == pygame.K_w:
+                finished = client_step('w')
+            elif event.key == pygame.K_s:
+                finished = client_step('s')
+            elif event.key == pygame.K_d:
+                finished = client_step('d')
+            elif event.key == pygame.K_a:
+                finished = client_step('a')
 
     # ход соперника, аналогичен ходу игрока
     if not step_flag and not finished:
         data_enemy = catch_server_steps(sock)
         vis = visual_enemy(screen, width, height, data_enemy, objects_enemy, objects_player,
-                                     x_enemy, y_enemy, x_player, y_player)
+                           x_enemy, y_enemy, x_player, y_player)
         player_step(screen, width, height)
 
         screen = vis[0]
@@ -144,10 +156,11 @@ while not finished:
                 key_and_knifes(screen, width, height, 'AB00', data_enemy)
             else:
                 key_and_knifes(screen, width, height, data_player, data_enemy)
-        else: finished = True
+        else:
+            finished = True
         step_flag = True
         pygame.event.clear()
-        #Очистка очереди, чтобы не обрабатывались нажатия во время чужого хода
+        # Очистка очереди, чтобы не обрабатывались нажатия во время чужого хода
 
 pygame.quit()
 sock.close()

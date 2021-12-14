@@ -1,4 +1,3 @@
-import numpy as np  # При отладке так удобнее смотреть вывод лабиринта
 import random
 from modules.lab_classes import Cell
 from modules.lab_classes import Player
@@ -190,7 +189,7 @@ def generate():
     generate_minotaurus()
 
     labirint = generate_labirint()
-    #visualisation_of_generated_lab()
+    # visualisation_of_generated_lab()
 
     return labirint, players
 

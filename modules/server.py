@@ -5,6 +5,7 @@ import socket
 Описаны функции для сервера, реализующие взаимодействие между клиентом и сервером
 '''
 
+
 def connection(IP, Port):
     '''
     Открывает порт для соединения с клиентом
@@ -34,6 +35,7 @@ def answer_to_client_step(лабиринт, conn, игроки):
         answer, лабиринт, игроки = игроки[0].move(data.decode('utf-8'), лабиринт, игроки)
         conn.send(answer.encode('utf-8'))
     return answer, лабиринт, игроки
+
 
 def say_to_client_about_serv_step(data, conn):
     '''

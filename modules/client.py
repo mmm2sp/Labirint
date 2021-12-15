@@ -6,6 +6,7 @@ import socket
 Описаны функции для клиента, реализующие взаимодействие между клиентом и сервером
 '''
 
+
 def connection(IP, Port):
     '''
     Подключается к серверу
@@ -39,6 +40,7 @@ def catch_server_steps(sock):
 
     return data.decode('utf-8')
 
+
 def Typing(ip, x, y, event, screen):
     '''
     Функция обрабатывает ввод IP-адреса игроком-клиентом
@@ -57,63 +59,63 @@ def Typing(ip, x, y, event, screen):
     if event.type == pygame.KEYDOWN and event.key == pygame.K_0:
         ip += '0'
         screen.blit(f1.render(str(ip), True,
-                                   (0, 0, 0)),(x, y))
+                              (0, 0, 0)), (x, y))
         pygame.display.update()
     if event.type == pygame.KEYDOWN and event.key == pygame.K_1:
         ip += '1'
         screen.blit(f1.render(str(ip), True,
-                                   (0, 0, 0)),(x, y))
+                              (0, 0, 0)), (x, y))
         pygame.display.update()
     if event.type == pygame.KEYDOWN and event.key == pygame.K_2:
         ip += '2'
         screen.blit(f1.render(str(ip), True,
-                                   (0, 0, 0)),(x, y))
+                              (0, 0, 0)), (x, y))
         pygame.display.update()
     if event.type == pygame.KEYDOWN and event.key == pygame.K_3:
         ip += '3'
         screen.blit(f1.render(str(ip), True,
-                                   (0, 0, 0)),(x, y))
+                              (0, 0, 0)), (x, y))
         pygame.display.update()
     if event.type == pygame.KEYDOWN and event.key == pygame.K_4:
         ip += '4'
         screen.blit(f1.render(str(ip), True,
-                                   (0, 0, 0)),(x, y))
+                              (0, 0, 0)), (x, y))
         pygame.display.update()
     if event.type == pygame.KEYDOWN and event.key == pygame.K_5:
         ip += '5'
         screen.blit(f1.render(str(ip), True,
-                                   (0, 0, 0)),(x, y))
+                              (0, 0, 0)), (x, y))
         pygame.display.update()
     if event.type == pygame.KEYDOWN and event.key == pygame.K_6:
         ip += '6'
         screen.blit(f1.render(str(ip), True,
-                                   (0, 0, 0)),(x, y))
+                              (0, 0, 0)), (x, y))
         pygame.display.update()
     if event.type == pygame.KEYDOWN and event.key == pygame.K_7:
         ip += '7'
         screen.blit(f1.render(str(ip), True,
-                                   (0, 0, 0)),(x, y))
+                              (0, 0, 0)), (x, y))
         pygame.display.update()
     if event.type == pygame.KEYDOWN and event.key == pygame.K_8:
         ip += '8'
         screen.blit(f1.render(str(ip), True,
-                                   (0, 0, 0)),(x, y))
+                              (0, 0, 0)), (x, y))
         pygame.display.update()
     if event.type == pygame.KEYDOWN and event.key == pygame.K_9:
         ip += '9'
         screen.blit(f1.render(str(ip), True,
-                                   (0, 0, 0)),(x, y))
+                              (0, 0, 0)), (x, y))
         pygame.display.update()
     if event.type == pygame.KEYDOWN and event.key == pygame.K_PERIOD:
         ip += '.'
         screen.blit(f1.render(str(ip), True,
-                                   (0, 0, 0)),(x, y))
+                              (0, 0, 0)), (x, y))
         pygame.display.update()
     if event.type == pygame.KEYDOWN and event.key == pygame.K_BACKSPACE:
-        ip = ip[:(len(ip)-1)]
-        pygame.draw.rect(screen, (200, 200, 200), (x, y+4, 380, 40))
+        ip = ip[:(len(ip) - 1)]
+        pygame.draw.rect(screen, (200, 200, 200), (x, y + 4, 380, 40))
         screen.blit(f1.render(str(ip), True,
-                                   (0, 0, 0)),(x, y))
+                              (0, 0, 0)), (x, y))
         pygame.display.update()
     if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
         s = 1
